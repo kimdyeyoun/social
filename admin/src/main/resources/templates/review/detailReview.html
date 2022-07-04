@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:with="user=${#authentication.principal}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>나가자 관리자</title>
+    <link rel="stylesheet" href="../assets/vendors/iconfonts/mdi/css/materialdesignicons.css">
+    <link rel="stylesheet" href="../assets/css/shared/style.css">
+    <link rel="stylesheet" href="../assets/css/demo_1/style.css">
+    <link rel="shortcut icon" href="../asssets/images/favicon.ico"/>
+    <script src="https://cdn.ckeditor.com/4.8.0/full/ckeditor.js"></script>
+</head>
+<body class="header-fixed">
+<!-- partial:partials/_header.html -->
+<th:block th:include="/../hf/header.html"></th:block>
+<!-- partial -->
+<div class="page-body">
+    <!-- partial:partials/_sidebar.html -->
+    <th:block th:include="/../hf/sidebar.html"></th:block>
+    <!-- partial -->
+    <div class="page-content-wrapper">
+        <div class="page-content-wrapper-inner">
+            <div id="content-viewport">
+                <!-- Begin Page Content -->
+                <div class="row">
+                    <div class="col-12" style="margin-bottom: 15px; display: flex; justify-content: space-between;">
+                        <!-- Page Heading -->
+                        <h4>인테리어업체 정보</h4>
+                        <p class="text-gray">
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="grid">
+                            <p class="grid-header">
+                                <span>기본 정보</span>
+                            </p>
+                            <div class="grid-body">
+                                <div class="item-wrapper">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" style="width: 100%; cellspacing: '0'; margin: auto;">
+                                            <tbody>
+                                            <input type="hidden" name="repair_id" th:value="${param.repair_id}">
+
+                                            <tr>
+                                                <td>
+                                                    회사명
+                                                </td>
+                                                <td>
+                                                    <span th:text="${review.interior_name}"></span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    담당자 닉네임
+                                                </td>
+                                                <td>
+                                                    <span th:text="${review.interior_manager_name}"></span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    제목
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <span th:text="${review.review_title}"></span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    내용
+                                                </td>
+                                                <td>
+                                                    <textarea class="form-control" id="ckeditor" name="review_contents" th:utext="${review.review_contents}" readonly></textarea>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    첨부 파일
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <th:block th:each="files,index : ${review.images}">
+                                                                <span>
+                                                                    <img th:src="|https://pref-bucket.s3.ap-northeast-2.amazonaws.com/images/${files.review_file}|" style="width:100px; height:100px; border : solid 1px #fff">
+                                                                    <th:block th:if="${(index.index+1) % 5 == 0}">
+                                                                        <br>
+                                                                    </th:block>
+                                                                </span>
+                                                        </th:block>
+                                                    </div>
+
+                                                    <div>
+                                                        <th:block th:each="files,index : ${review.movies}">
+                                                            <span>
+                                                                <video controls style="width:300px; height:300px; border : solid 1px #fff">
+                                                                    <source th:src="|https://pref-bucket.s3.ap-northeast-2.amazonaws.com/images/${files.review_file}|" type="video/mp4">
+                                                                </video>
+                                                                <th:block th:if="${(index.index+1) % 2 == 0}">
+                                                                    <br>
+                                                                </th:block>
+                                                            </span>
+                                                        </th:block>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    제품
+                                                </td>
+                                                <td>
+                                                    <span th:text="${review.product_title}"></span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    주택 형태
+                                                </td>
+                                                <td>
+                                                    <span th:if="${review.review_house_form==1}">아파트</span>
+                                                    <span th:if="${review.review_house_form==2}">오피스텔</span>
+                                                    <span th:if="${review.review_house_form==3}">단독전원주택</span>
+                                                    <span th:if="${review.review_house_form==4}">빌라연립</span>
+                                                    <span th:if="${review.review_house_form==5}">원룸</span>
+
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    평수
+                                                </td>
+                                                <td>
+                                                    <span th:text="${review.review_house_size + '평'}"></span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    태그
+                                                </td>
+                                                <td>
+                                                    <th:block th:if="${not #strings.isEmpty(review.tag_list[0].tag) == true}" th:each="files,index : ${review.tag_list}">
+                                                        <span style="border: solid 3px #fff0ff; padding: 5px 5px 5px 5px; background: skyblue; border-radius: 50px;" th:text="${'#' + files.tag}"></span>
+                                                        <th:block th:if="${(index.index+1) % 5 == 0}">
+                                                            <br>
+                                                            <br>
+                                                        </th:block>
+                                                    </th:block>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    상태
+                                                </td>
+                                                <td>
+                                                    <span th:if="${review.review_status==1}">정상</span>
+                                                    <span th:if="${review.review_status==2}">숨김</span>
+                                                    <span th:if="${review.review_status==3}">제재</span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    등록 일시
+                                                </td>
+                                                <td>
+                                                    <span th:text="${review.review_house_size + '평'}"></span>
+                                                </td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                        <div class="mx-auto" style="text-align: center; margin-top: 10px;">
+                                            <span>
+                                                <a th:href="@{/review/detailUpdReview(review_id=${param.review_id})}"><button type="button" class="search_btn btn btn-primary">수정</button></a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="grid">
+                        <p class="grid-header">
+                            <span>활동 정보</span>
+                        </p>
+                        <div class="grid-body">
+                            <div class="item-wrapper">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dataTable" style="width: 50%; cellspacing: '0'; margin: auto;">
+                                        <tbody>
+
+                                            <tr>
+                                                <td>
+                                                    조회수
+                                                </td>
+                                                <td>
+                                                    <span th:text="${review.review_views + '회'}"></span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    좋아요
+                                                </td>
+                                                <td>
+                                                    <span th:text="${review.review_likes + '회'}"></span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    댓글/답글
+                                                </td>
+                                                <td>
+                                                    <span th:text="${review.reply_count + '회'}"></span>
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/assets/vendors/js/core.js"></script>
+<script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
+<script src="/assets/vendors/chartjs/Chart.min.js"></script>
+<script src="/assets/js/charts/chartjs.addon.js"></script>
+<script src="/assets/js/template.js"></script>
+<script src="/assets/js/dashboard.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+
+    CKEDITOR.plugins.addExternal('youtube', '/youtube/plugin.js');
+    CKEDITOR.plugins.addExternal('video', '/video/plugin.js');
+
+    CKEDITOR.replace('ckeditor',
+        {
+            // extraPlugins : 'youtube',
+            uploadUrl: "/editor/drag?path=dnmaison/event",						// 드래그 드롭을 위한 URL
+            filebrowserUploadUrl: "/editor/basic?path=dnmaison/event",			// 파일업로드를 위한 URL
+            on :
+                {
+                    instanceReady : function ( evt )
+                    {
+                        // Hide the editor top bar.
+                        document.getElementById('cke_1_top').style.display = 'none';
+                    }
+                }
+
+        });
+</script>
+
+</script>
+</body>
+</html>

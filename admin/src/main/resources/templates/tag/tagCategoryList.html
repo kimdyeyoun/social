@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:with="user=${#authentication.principal}">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>나가자 관리자</title>
+	<link rel="stylesheet" href="../assets/vendors/iconfonts/mdi/css/materialdesignicons.css">
+	<link rel="stylesheet" href="../assets/css/shared/style.css">
+	<link rel="stylesheet" href="../assets/css/demo_1/style.css">
+	<link rel="shortcut icon" href="../asssets/images/favicon.ico"/>
+	<style type="text/css">
+		.current {
+			border: 1px solid;
+			background: #696ffb;
+			color: #FFFFFF;
+			margin-right: 3px;
+			border-radius: 4px;
+			width: 3%;
+		}
+		.paging {
+			border: 1px solid #f2f4f9;
+			background: #FFFFFF;
+			margin-right: 3px;
+			border-radius: 4px;
+			width: 3%;
+		}
+	</style>
+</head>
+<body class="header-fixed">
+<th:block th:include="/../hf/header.html"></th:block>
+<div class="page-body">
+	<th:block th:include="/../hf/sidebar.html"></th:block>
+	<div class="page-content-wrapper">
+		<div class="page-content-wrapper-inner">
+			<div id="content-viewport">
+				<div class="row">
+					<div class="col-12" style="margin-bottom: 15px; display: flex; justify-content: space-between;">
+						<h4>태그 카테고리 관리</h4>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div class="grid">
+							<p class="grid-header">카테고리 추가</p>
+							<div class="card-body">
+								<br>
+								<div class="grid-body">
+									<div class="item-wrapper">
+										<div class="table-responsive">
+											<table class="table table-bordered" style="width: 100%; cellspacing: '0'; margin: auto;">
+												<tbody>
+													<tr>
+														<td>카테고리명</td>
+														<td><input type="text" class="form-control" id="tag_category"></td>
+													</tr>
+												</tbody>
+											</table>
+											<div class="mx-auto" style="text-align: center; margin-top: 10px;">
+												<button type="button" class="search_btn btn btn-primary" onclick="InsertBtn();">등록</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-12">
+							<div class="grid" id="grid-width">
+								<select class="form-control" id="order_type" style="width: 120px; float: right; margin: 5px 10px 0 0;">
+									<option value="tag_category_id">등록순</option>
+									<option value="tag_category_order">우선순위</option>
+								</select>
+								<p class="grid-header">카테고리 목록</p>
+								<div class="grid-body">
+									<div class="item-wrapper">
+										<div class="table-responsive">
+											<table class="table table-bordered" id="dataTable" style="width: 100%; cellspacing: '0'; margin: auto;">
+												<tbody>
+													<tr>
+														<td>번호</td>
+														<td>카테고리명</td>
+														<td style="width: 250px;">우선순위</td>
+														<td style="width: 150px;"></td>
+													</tr>
+												</tbody>
+												<tbody id="item_list">
+												</tbody>
+											</table>
+											<div id="page_list" style="text-align:center; margin: 2% 0 0 0;">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<th:block th:include="/../hf/footer.html"></th:block>
+<script src="/assets/vendors/js/core.js"></script>
+<script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
+<script src="/assets/vendors/chartjs/Chart.min.js"></script>
+<script src="/assets/js/charts/chartjs.addon.js"></script>
+<script src="/assets/js/template.js"></script>
+<script src="/assets/js/dashboard.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+	$(document).ready(function()
+	{
+		SearchBtn(1);
+	});
+	
+	$("#order_type").change(function()
+	{
+		SearchBtn(1);
+	})
+	
+	function SearchBtn(e)
+	{
+		var data = {'page_num' : e, 'order_type' : $("#order_type").val()};
+		
+		$.ajax(
+		{
+			url : '/tag/category/list',
+			method : 'POST',
+			dataType : 'json',
+			data : data,
+			success : function(result)
+			{
+				var item_list = $("#item_list");
+				var item_add = "";
+				
+				var page_list = $("#page_list");
+				var page_add = "";
+				
+				// list start
+				if(result.category.length == 0)
+				{
+					item_add += '<tr>';
+					item_add += '<td></td>';
+					item_add += '<td></td>';
+					item_add += '<td></td>';
+					item_add += '<td></td>';
+					item_add += '</tr>';
+				}
+				else
+				{
+					for(var i = 0; i < result.category.length; i++)
+					{
+						item_add += '<tr>';
+						item_add += '<td>' + (((result.page.page_num - 1) * result.page.limit) + i + 1) + '</a></td>';
+						item_add += '<td><input type="text" class="form-control" id="category_' + result.category[i].tag_category_id + '" value="' + result.category[i].tag_category + '"></td>';
+						item_add += '<td><input type="number" class="form-control" id="order_' + result.category[i].tag_category_id + '" value="' + result.category[i].tag_category_order + '"></td>';
+						item_add += '<td>';
+						item_add += '<button type="button" class="btn btn-info" onclick="UpdateBtn(' + result.category[i].tag_category_id + ')" style="margin: 0 10px 0 0;">수정</button>';
+						item_add += '<button type="button" class="btn btn-danger" onclick="DeleteBtn(' + result.category[i].tag_category_id + ')">삭제</button>';
+						item_add += '</td>';
+						item_add += '</tr>';
+					}
+				}
+				// list end
+				
+				// paging start
+				if(result.page.page_num > 10)
+				{
+					page_add += '<button class="paging" onclick="SearchBtn(' + (result.page.start_page - 10) + ')"><</button>';
+				}
+				
+				for(var i = result.page.start_page; i < (result.page.end_page + 1); i++)
+				{
+					if(result.page.page_num == i)
+					{
+						page_add += '<button class="current" onclick="SearchBtn(' + i + ')">' + i + '</button>';
+					}
+					else if(i <= result.page.max_page)
+					{
+						page_add += '<button class="paging" onclick="SearchBtn(' + i + ')">' + i + '</button>';
+					}
+				}
+				
+				if(result.page.start_page + 10 < (result.page.max_page))
+				{
+					page_add += '<button class="paging" onclick="SearchBtn(' + (result.page.start_page + 10) + ')">></button>';
+				}
+				// paging end
+				
+				item_list.empty();
+				item_list.append(item_add);
+				
+				page_list.empty();
+				page_list.append(page_add);
+			},
+			error(e)
+			{
+				console.log(e)
+			}
+		})
+	}
+	
+	function InsertBtn()
+	{
+		if(confirm("등록하시겠습니까?") == true)
+		{
+			$.ajax(
+			{
+				url : '/tag/category/insert',
+				method : 'POST',
+				dataType : 'json',
+				data : {'tag_category' : $("#tag_category").val()},
+				success : function(result)
+				{
+					if(result == 0)
+					{
+						alert("등록에 실패하였습니다.");
+					}
+					else
+					{
+						alert("등록에 성공하였습니다.");
+						
+						location.reload();
+					}
+				}
+			});
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function UpdateBtn(e)
+	{
+		console.log($("#category_" + e).val())
+		console.log($("#order_" + e).val())
+		
+		if(confirm("수정하시겠습니까?") == true)
+		{
+			$.ajax(
+			{
+				url : '/tag/category/update',
+				method : 'POST',
+				dataType : 'json',
+				data : {'tag_category_id' : e, 'tag_category' : $("#category_" + e).val(), 'tag_category_order' : $("#order_" + e).val()},
+				success : function(result)
+				{
+					if(result == 0)
+					{
+						alert("수정에 실패하였습니다.");
+					}
+					else
+					{
+						alert("수정에 성공하였습니다.");
+						
+						location.reload();
+					}
+				}
+			});
+		}
+	}
+	
+	function DeleteBtn(e)
+	{
+		if(confirm("삭제하시겠습니까?") == true)
+		{
+			$.ajax(
+			{
+				url : '/tag/category/delete',
+				method : 'POST',
+				dataType : 'json',
+				data : {'tag_category_id' : e},
+				success : function(result)
+				{
+					if(result == 0)
+					{
+						alert("삭제에 실패하였습니다.");
+					}
+					else
+					{
+						alert("삭제에 성공하였습니다.");
+						
+						location.reload();
+					}
+				}
+			});
+		}
+	}
+</script>
+</body>
+</html>

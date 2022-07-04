@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:with="user=${#authentication.principal}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>나가자 관리자</title>
+    <link rel="stylesheet" href="../assets/vendors/iconfonts/mdi/css/materialdesignicons.css">
+    <link rel="stylesheet" href="../assets/css/shared/style.css">
+    <link rel="stylesheet" href="../assets/css/demo_1/style.css">
+    <link rel="shortcut icon" href="../asssets/images/favicon.ico"/>
+</head>
+<body class="header-fixed">
+<!-- partial:partials/_header.html -->
+<th:block th:include="/../hf/header.html"></th:block>
+<!-- partial -->
+<div class="page-body">
+    <!-- partial:partials/_sidebar.html -->
+    <th:block th:include="/../hf/sidebar.html"></th:block>
+    <!-- partial -->
+    <div class="page-content-wrapper">
+        <div class="page-content-wrapper-inner">
+            <div id="content-viewport">
+                <!-- Begin Page Content -->
+                <div class="row">
+                    <div class="col-12" style="margin-bottom: 15px; display: flex; justify-content: space-between;">
+                        <!-- Page Heading -->
+                        <h4>qna 정보</h4>
+                        <p class="text-gray">
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="grid">
+                            <p class="grid-header">
+                                <span th:text="${'공지사항NO. : ' + param.qna_id}"></span>
+                                <input type="hidden" name="qna_id" th:value="${param.qna_id}">
+                            </p>
+                            <div class="grid-body">
+                                <div class="item-wrapper">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="dataTable" style="width: 50%; cellspacing: '0'; margin: auto;">
+                                            <tbody>
+
+                                            <tr>
+                                                <td>
+                                                    질문인
+                                                </td>
+                                                <td>
+                                                    <span th:text="${qna.user_nickname}"></span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    분류
+                                                </td>
+                                                <td>
+                                                    <span th:if="${qna.qna_type == 1}">건의하기</span>
+                                                    <span th:if="${qna.qna_type == 2}">신고하기</span>
+                                                    <span th:if="${qna.qna_type == 3}">서비스오류</span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    문의 이미지
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <th:block th:each="files,index : ${qna.files}">
+                                                                <span>
+                                                                    <img th:src="|https://pref-bucket.s3.ap-northeast-2.amazonaws.com/images/${files.qna_file}|" style="width:100px; height:100px; border : solid 1px #fff">
+                                                                    <th:block th:if="${(index.index+1) % 5 == 0}">
+                                                                        <br>
+                                                                    </th:block>
+                                                                </span>
+                                                        </th:block>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    문의내용
+                                                </td>
+                                                <td>
+                                                    <textarea style="width: 700px; height : 500px; border: transparent" th:utext="${qna.qna_contents}" readonly></textarea>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    등록일시
+                                                </td>
+                                                <td th:text="${qna.qna_upload_date}">
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    답변내용
+                                                </td>
+                                                <td>
+                                                    <textarea name="qna_answer" style="width: 700px; height : 500px; border: transparent" th:utext="${qna.qna_answer}" placeholder="답변 입력 ..."></textarea>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    답변 일시
+                                                </td>
+                                                <td th:text="${qna.qna_answer_date}">
+                                                </td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                        <div class="mx-auto" style="text-align: center; margin-top: 10px;">
+                                            <span>
+                                            <button type="button" class="search_btn btn btn-primary" onclick="Update()">답변등록</button>
+                                            </span>
+                                            <span>
+                                            <button type="button" class="search_btn btn btn-danger" onclick="Reset()">답변삭제</button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/assets/vendors/js/core.js"></script>
+<script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
+<script src="/assets/vendors/chartjs/Chart.min.js"></script>
+<script src="/assets/js/charts/chartjs.addon.js"></script>
+<script src="/assets/js/template.js"></script>
+<script src="/assets/js/dashboard.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    function Update()
+    {
+        if(confirm('답변등록 하시겠습니까?'))
+        {
+            $.ajax
+            (
+                {
+                    url : '/qna/qnaUpdateAnswer',
+                    method : 'POST',
+                    type : 'JSON',
+                    data : {'qna_id' : $('input[name=qna_id]').val(), 'qna_answer' : $('textarea[name=qna_answer]').val()},
+                    success : function (result)
+                    {
+                        switch (result)
+                        {
+                            case 1:
+                                alert('등록되었습니다.');
+                                location.reload();
+                                break;
+                            case 0:
+                                alert('등록 실패 관리자에게 문의 해주세요.')
+                                break;
+                        }
+                    }
+                }
+            )
+        }
+    }
+    function Reset()
+    {
+        if(confirm('답변삭제 하시겠습니까?'))
+        {
+            $.ajax
+            (
+                {
+                    url : '/qna/qnaResetAnswer',
+                    method : 'POST',
+                    type : 'JSON',
+                    data : {'qna_id' : $('input[name=qna_id]').val()},
+                    success : function (result)
+                    {
+                        switch (result)
+                        {
+                            case 1:
+                                alert('리셋되었습니다.');
+                                location.reload();
+                                break;
+                            case 0:
+                                alert('삭제 실패 관리자에게 문의 해주세요.')
+                                break;
+                        }
+                    }
+                }
+            )
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<div class="sidebar" th:with="user =${#authentication.principal}" xmlns:th="http://www.thymeleaf.org">
+    <ul class="navigation-menu">
+        <li>
+            <a href="#admin-li" data-toggle="collapse" aria-expanded="false">
+                <span class="link-title">대시보드</span>
+                <i class="mdi mdi-apps link-icon"></i>
+            </a>
+            <ul class="collapse navigation-submenu" id="admin-li">
+                <li><a href="/index">대시보드</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#admin-li1" data-toggle="collapse" aria-expanded="false">
+                <span class="link-title">회원 관리</span>
+                <i class="mdi mdi-human-handsdown link-icon"></i>
+            </a>
+            <ul class="collapse navigation-submenu" id="admin-li1">
+                <li><a href="/user/userList">회원</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#admin-li2" data-toggle="collapse" aria-expanded="false">
+                <span class="link-title">인테리어 업체 관리</span>
+                <i class="mdi mdi-food-apple link-icon"></i>
+            </a>
+            <ul class="collapse navigation-submenu" id="admin-li2">
+                <li><a href="/interior/interiorList">인테리어 업체</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#admin-li3" data-toggle="collapse" aria-expanded="false">
+                <span class="link-title">대리점 관리</span>
+                <i class="mdi mdi-calendar-text link-icon"></i>
+            </a>
+            <ul class="collapse navigation-submenu" id="admin-li3">
+                <li><a href="/agency/agencyList">대리점</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#admin-li4" data-toggle="collapse" aria-expanded="false">
+                <span class="link-title">상품 관리</span>
+                <i class="mdi mdi-basket link-icon"></i>
+            </a>
+            <ul class="collapse navigation-submenu" id="admin-li4">
+                <li><a href="/product/list">상품 목록</a></li>
+                <li><a href="/sample/list">샘플북 신청 목록</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#admin-li5" data-toggle="collapse" aria-expanded="false">
+                <span class="link-title">게시판 통합 관리</span>
+                <i class="mdi mdi-barley link-icon"></i>
+            </a>
+            <ul class="collapse navigation-submenu" id="admin-li5">
+                <li><a href="/board/boardList">공지사항</a></li>
+                <li><a href="/event/eventList">이벤트</a></li>
+                <li><a href="/faq/faqList">FAQ</a></li>
+                <li><a href="/qna/qnaList">QNA</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#admin-li6" data-toggle="collapse" aria-expanded="false">
+                <span class="link-title">시공 후기</span>
+                <i class="mdi mdi-checkbox-multiple-blank link-icon"></i>
+            </a>
+            <ul class="collapse navigation-submenu" id="admin-li6">
+                <li><a href="/review/reviewList">시공후기 관리</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#admin-li7" data-toggle="collapse" aria-expanded="false">
+                <span class="link-title">시공 상담</span>
+                <i class="mdi mdi-account link-icon"></i>
+            </a>
+            <ul class="collapse navigation-submenu" id="admin-li7">
+                <li><a href="/chat/chatRoomList">시공상담 관리</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#admin-li11" data-toggle="collapse" aria-expanded="false">
+                <span class="link-title">댓글/답글</span>
+                <i class="mdi mdi-box-cutter link-icon"></i>
+            </a>
+            <ul class="collapse navigation-submenu" id="admin-li11">
+                <li><a href="/user/replyList">댓글/답글 관리</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#admin-li8" data-toggle="collapse" aria-expanded="false">
+                <span class="link-title">A/S 관리</span>
+                <i class="mdi mdi-assistant link-icon"></i>
+            </a>
+            <ul class="collapse navigation-submenu" id="admin-li8">
+                <li><a href="/repair/repairList">A/S 관리</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#admin-li9" data-toggle="collapse" aria-expanded="false">
+                <span class="link-title">키워드</span>
+                <i class="mdi mdi-truck link-icon"></i>
+            </a>
+            <ul class="collapse navigation-submenu" id="admin-li9">
+                <li><a href="/keyword/keywordList">키워드 관리</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#admin-li10" data-toggle="collapse" aria-expanded="false">
+                <span class="link-title">설정</span>
+                <i class="mdi mdi-cart link-icon"></i>
+            </a>
+            <ul class="collapse navigation-submenu" id="admin-li10">
+                <li><a href="/banner/mainList">메인 배너</a></li>
+                <li><a href="/reservation/list">푸시 알림</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>

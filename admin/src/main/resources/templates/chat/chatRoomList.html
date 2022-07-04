@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:with="user = ${#authentication.principal}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>나가자 관리자</title>
+    <link rel="stylesheet" href="/assets/vendors/iconfonts/mdi/css/materialdesignicons.css">
+    <link rel="stylesheet" href="/assets/css/shared/style.css">
+    <link rel="stylesheet" href="/assets/css/demo_1/style.css">
+    <link rel="shortcut icon" href="/asssets/images/favicon.ico"/>
+    <style type="text/css">
+        .current {
+            border: 1px solid;
+            background: #696ffb;
+            color: #FFFFFF;
+            margin-right: 3px;
+            border-radius: 4px;
+            width: 3%;
+        }
+
+        .paging {
+            border: 1px solid #f2f4f9;
+            background: #FFFFFF;
+            margin-right: 3px;
+            border-radius: 4px;
+            width: 3%;
+        }
+    </style>
+</head>
+<body class="header-fixed">
+<th:block th:include="/../hf/header.html"></th:block>
+<div class="page-body">
+    <th:block th:include="/../hf/sidebar.html"></th:block>
+    <div class="page-content-wrapper">
+        <div class="page-content-wrapper-inner">
+            <div id="content-viewport">
+                <div class="row">
+                    <div class="col-12" style="margin-bottom: 15px; display: flex; justify-content: space-between;">
+                        <h4>시공상담 목록</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="grid" id="grid-width">
+                            <p class="grid-header">시공상담 검색</p>
+                            <div class="grid-body">
+                                <div class="item-wrapper">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="dataTable"
+                                               style="width: 100%; cellspacing: '0'; margin: auto;">
+                                            <tbody>
+                                            <tr>
+                                                <td>유저 아이디</td>
+                                                <td><input type="text" class="form-control" id="user_email"
+                                                           style="width: 500px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>업체명</td>
+                                                <td><input type="text" class="form-control" id="interior_name"
+                                                           style="width: 500px;"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="mx-auto" style="text-align: center; margin-top: 10px;">
+                                            <button type="button" class="search_btn btn btn-primary"
+                                                    onclick="SearchBtn(1);">검색
+                                            </button>
+                                            <input type="hidden" id="user_id" name="user_id"
+                                                   th:value="${param.user_id}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="grid" id="grid-width">
+                            <p class="grid-header">채팅방 목록</p>
+                            <div class="grid-body">
+                                <div class="item-wrapper">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="dataTable"
+                                               style="width: 100%; cellspacing: '0'; margin: auto;">
+                                            <tbody>
+                                            <tr>
+                                                <td>번호</td>
+                                                <td>유저 아이디</td>
+                                                <td>업체명</td>
+                                                <td>담당자명</td>
+                                                <td>업체 연락처</td>
+                                                <td>등록일</td>
+                                                <td></td>
+                                            </tr>
+                                            </tbody>
+                                            <tbody id="item_list">
+                                            </tbody>
+                                        </table>
+                                        <div id="page_list" style="text-align:center; margin: 2% 0 0 0;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="/../hf/footer.html"></th:block>
+</div>
+<script src="/assets/vendors/js/core.js"></script>
+<script src="/assets/vendors/datatables/jquery.dataTables.min.js"></script>
+<script src="/assets/vendors/datatables/dataTables.bootstrap4.min.js"></script>
+<script src="/assets/js/demo/datatables-demo.js"></script>
+<script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
+<script src="/assets/vendors/chartjs/Chart.min.js"></script>
+<script src="/assets/js/charts/chartjs.addon.js"></script>
+<script src="/assets/js/template.js"></script>
+<script src="/assets/js/dashboard.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    $(document).ready(function () {
+        SearchBtn(1);
+    });
+
+    function SearchBtn(e) {
+        var data = {
+            'user_id': $("#user_id").val(),
+            'user_email': $("#user_email").val(),
+            'interior_name': $("#interior_name").val(),
+            'page_num': e
+        };
+
+        $.ajax(
+            {
+                url: '/chat/selectChatRoomList',
+                method: 'POST',
+                dataType: 'json',
+                data: data,
+                success: function (result) {
+                    var item_list = $("#item_list");
+                    var item_add = "";
+                    var page_list = $("#page_list");
+                    var page_add = "";
+
+                    // list start
+                    if (result.chatRoom.length == 0) {
+                        item_add += '<tr>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '</tr>';
+                    } else {
+                        for (var i = 0; i < result.chatRoom.length; i++) {
+                            item_add += '<tr>';
+                            item_add += '<td>' + (((result.page.page_num - 1) * result.page.limit) + i + 1) + '</td>';
+                            item_add += '<td>' + result.chatRoom[i].user_email + '</td>';
+                            item_add += '<td>' + result.chatRoom[i].interior_name + '</td>';
+                            item_add += '<td>' + result.chatRoom[i].interior_manager_name + '</td>';
+                            item_add += '<td>' + result.chatRoom[i].interior_phone + '</td>';
+                            item_add += '<td>' + result.chatRoom[i].chat_room_create_date + '</td>';
+                            item_add += '<td><a class="btn btn-sm btn-primary" href="chatList?chat_bridge_id=' + result.chatRoom[i].chat_bridge_id + '">상세조회</button></td>';
+                            item_add += '</tr>';
+                        }
+                    }
+                    // list end
+
+                    // paging start
+                    if (result.page.page_num > 10) {
+                        page_add += '<button class="paging" onclick="SearchBtn(' + (result.page.start_page - 10) + ')"><</button>';
+                    }
+
+                    for (var i = result.page.start_page; i < (result.page.end_page + 1); i++) {
+                        if (result.page.page_num == i) {
+                            page_add += '<button class="current" onclick="SearchBtn(' + i + ')">' + i + '</button>';
+                        } else if (i <= result.page.max_page) {
+                            page_add += '<button class="paging" onclick="SearchBtn(' + i + ')">' + i + '</button>';
+                        }
+                    }
+
+                    if (result.page.start_page + 10 < (result.page.max_page)) {
+                        page_add += '<button class="paging" onclick="SearchBtn(' + (result.page.start_page + 10) + ')">></button>';
+                    }
+                    // paging end
+
+                    item_list.empty();
+                    item_list.append(item_add);
+
+                    page_list.empty();
+                    page_list.append(page_add);
+                },
+                error(e) {
+                    console.log(e)
+                }
+            })
+    }
+
+    function CreateChatBridge(e) {
+        if (confirm("해당 채팅방을 연결하시겠습니까?") == true) {
+            $.ajax(
+                {
+                    url: '/chat/createChatBridge',
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {chat_room_id: e},
+                    success: function (result) {
+                        if (result == 0) {
+                            alert("연결에 실패하였습니다.");
+
+                            location.reload();
+                        } else {
+                            location.reload();
+                        }
+                    }
+                });
+        } else {
+            return;
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<nav class="t-header">
+	<div class="t-header-brand-wrapper">
+		<a href="/index">
+			<!-- <img src="/../assets/images/mainLogo.png" alt="logo" class="logo" style="height: 30px; width: 150px;"/> -->
+			<span style="text-align: center; font-size: 25px; color: #000000;">나가자 관리자</span>
+		</a>
+	</div>
+	<div class="t-header-content-wrapper">
+		<div class="t-header-content">
+			<button class="t-header-toggler t-header-mobile-toggler d-block d-lg-none">
+				<i class="mdi mdi-menu"></i>
+			</button>
+			<ul class="nav ml-auto">
+				<li class="nav-item nav-link">
+					<span class="small" style="margin-right: 10px;" th:text="${user.adminLoginId} + ' 님'"></span>
+					<img class="img-profile rounded-circle" src="/assets/images/none.png" style="height: 30px;width: 30px;">  
+				</li>          
+				<li class="nav-item ">
+					<a class="nav-link" onclick="location.href='logout'">
+						<i class="mdi mdi-logout mdi-1x"></i>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>

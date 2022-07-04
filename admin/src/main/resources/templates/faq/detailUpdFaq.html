@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:with="user=${#authentication.principal}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>나가자 관리자</title>
+    <link rel="stylesheet" href="../assets/vendors/iconfonts/mdi/css/materialdesignicons.css">
+    <link rel="stylesheet" href="../assets/css/shared/style.css">
+    <link rel="stylesheet" href="../assets/css/demo_1/style.css">
+    <link rel="shortcut icon" href="../asssets/images/favicon.ico"/>
+</head>
+<body class="header-fixed">
+<!-- partial:partials/_header.html -->
+<th:block th:include="/../hf/header.html"></th:block>
+<!-- partial -->
+<div class="page-body">
+    <!-- partial:partials/_sidebar.html -->
+    <th:block th:include="/../hf/sidebar.html"></th:block>
+    <!-- partial -->
+    <div class="page-content-wrapper">
+        <div class="page-content-wrapper-inner">
+            <div id="content-viewport">
+                <!-- Begin Page Content -->
+                <div class="row">
+                    <div class="col-12" style="margin-bottom: 15px; display: flex; justify-content: space-between;">
+                        <!-- Page Heading -->
+                        <h4>질문/응답 수정</h4>
+                        <p class="text-gray">
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="grid">
+                            <p class="grid-header">
+                                <span th:text="${'이벤트NO. : ' + param.faq_id}"></span>
+                                <input type="hidden" id="faq_id" name="faq_id" th:value="${param.faq_id}">
+                            </p>
+                            <div class="grid-body">
+                                <div class="item-wrapper">
+                                    <div class="table-responsive">
+                                        <form id="feed_form" method="POST" enctype="multipart/form-data">
+                                            <table class="table table-bordered" id="dataTable" style="width: 50%; cellspacing: '0'; margin: auto;">
+                                                <tbody>
+
+                                                <tr>
+                                                    <td>
+                                                        질문
+                                                    </td>
+                                                    <td>
+                                                        <input type="hidden" name="faq_id" th:value="${param.faq_id}">
+                                                        <input class="form-control" type="text" name="faq_question" th:value="${faq.faq_question}">
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        응답
+                                                    </td>
+                                                    <td>
+                                                        <textarea style="width: 700px; height : 500px;" name="faq_answer"  th:text="${faq.faq_answer}"></textarea>
+                                                    </td>
+                                                </tr>
+
+
+                                                </tbody>
+                                            </table>
+                                            <div class="mx-auto" style="text-align: center; margin-top: 10px;">
+                                            <span>
+                                                <button type="button" class="search_btn btn btn-primary" onclick="updBtn()" >완료</button>
+                                            </span>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/assets/vendors/js/core.js"></script>
+<script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
+<script src="/assets/vendors/chartjs/Chart.min.js"></script>
+<script src="/assets/js/charts/chartjs.addon.js"></script>
+<script src="/assets/js/template.js"></script>
+<script src="../assets/js/dashfaq.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    function updBtn() {
+        let updData = new FormData($('#feed_form')[0]);
+
+        if (confirm('수정하시겠습니까?'))
+        {
+            $.ajax
+            (
+                {
+                    url: '/faq/faqInformationUpd',
+                    type: "POST",
+                    data: updData,
+                    dataType: 'JSON',
+                    enctype: 'multipart/form-data',
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    success: function (result) {
+                        console.log(result);
+                        switch (result) {
+                            case 1:
+                                alert('수정되었습니다.');
+                                location.href="/faq/detailFaq?faq_id=" + $("#faq_id").val();
+                                break;
+
+                            case 0:
+                                alert('수정 실패 관리자에게 문의 해주십시오.');
+                                break;
+                        }
+
+                    }
+                }
+            )
+        }
+    }
+</script>
+</body>
+</html>

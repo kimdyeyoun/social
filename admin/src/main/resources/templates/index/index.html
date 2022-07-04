@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:with=" user = ${#authentication.principal}">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>나가자</title>
+	<link rel="stylesheet" href="../assets/vendors/iconfonts/mdi/css/materialdesignicons.css">
+	<link rel="stylesheet" href="../assets/css/shared/style.css">
+	<link rel="stylesheet" href="../assets/css/demo_1/style.css">
+	<link rel="shortcut icon" href="../asssets/images/favicon.ico" />
+</head>
+<body class="header-fixed">
+<th:block th:include="/../hf/header.html"></th:block>
+<div class="page-body">
+	<th:block th:include="/../hf/sidebar.html"></th:block>
+	<div class="page-content-wrapper">
+		<div class="page-content-wrapper-inner">
+			<div class="content-viewport">
+				<div class="row">
+					<div class="col-12 py-5">
+						<h4>대시보드</h4>
+					</div>
+				</div>
+
+				<div class="row">
+					<span style="padding-left: 5px"><input type="date"></span>
+					<span style="padding-left: 20px"><input type="date"></span>
+				</div>
+
+				<div style="padding-top: 30px" class="row">
+					<div class="col-md-3 col-sm-6 col-6 equel-grid">
+						<div class="grid">
+							<div class="grid-body text-gray">
+								<p style="text-align: center;font-size: 30px; padding-top: 30px">
+									회원 수
+								</p>
+							</div>
+							<div style="text-align: center;font-size: 30px; padding-bottom: 30px">
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-3 col-sm-6 col-6 equel-grid">
+						<div class="grid">
+							<div class="grid-body text-gray">
+								<p style="text-align: center;font-size: 30px; padding-top: 30px">
+									인테리어 업체 수
+								</p>
+							</div>
+							<div style="text-align: center;font-size: 30px; padding-bottom: 30px">
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-3 col-sm-6 col-6 equel-grid">
+						<div class="grid">
+							<div class="grid-body text-gray">
+								<p style="text-align: center;font-size: 30px; padding-top: 30px">
+									대리점 수
+								</p>
+							</div>
+							<div style="text-align: center;font-size: 30px; padding-bottom: 30px">
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-3 col-sm-6 col-6 equel-grid">
+						<div class="grid">
+							<div class="grid-body text-gray">
+								<p style="text-align: center;font-size: 30px; padding-top: 30px">
+									제품 수
+								</p>
+							</div>
+							<div style="text-align: center;font-size: 30px; padding-bottom: 30px">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-3 col-sm-6 col-6 equel-grid">
+						<div class="grid">
+							<div class="grid-body text-gray">
+								<p style="text-align: center;font-size: 30px; padding-top: 30px">
+									샘플복 발송대기
+								</p>
+							</div>
+							<div style="text-align: center;font-size: 30px; padding-bottom: 30px">
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-3 col-sm-6 col-6 equel-grid">
+						<div class="grid">
+							<div class="grid-body text-gray">
+								<p style="text-align: center;font-size: 30px; padding-top: 30px">
+									샘플북 발송완료
+								</p>
+							</div>
+							<div style="text-align: center;font-size: 30px; padding-bottom: 30px">
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-3 col-sm-6 col-6 equel-grid">
+						<div class="grid">
+							<div class="grid-body text-gray">
+								<p style="text-align: center;font-size: 30px; padding-top: 30px">
+									리뷰 수
+								</p>
+							</div>
+							<div style="text-align: center;font-size: 30px; padding-bottom: 30px">
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-3 col-sm-6 col-6 equel-grid">
+						<div class="grid">
+							<div class="grid-body text-gray">
+								<p style="text-align: center;font-size: 30px; padding-top: 30px">
+									댓글/답글 수
+								</p>
+							</div>
+							<div style="text-align: center;font-size: 30px; padding-bottom: 30px">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-3 col-sm-6 col-6 equel-grid">
+						<div class="grid">
+							<div class="grid-body text-gray">
+								<p style="text-align: center;font-size: 30px; padding-top: 30px">
+									시공상담 견적 문의 수
+								</p>
+							</div>
+							<div style="text-align: center;font-size: 30px; padding-bottom: 30px">
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-3 col-sm-6 col-6 equel-grid">
+						<div class="grid">
+							<div class="grid-body text-gray">
+								<p style="text-align: center;font-size: 30px; padding-top: 30px">
+									Q&A 수
+								</p>
+							</div>
+							<div style="text-align: center;font-size: 30px; padding-bottom: 30px">
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-3 col-sm-6 col-6 equel-grid">
+						<div class="grid">
+							<div class="grid-body text-gray">
+								<p style="text-align: center;font-size: 30px; padding-top: 30px">
+									Q&A 미답변 수
+								</p>
+							</div>
+							<div style="text-align: center;font-size: 30px; padding-bottom: 30px">
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-3 col-sm-6 col-6 equel-grid">
+						<div class="grid">
+							<div class="grid-body text-gray">
+								<p style="text-align: center;font-size: 30px; padding-top: 30px">
+									A/S 신청 수
+								</p>
+							</div>
+							<div style="text-align: center;font-size: 30px; padding-bottom: 30px">
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+<th:block th:include="/../hf/footer.html"></th:block>
+<script src="/../assets/vendors/js/core.js"></script>
+<script src="/../assets/vendors/apexcharts/apexcharts.min.js"></script>
+<script src="/../assets/vendors/chartjs/Chart.min.js"></script>
+<script src="/../assets/js/charts/chartjs.addon.js"></script>
+<script src="/../assets/js/template.js"></script>
+<script src="/../assets/js/dashboard.js"></script>
+<script src="/assets/vendors/js/core.js"></script>
+<script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
+<script src="/assets/vendors/chartjs/Chart.min.js"></script>
+<script src="/assets/js/charts/chartjs.addon.js"></script>
+<script src="/assets/js/template.js"></script>
+<script src="/assets/js/dashboard.js"></script>
+<!-- <script src="../js/chart_data.js"></script> -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</body>
+</html>
