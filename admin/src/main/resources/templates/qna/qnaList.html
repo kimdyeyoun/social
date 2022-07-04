@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:with="user=${#authentication.principal}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>나가자 관리자</title>
+    <link rel="stylesheet" href="../assets/vendors/iconfonts/mdi/css/materialdesignicons.css">
+    <link rel="stylesheet" href="../assets/css/shared/style.css">
+    <link rel="stylesheet" href="../assets/css/demo_1/style.css">
+    <link rel="shortcut icon" href="../asssets/images/favicon.ico"/>
+    <style type="text/css">
+        .current {
+            border: 1px solid;
+            background: #696ffb;
+            color: #FFFFFF;
+            margin-right: 3px;
+            border-radius: 4px;
+            width: 3%;
+        }
+        .paging {
+            border: 1px solid #f2f4f9;
+            background: #FFFFFF;
+            margin-right: 3px;
+            border-radius: 4px;
+            width: 3%;
+        }
+    </style>
+</head>
+<body class="header-fixed">
+<th:block th:include="/../hf/header.html"></th:block>
+<div class="page-body">
+    <th:block th:include="/../hf/sidebar.html"></th:block>
+    <div class="page-content-wrapper">
+        <div class="page-content-wrapper-inner">
+            <div id="content-viewport">
+                <div class="row">
+                    <div class="col-12" style="margin-bottom: 15px; display: flex; justify-content: space-between;">
+                        <h4>QNA 관리</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="grid">
+                            <p class="grid-header">
+                                QNA 검색
+                            </p>
+                            <div class="card-body">
+                                <div class="grid-body">
+                                    <div class="item-wrapper">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" style="width: 100%; cellspacing: '0'; margin: auto;">
+                                                <tbody>
+
+                                                    <tr>
+                                                        <td>
+                                                            닉네임
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-control" type="text" id="user_nickname" style="width: 500px;">
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>
+                                                            Qna 기간
+                                                        </td>
+                                                        <td>
+                                                            <select id="qna_status_answer" class="form-control" style="width: 200px;">
+                                                                <option selected="selected" value="99">전체</option>
+                                                                <option value="1">답변</option>
+                                                                <option value="0">미답변</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+        
+                                                    <tr>
+                                                        <td>
+                                                            Qna 기간
+                                                        </td>
+                                                        <td>
+                                                            <select id="qna_type" class="form-control" style="width: 200px;">
+                                                                <option selected="selected" value="99">전체</option>
+                                                                <option value="1">건의하기</option>
+                                                                <option value="2">신고하기</option>
+                                                                <option value="3">서비스오류</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                            <div class="mx-auto" style="text-align: center; margin-top: 10px;">
+                                                <button type="button" class="search_btn btn btn-primary" onclick="SearchBtn(1);">검색 </button>
+                                                <input type="hidden" id="pk" th:value="${param.user_id}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="grid" id="grid-width">
+                                <p class="grid-header">
+                                    QNA <목록></목록>
+                                </p>
+                                <div class="grid-body">
+                                    <div class="item-wrapper">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="dataTable" style="width: 100%; cellspacing: '0'; margin: auto;">
+                                                <tbody>
+                                                <tr>
+                                                    <td>NO.</td>
+                                                    <td>제목</td>
+                                                    <td>질문인</td>
+                                                    <td>분류</td>
+                                                    <td>상태</td>
+                                                    <td>등록일시</td>
+                                                    <td>세부사항</td>
+                                                    <td>삭제</td>
+                                                </tr>
+                                                </tbody>
+                                                <tbody id="item_list">
+                                                </tbody>
+                                            </table>
+                                            <div id="page_list" style="text-align:center; margin: 2% 0 0 0;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:include="/../hf/footer.html"></th:block>
+<script src="/assets/vendors/js/core.js"></script>
+<script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
+<script src="/assets/vendors/chartjs/Chart.min.js"></script>
+<script src="/assets/js/charts/chartjs.addon.js"></script>
+<script src="/assets/js/template.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    $(document).ready(function () {
+        SearchBtn(1);
+    });
+
+    function SearchBtn(e) {
+
+        let data = {'pk' : $("#pk").val(), 'user_nickname': $("#user_nickname").val(), 'qna_status_answer': $("#qna_status_answer").val(), 'qna_type': $("#qna_type").val(), 'page_num': e};
+
+        console.log(data);
+        $.ajax(
+            {
+                url: '/qna/selectNewQna',
+                type: 'POST',
+                dataType : 'json',
+                data : data,
+                success: function (result) {
+                    console.log(result);
+                    var item_list = $("#item_list");
+                    var item_add = "";
+                    var page_list = $("#page_list");
+                    var page_add = "";
+                    // list start
+                    if (result.qna.length == 0) {
+                        item_add += '<tr>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '</tr>';
+                    } else {
+                        for (var i = 0; i < result.qna.length; i++) {
+                            item_add += '<tr>';
+
+                            item_add += '<td>' + result.qna[i].qna_id + '</td>';
+                            item_add += '<td>' + result.qna[i].qna_title + '</td>';
+                            item_add += '<td>' + result.qna[i].user_nickname + '</td>';
+
+                            if (result.qna[i].qna_type == 1)
+                            {
+                               item_add += '<td>건의하기</td>'
+                            }
+                            else if(result.qna[i].qna_type == 2)
+                            {
+                                item_add += '<td>신고하기</td>'
+                            }
+                            else if(result.qna[i].qna_type == 3)
+                            {
+                                item_add += '<td>서비스오류</td>'
+                            }
+
+                            if (result.qna[i].qna_status_answer == 1)
+                            {
+                                item_add += '<td>답변</td>'
+                            }
+                            else if(result.qna[i].qna_status_answer == 0)
+                            {
+                                item_add += '<td>미답변</td>'
+                            }
+
+                            item_add += '<td>' + result.qna[i].qna_upload_date + '</td>';
+
+                            item_add += '<td>' + '<a href="/qna/detailQna?qna_id=' + result.qna[i].qna_id + '"><button class="btn btn-sm btn-primary">세부사항</button></a>' + '</td>';
+                            item_add += '<td>' + '<button type="button" onclick="delBtn('+(result.qna[i].qna_id)+')" class="btn btn-sm btn-danger">삭제</button>' + '</td>';
+
+                            item_add += '</tr>';
+                        }
+                    }
+                    // list end
+                    // paging start
+                    if (result.page.page_num > 10) {
+                        page_add += '<button class="paging" onclick="SearchBtn(' + (result.page.start_page - 10) + ')"><</button>';
+                    }
+                    for (var i = result.page.start_page; i < (result.page.end_page + 1); i++) {
+                        if (result.page.page_num == i) {
+                            page_add += '<button class="current" onclick="SearchBtn(' + i + ')">' + i + '</button>';
+                        } else if (i <= result.page.max_page) {
+                            page_add += '<button class="paging" onclick="SearchBtn(' + i + ')">' + i + '</button>';
+                        }
+                    }
+                    if (result.page.start_page + 10 < (result.page.max_page)) {
+                        page_add += '<button class="paging" onclick="SearchBtn(' + (result.page.start_page + 10) + ')">></button>';
+                    }
+                    // paging end
+                    item_list.empty();
+                    item_list.append(item_add);
+                    page_list.empty();
+                    page_list.append(page_add);
+                },
+                error(e) {
+                    console.log(e);
+                }
+            })
+    }
+
+    function delBtn(e){
+        if(confirm('삭제하시겠습니까?'))
+        {
+            $.ajax
+            (
+                {
+                    url : '/qna/qnaInformationDel',
+                    method : 'POST',
+                    type : 'JSON',
+                    data : {'qna_id' : e},
+                    success : function (result)
+                    {
+                        switch (result)
+                        {
+                            case 1:
+                                alert('삭제되었습니다.');
+                                location.reload();
+                                break;
+                            case 0:
+                                alert('삭제 실패 관리자에게 문의 해주세요.')
+                                break;
+                        }
+                    }
+                }
+            )
+        }
+    }
+
+</script>
+</body>
+</html>

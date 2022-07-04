@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nagaja.admin.mapper.UserMapper">
+
+    <resultMap id="AdminAuth" type="com.nagaja.admin.entity.Admin">
+        <result column="admin_id" property="adminId" javaType="Integer"/>
+        <result column="admin_login_id" property="adminLoginId" javaType="String"/>
+        <result column="admin_login_pw" property="adminLoginPw" javaType="String"/>
+        <result column="admin_type" property="adminType" javaType="String"/>
+        <result column="admin_create_date" property="adminCreateDate" javaType="String"/>
+        <result column="admin_modify_date" property="adminModifyDate" javaType="String"/>
+    </resultMap>
+
+    <!--TODO 관리자 수 검색-->
+    <select id="selectAdminCount" resultType="int">
+        SELECT COUNT(*) FROM admin
+    </select>
+
+    <!--관리자 검색-->
+    <select id="selectNewAdminList" resultType="Admin">
+        SELECT * FROM admin
+        ORDER BY admin_id DESC
+    </select>
+
+
+<!--    &lt;!&ndash;관리자 생성&ndash;&gt;-->
+<!--    <insert id="createAdmin" parameterType="Admin">-->
+<!--        INSERT INTO admin(admin_id, admin_pw, admin_create_date, admin_type)-->
+<!--        VALUES (#{admin_id}, #{admin_pw}, NOW(), #{admin_type})-->
+<!--    </insert>-->
+
+<!--    &lt;!&ndash; 관리자 삭제&ndash;&gt;-->
+<!--    <delete id="deleteAdminAjax" parameterType="integer">-->
+<!--        DELETE-->
+<!--        FROM admin-->
+<!--        WHERE admin_no = #{ajaxData}-->
+<!--    </delete>-->
+
+<!--    &lt;!&ndash; 관리자 수 서치&ndash;&gt;-->
+<!--    <select id="selectAdminId" parameterType="String" resultType="Integer">-->
+<!--        SELECT count(*)-->
+<!--        FROM admin-->
+<!--        WHERE admin_id = #{admin_id}-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash; 관리자 검색&ndash;&gt;-->
+<!--    <select id="adminId" parameterType="int" resultType="Admin">-->
+<!--        SELECT *-->
+<!--        FROM admin-->
+<!--        WHERE admin_no = #{admin_no}-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;관리자 패스워드 업데이트&ndash;&gt;-->
+<!--    <update id="adminPwUpd" parameterType="Admin">-->
+<!--        UPDATE admin-->
+<!--        SET admin_pw = #{admin_pw}-->
+<!--        WHERE admin_no = #{admin_no}-->
+<!--    </update>-->
+</mapper>

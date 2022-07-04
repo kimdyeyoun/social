@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:with="user=${#authentication.principal}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>나가자 관리자</title>
+  <link rel="stylesheet" href="../assets/vendors/iconfonts/mdi/css/materialdesignicons.css">
+  <link rel="stylesheet" href="../assets/css/shared/style.css">
+  <link rel="stylesheet" href="../assets/css/demo_1/style.css">
+  <link rel="shortcut icon" href="../asssets/images/favicon.ico"/>
+</head>
+<body class="header-fixed">
+<!-- partial:partials/_header.html -->
+<th:block th:include="/../hf/header.html"></th:block>
+<!-- partial -->
+<div class="page-body">
+  <!-- partial:partials/_sidebar.html -->
+  <th:block th:include="/../hf/sidebar.html"></th:block>
+  <!-- partial -->
+  <div class="page-content-wrapper">
+    <div class="page-content-wrapper-inner">
+      <div id="content-viewport">
+        <!-- Begin Page Content -->
+        <div class="row">
+          <div class="col-12" style="margin-bottom: 15px; display: flex; justify-content: space-between;">
+            <!-- Page Heading -->
+            <h4>A/S답변 수정</h4>
+            <p class="text-gray">
+            </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="grid">
+              <p class="grid-header">
+                <span th:text="${'NO : ' + param.repair_progress_id}"></span>
+              </p>
+              <div class="grid-body">
+                <div class="item-wrapper">
+                  <div class="table-responsive">
+                    <form id="feed_form" method="POST" enctype="multipart/form-data">
+                      <table class="table table-bordered" id="dataTable" style="width: 98%; cellspacing: '0'; margin: auto;">
+                        <tbody>
+                        <tr>
+                          <td>
+                            등록자
+                          </td>
+                          <td>
+                            <input type="text" name="repair_progress_repairer" class="form-control" required="required" th:value="${progress.repair_progress_repairer}" style="width: 200px">
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            내용
+                          </td>
+                          <td>
+                            <div>
+                              <input type="text" name="repair_progress_contents" th:value="${progress.repair_progress_contents}">
+                            </div>
+                            <div style="padding-top: 10px;">
+                              <div id="delImgPK"></div>
+                              <th:block th:each="files,index : ${progress.repair_files}">
+                                  <span th:id="|id_${files.repair_progress_file_id}|">
+                                    <span style="position:relative;">
+                                        <span style="position: absolute;">
+                                          <button type="button" th:onclick="|delBtnFile(${files.repair_progress_file_id})|" >x</button>
+                                        </span>
+                                    </span>
+                                      <img th:src="|https://pref-bucket.s3.ap-northeast-2.amazonaws.com/images/${files.repair_progress_file}|" style="width:100px; height:100px; border : solid 1px #fff">
+                                      <th:block th:if="${(index.index+1) % 5 == 0}">
+                                          <br>
+                                      </th:block>
+                                  </span>
+                              </th:block>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            추가 A/S 이미지
+                          </td>
+
+                          <td>
+                            <input type="file" name="files" multiple>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                             상태
+                          </td>
+                          <td>
+                            <input type="radio" name="repair_progress_type" id="repair_progress_type1" class="roundup_type" value=2 th:checked="${progress.repair_progress_type==2}" required="required">
+                            <label for="repair_progress_type1">A/S 진행 중</label>
+                            <input type="radio" name="repair_progress_type" id="repair_progress_type2" class="roundup_type" value=3 th:checked="${progress.repair_progress_type==3}" required="required">
+                            <label for="repair_progress_type2">A/S 완료</label>
+                          </td>
+                        </tr>
+                        </tbody>
+                      </table>
+                      <div class="mx-auto" style="text-align: center; margin-top: 10px;">
+                          <span>
+                              <button type="button" class="search_btn btn btn-primary" onclick="updBtn()" >수정</button>
+                          </span>
+                          <input type="hidden" id="repair_id" name="repair_id" th:value="${progress.repair_id}">
+                          <input type="hidden" id="repair_progress_id" name="repair_progress_id" th:value="${param.repair_progress_id}">
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+
+</body>
+<script src="/assets/vendors/js/core.js"></script>
+<script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
+<script src="/assets/vendors/chartjs/Chart.min.js"></script>
+<script src="/assets/js/charts/chartjs.addon.js"></script>
+<script src="/assets/js/template.js"></script>
+<script src="/assets/js/dashboard.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=bab351f7ade976853653945aab9af547&libraries=services"></script>
+<script>
+
+  function updBtn() {
+    let updData = new FormData($('#feed_form')[0]);
+
+    if (confirm('수정하시겠습니까?'))
+    {
+      $.ajax
+      (
+              {
+                url: '/repair/progressUpd',
+                type: "POST",
+                data: updData,
+                dataType: 'JSON',
+                enctype: 'multipart/form-data',
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                  console.log(result);
+                  switch (result) {
+                    case 1:
+                      alert('수정되었습니다.');
+                      location.href="/repair/detailRepair?repair_id=" + $("#repair_id").val();
+                      break;
+
+                    case 0:
+                      alert('수정 실패 관리자에게 문의 해주십시오.');
+                      break;
+                  }
+
+                }
+              }
+      )
+    }
+  }
+
+  function delBtnFile(e) {
+    $("#id_" + e).remove()
+    let item_list = $("#delImgPK")
+    let item_add = '<input type="hidden" name="repair_progress_file_id" value="'+(e)+'">'
+    item_list.append(item_add);
+
+  }
+</script>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:with="user = ${#authentication.principal}">
+	<head>
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	    <title>나가자 관리자</title>
+	    <link rel="stylesheet" href="../assets/vendors/iconfonts/mdi/css/materialdesignicons.css">
+	    <link rel="stylesheet" href="../assets/css/shared/style.css">
+	    <link rel="stylesheet" href="../assets/css/demo_1/style.css">
+	    <link rel="shortcut icon" href="../asssets/images/favicon.ico"/>
+	    <link rel="stylesheet" href="/../assets/css/shared/chat-room.css">
+    	<style type="text/css">
+			.current{border:1px solid; background: #696ffb; color: #FFFFFF; margin-right: 3px; border-radius : 4px; width: 3%;}
+			.paging{border:1px solid #f2f4f9; background: #FFFFFF; margin-right: 3px;  border-radius : 4px; width: 3%;}
+		</style>
+	</head>
+	<body class="header-fixed">
+		<th:block th:include="/../hf/header.html"></th:block>
+		<div class="page-body">
+			<th:block th:include="/../hf/sidebar.html"></th:block>
+			<div class="page-content-wrapper">
+				<div class="page-content-wrapper-inner">
+					<div id="content-viewport">
+						<div class="row">
+							<div class="col-12" style="margin-bottom: 15px; display: block; justify-content: space-between;">
+								<h4>시공 상담</h4><br/>
+							</div>
+							<div class="col-12" style="margin-bottom: 15px; display: block; justify-content: space-between;">
+								<h6 th:text="|업체 : ${chatRoom.interior_name}|"></h6>
+								<h6 th:text="|고객 : ${chatRoom.user_email}|"></h6>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12">
+								<div class="grid" id="grid-width">
+									<section id="section">
+										<div class="container clearfix">
+											<!-- 컨텐츠(채팅창) -->
+							                <div class="inner-box" id="item_list" onScroll="Content_Box(this)">
+							                	<!-- 
+							                	<div class="chat-out-box">
+							                		<p class="in-ment font-bold">김선생 님이 나가셨습니다.</p>
+							                	</div> 
+							                	-->
+							                	<!-- (대화방 나가기버튼 누른후)사람이 나갔을때 나오는 문구입니다. chat-out-box에 on클래스 붙이면 나타납니다. -->
+							                </div>
+											<!--
+											<form action="sendChat" id="send_form" method="POST" enctype="multipart/form-data">
+												<div class="text-send-box">
+														<textarea class="text-send" id="chat_contents" name="chat_contents"></textarea>
+														<div class="file-send-button">
+															<input type="file" id="filepic" name="file" onChange="FileUpload()"/>
+															<label for="filepic"></label>
+														</div>
+													<button type="button" class="send-box" onclick="SendChat()">
+														<div class="img-wrap">
+															<img src="/../assets/images/send.svg" alt="메시지전송">
+														</div>
+													</button>
+												</div>
+												<input type="hidden" id="chat_room_id" name="chat_room_id" th:value="${chatRoom.chat_room_id}">
+											</form>
+											-->
+											<button type="button" class="btn btn-primary" onclick="ReloadChat();" style="margin: 15px;">새고로침</button>
+										</div>
+									</section>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<th:block th:include="/../hf/footer.html"></th:block>
+			<input type="hidden" id="chat_bridge_id" th:value="${chat_bridge_id}">
+		</div>
+		<script src="/assets/vendors/js/core.js"></script>
+		<!-- <script src="/assets/vendors/datatables/jquery.dataTables.min.js"></script> -->
+		<!-- <script src="/assets/vendors/datatables/dataTables.bootstrap4.min.js"></script> -->
+		<!-- <script src="/assets/js/demo/datatables-demo.js"></script> -->
+		<script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
+		<script src="/assets/vendors/chartjs/Chart.min.js"></script>
+		<script src="/assets/js/charts/chartjs.addon.js"></script>
+		<script src="/assets/js/template.js"></script>
+		<script src="/assets/js/dashboard.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+		<script>
+			let chatCount = 1;
+			
+			$(document).ready(function ()
+			{
+				if(chatCount === 1)
+				{
+					SelectChat(chatCount);
+				}
+			});
+			
+			// 역무한스크롤
+			function Content_Box(e)
+			{
+		        if(e.scrollTop === 0)
+		        {
+		        	// 스크롤바가 아래 쪽에 위치할 때
+		        	SelectChat(chatCount)
+		        }
+			}
+			
+			// 스크롤 하단으로 내리는 함수
+			function setScrollTop()
+			{
+				const MessageDiv = $("#item_list").get(0);
+				const elScrollHeight = MessageDiv.scrollHeight;
+				
+				MessageDiv.scrollTo(0, elScrollHeight);
+			}
+			
+			// 파일 업로드시 파일 이름 적어주는 함수
+			function FileUpload()
+			{
+				const input = document.getElementById('filepic');
+				const file = input.files[0];
+				
+				var textValue =$("#chat_contents").val(file.name);
+			}
+			
+			// 채팅 구하는 함수
+			function SelectChat(e)
+			{
+				var data = {'chat_bridge_id' : $("#chat_bridge_id").val(), 'page_num' : e};
+
+				chatCount++;
+				
+				$.ajax(
+				{
+					url : '/chat/selectChatList',
+					method : 'POST',
+					dataType : 'json',
+					data : data,
+					success : function(result)
+					{
+						const MessageDiv = $("#item_list").get(0);
+						const prevHeight = MessageDiv.scrollHeight;
+						
+						var item_list = $("#item_list");
+						var item_add = "";
+						
+						for(var i = 0; i < result.length; i++)
+						{
+							if(result[i].user_type == 0)
+							{
+								if(result[i].chat_type == 0)
+								{
+									item_add += `
+										<div class="my-chat-box font-regular">
+											<div class="send-time"><span class="time">${result[i].chat_create_date}</span></div>
+											<div class="my-chat"><span class="chat">${result[i].chat_contents}</span></div>
+										</div>
+										<div class="clearfix"></div>`
+								}
+								else
+								{
+									item_add += `
+										<div class="my-chat-box font-regular">
+											<div class="send-time"><span class="time">${result[i].chat_create_date}</span></div>
+											<div class="my-chat">
+		                   						<img src="https://pref-bucket.s3.ap-northeast-2.amazonaws.com/images/${result[i].chat_contents}" alt="보내는사진" class="chat-img">
+											</div>
+			                   			</div>
+			                   			<div class="clearfix"></div>`
+								}
+							}
+							else
+							{
+								if(result[i].chat_type == 0)
+								{
+									item_add += `
+										<div class="friend-chat-box font-regular">
+											<div class="friend-img">
+												<div class="img-wrap">
+													<img src="/../assets/images/chat_user.png" alt="본인사진">
+												</div>
+											</div>
+											<div class="friend-info-box font-regular">
+												<div class=friend-info>
+													<span class="name">${result[i].interior_name}</span>
+												</div>
+												<div class="friend-chat">
+													<span class="chat">${result[i].chat_contents}</span>
+												</div>
+											</div>
+											<div class="send-time">
+												<span class="time">${result[i].chat_create_date}</span>
+											</div>
+										</div>
+										<div class="clearfix"></div>`
+								}
+								else
+								{
+									item_add += `
+										<div class="friend-chat-box font-regular">
+											<div class="friend-img">
+												<div class="img-wrap">
+													<img src="/../assets/images/chat_user.png" alt="본인사진">
+												</div>
+											</div>
+											<div class="friend-info-box font-regular">
+												<div class=friend-info>
+													<span class="name">${result[i].user_login_id}</span>
+												</div>
+												<div class="friend-chat">
+													<img src="https://pref-bucket.s3.ap-northeast-2.amazonaws.com/images/${result[i].chat_contents}" alt="보내는사진" class="chat-img">
+												</div>
+											</div>
+											<div class="send-time">
+												<span class="time">${result[i].chat_create_date}</span>
+											</div>
+										</div>
+										<div class="clearfix"></div>`
+								}
+							}
+						}
+
+						item_list.prepend(item_add);
+						
+						if(chatCount === 2)
+						{
+							setScrollTop();
+						}
+						else
+						{
+							const nextHeight = MessageDiv.scrollHeight;
+							
+				        	MessageDiv.scrollTo(0, nextHeight-prevHeight);
+						}
+					}
+				})
+			}
+			
+			// 채팅 보내는 함수
+			function SendChat()
+			{
+				var data = new FormData($("#send_form")[0]);
+				
+				$.ajax(
+				{
+					url : "/chat/sendChat",
+					type : "POST",
+					data : data,
+					cache : false,
+					contentType : false,
+					processData : false,
+					success : function(result)
+					{
+						if(result != 0)
+						{
+							$("#chat_contents").val("");
+							chatCount = 1;
+							$("#item_list").empty();
+							SelectChat(chatCount);
+						}
+					},
+					error : function(e)
+					{
+						console.log(e);
+					}
+				});
+				
+				setScrollTop();
+			}
+
+			function ReloadChat()
+			{
+				var item_list = $("#item_list");
+
+				item_list.empty();
+
+				SelectChat(1);
+			}
+		</script>
+	</body>
+</html>

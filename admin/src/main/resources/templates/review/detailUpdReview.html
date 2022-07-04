@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:with="user=${#authentication.principal}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>나가자 관리자</title>
+    <link rel="stylesheet" href="../assets/vendors/iconfonts/mdi/css/materialdesignicons.css">
+    <link rel="stylesheet" href="../assets/css/shared/style.css">
+    <link rel="stylesheet" href="../assets/css/demo_1/style.css">
+    <link rel="shortcut icon" href="../asssets/images/favicon.ico"/>
+    <script src="https://cdn.ckeditor.com/4.8.0/full/ckeditor.js"></script>
+</head>
+<body class="header-fixed">
+<!-- partial:partials/_header.html -->
+<th:block th:include="/../hf/header.html"></th:block>
+<!-- partial -->
+<div class="page-body">
+    <!-- partial:partials/_sidebar.html -->
+    <th:block th:include="/../hf/sidebar.html"></th:block>
+    <!-- partial -->
+    <div class="page-content-wrapper">
+        <div class="page-content-wrapper-inner">
+            <div id="content-viewport">
+                <!-- Begin Page Content -->
+                <div class="row">
+                    <div class="col-12" style="margin-bottom: 15px; display: flex; justify-content: space-between;">
+                        <!-- Page Heading -->
+                        <h4>인테리어업체 정보</h4>
+                        <p class="text-gray">
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="grid">
+                            <p class="grid-header">
+                                <span>기본 정보</span>
+                            </p>
+                            <div class="grid-body">
+                                <div class="item-wrapper">
+                                    <div class="table-responsive">
+                                        <form id="feed_form" method="POST" enctype="multipart/form-data">
+                                            <table class="table table-bordered" style="width: 100%; cellspacing: '0'; margin: auto;">
+                                                <tbody>
+                                                <input type="hidden" id="review_id" name="review_id" th:value="${param.review_id}">
+                                                <tr>
+                                                    <td>
+                                                        회사명
+                                                    </td>
+                                                    <td th:text="${review.interior_name}"></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        담당자 닉네임
+                                                    </td>
+                                                    <td  th:text="${review.interior_manager_name}"></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        제목
+                                                    </td>
+                                                    <td>
+                                                        <div>
+                                                            <span>
+                                                                <input name="review_title" type="text" class="form-control" th:value="${review.review_title}">
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        내용
+                                                    </td>
+
+                                                    <td>
+                                                        <div>
+                                                            <span>
+                                                                <textarea class="form-control" id="ckeditor" name="review_contents" th:utext="${review.review_contents}"></textarea>
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        첨부 파일
+                                                    </td>
+                                                    <td>
+                                                        <div>
+                                                            <div id="delImgPK"></div>
+                                                            <th:block th:each="files,index : ${review.images}">
+                                                                <span th:id="|id_${files.review_file_id}|" style="position:relative;">
+                                                                    <span style="position: absolute;">
+                                                                        <button type="button" th:onclick="|delBtnFile(${files.review_file_id})|" >x</button>
+                                                                    </span>
+                                                                    <span>
+                                                                        <img th:src="|https://pref-bucket.s3.ap-northeast-2.amazonaws.com/images/${files.review_file}|" style="width:100px; height:100px; border : solid 1px #fff">
+                                                                        <th:block th:if="${(index.index+1) % 5 == 0}">
+                                                                            <br>
+                                                                        </th:block>
+                                                                    </span>
+                                                                </span>
+                                                            </th:block>
+                                                        </div>
+                                                        <div>
+                                                            <th:block th:each="files,index : ${review.movies}">
+
+                                                                <span th:id="|id2_${files.review_file_id}|" style="position:relative;z-index: 2">
+
+                                                                    <span  style="position:absolute; padding-top: 30px;z-index: 1">
+                                                                        <span>
+                                                                            <button type="button" th:onclick="|delBtnFile2(${files.review_file_id})|" >x</button>
+                                                                        </span>
+                                                                    </span>
+
+                                                                    <video controls style="width:300px; height:200px; padding-top: 20px; padding-right: 20px; border : solid 1px #fff">
+                                                                        <source th:src="|https://pref-bucket.s3.ap-northeast-2.amazonaws.com/images/${files.review_file}|" type="video/mp4">
+                                                                    </video>
+                                                                    <th:block th:if="${(index.index+1) % 2 == 0}">
+                                                                        <br>
+                                                                    </th:block>
+                                                                    </span>
+                                                            </th:block>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        추가 파일
+                                                    </td>
+                                                    <td>
+                                                        <input type="file" name="files" multiple>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        제품
+                                                    </td>
+                                                    <td>
+                                                        <div>
+                                                            <select class="form-control" name="product_id" style="width: auto;">
+                                                                <th:block th:each="product,index : ${product}">
+                                                                    <option th:value="${product.product_id}" th:text="${product.product_title}" th:selected="${review.product_id == product.product_id}"></option>
+                                                                </th:block>
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        주택 형태
+                                                    </td>
+                                                    <td>
+                                                        <input type="radio" name="review_house_form" id="review_house_form1" class="roundup_type" value=1 th:checked="${review.review_house_form==1}" required="required">
+                                                        <label for="review_house_form1">아파트</label>
+                                                        <input type="radio" name="review_house_form" id="review_house_form2" class="roundup_type" value=2 th:checked="${review.review_house_form==2}" required="required">
+                                                        <label for="review_house_form2">오피스텔</label>
+                                                        <input type="radio" name="review_house_form" id="review_house_form3" class="roundup_type" value=3 th:checked="${review.review_house_form==3}" required="required">
+                                                        <label for="review_house_form3">단독전원주택</label>
+                                                        <input type="radio" name="review_house_form" id="review_house_form4" class="roundup_type" value=4 th:checked="${review.review_house_form==4}" required="required">
+                                                        <label for="review_house_form4">빌라연립</label>
+                                                        <input type="radio" name="review_house_form" id="review_house_form5" class="roundup_type" value=4 th:checked="${review.review_house_form==5}" required="required">
+                                                        <label for="review_house_form5">원룸</label>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+
+                                                    <td>
+                                                        평수
+                                                    </td>
+
+                                                    <td>
+                                                        <span>
+                                                            <input name="review_house_size" type="text" class="form-control" th:value="${review.review_house_size}" style="width: 200px;">
+                                                        </span>
+                                                    </td>
+
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        태그 추가
+                                                    </td>
+                                                    <td>
+                                                        <div>
+                                                            <select class="form-control" id="tag" style="width: auto;" onchange="change((this))">
+                                                                <th:block th:each="tag : ${tag}">
+                                                                    <option th:id="|tag_${tag.tag_id}|" th:value="${tag.tag_id}" th:text="${tag.tag}" ></option>
+                                                                </th:block>
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        태그
+                                                    </td>
+                                                    <td>
+                                                        <div style="color: red">*태그를 클릭하여 수정 가능</div>
+                                                        <div id="deleteTag"></div>
+                                                        <br>
+                                                        <div>
+                                                            <th:block th:if="${not #strings.isEmpty(review.tag_list[0].tag) == true}" th:each="files,index : ${review.tag_list}">
+
+                                                                <span th:id="|tag_${files.review_tag_id}|" name="delTag" class="primary_tag" style="cursor : pointer;border: solid 3px #fff0ff; padding: 5px 15px 5px 15px; background: skyblue; border-radius: 50px;" th:text="${'#' + files.tag}" th:onclick="|delTag2(${files.review_tag_id})|"></span>
+
+                                                                <th:block th:if="${(index.index+1) % 5 == 0}">
+                                                                    <br>
+                                                                    <br>
+                                                                </th:block>
+                                                            </th:block>
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        추가 태그
+                                                    </td>
+                                                    <td>
+                                                        <br>
+                                                        <div id="list_a">
+
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        상태
+                                                    </td>
+                                                    <td>
+                                                        <input type="radio" name="review_status" id="review_status1" class="roundup_type" value=1 th:checked="${review.review_status==1}" required="required">
+                                                        <label for="review_status1">정상</label>
+                                                        <input type="radio" name="review_status" id="review_status2" class="roundup_type" value=2 th:checked="${review.review_status==2}" required="required">
+                                                        <label for="review_status2">숨김</label>
+                                                        <input type="radio" name="review_status" id="review_status3" class="roundup_type" value=3 th:checked="${review.review_status==3}" required="required">
+                                                        <label for="review_status3">제재</label>
+                                                    </td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                            <div class="mx-auto" style="text-align: center; margin-top: 10px;">
+                                              <span>
+                                                  <button type="button" class="search_btn btn btn-primary" onclick="updBtn()" >수정</button>
+                                              </span>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/assets/vendors/js/core.js"></script>
+<script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
+<script src="/assets/vendors/chartjs/Chart.min.js"></script>
+<script src="/assets/js/charts/chartjs.addon.js"></script>
+<script src="/assets/js/template.js"></script>
+<script src="/assets/js/dashboard.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    let num = 0;
+    let flag = 0;
+    let num2 = 1500;
+    function change(target){
+        let a;
+
+        num++;
+        console.log(target);
+        a = '<span class="primary_tag" id="tag_'+(num2)+'" name="tag_pk" onclick="delTag('+(num2)+')" style="border: solid 3px #fff0ff; padding: 5px 15px 5px 15px; background: skyblue; border-radius: 50px;cursor: pointer;" value="'+target.options[target.selectedIndex].value+'">'+ '#' + target.options[target.selectedIndex].text +'</span>' +
+            '<input type="hidden" name="insertTag" value="'+target.options[target.selectedIndex].value+'">'
+
+        if(num % 5 == 0)
+        {
+            a += '<br><br>'
+        }
+
+        $('#list_a').append(a)
+
+    }
+
+    function delTag(e)
+    {
+        $('#tag_' + e).remove()
+    }
+
+    function delTag2(e)
+    {
+        $('#deletes_' + e).remove()
+        $('#tag_' + e).remove()
+        let a = '<input id="deletes_'+(e)+'" type="hidden" name="delete_tag" value="'+(e)+'">';
+        $('#deleteTag').append(a);
+    }
+
+    function delBtnFile(e)
+    {
+        $("#id_" + e).remove()
+        let item_list = $("#delImgPK")
+        let item_add = '<input type="hidden" name="file_pk" value="'+(e)+'">'
+        item_list.append(item_add);
+
+    }
+
+    function delBtnFile2(e)
+    {
+        $("#id2_" + e).remove()
+        let item_list = $("#delImgPK")
+        let item_add = '<input type="hidden" name="file_pk" value="'+(e)+'">'
+        item_list.append(item_add);
+
+    }
+
+    CKEDITOR.plugins.addExternal('youtube', '/youtube/plugin.js');
+    CKEDITOR.plugins.addExternal('video', '/video/plugin.js');
+
+    CKEDITOR.replace('ckeditor',
+        {
+            // extraPlugins : 'youtube',
+            uploadUrl: "/editor/drag?path=dnmaison/event",						// 드래그 드롭을 위한 URL
+            filebrowserUploadUrl: "/editor/basic?path=dnmaison/event"			// 파일업로드를 위한 URL
+        });
+
+    function updBtn() {
+        $('textarea[name=review_contents]').val(CKEDITOR.instances['ckeditor'].getData());
+        let updData = new FormData($('#feed_form')[0]);
+
+        if (confirm('수정하시겠습니까?'))
+        {
+            $.ajax
+            (
+                {
+                    url: '/review/reviewInformationUpd',
+                    type: "POST",
+                    data: updData,
+                    dataType: 'JSON',
+                    enctype: 'multipart/form-data',
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    success: function (result) {
+                        console.log(result);
+                        if (result == 0)
+                        {
+                            alert('수정 실패 관리자에게 문의 해주십시오.');
+                        }
+                        else
+                        {
+                            alert('수정되었습니다.');
+                            location.href="/review/detailReview?review_id=" + $("#review_id").val();
+                        }
+                    }
+                }
+            )
+        }
+    }
+</script>
+</script>
+</body>
+</html>

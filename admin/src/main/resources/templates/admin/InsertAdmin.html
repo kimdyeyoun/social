@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" th:with="user =${#authentication.principal}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>BMI 관리자</title>
+    <link rel="stylesheet" href="../assets/vendors/iconfonts/mdi/css/materialdesignicons.css">
+    <link rel="stylesheet" href="../assets/css/shared/style.css">
+    <link rel="stylesheet" href="../assets/css/demo_1/style.css">
+    <link rel="shortcut icon" href="../asssets/images/favicon.ico"/>
+</head>
+<body class="header-fixed">
+
+<!-- partial:partials/_header.html -->
+<th:block th:include="/../hf/header.html"></th:block>
+<!-- partial -->
+
+<div class="page-body">
+    <!-- partial:partials/_sidebar.html -->
+    <th:block th:include="/../hf/sidebar.html"></th:block>
+    <!-- partial -->
+
+    <div class="page-content-wrapper">
+        <div class="page-content-wrapper-inner">
+
+            <div class="content-viewport row">
+                <div class="col-8 mx-auto">
+                    <div class="grid">
+                        <p class="grid-header">관리자 등록</p>
+                        <div class="grid-body">
+                            <div class="item-wrapper">
+                                <form action="create_admin" method="POST" class="user" onsubmit="return joinSubmit();">
+                                    <div class="form-group">
+                                        <label>아이디*</label>
+                                        <input type="text" class="form-control form-control-user" name="admin_id"
+                                               id="admin_id" placeholder="ID" onchange="findid()">
+                                        <div id="id-box"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>비밀번호</label>
+                                        <input type="password" class="form-control form-control-user" name="admin_pw"
+                                               id="admin_pw" placeholder="PASSWORD">
+                                    </div>
+                                    <div class="form-group" style="text-align: center">
+                                        <input  type="radio" name="admin_type"
+                                               id="roundup-type-options1" class="roundup_type" value=0
+                                               required="required">
+                                        <label for="roundup-type-options1">cs</label>
+
+                                        <input type="radio" name="admin_type"
+                                               id="roundup-type-options2" class="roundup_type" value=2
+                                               required="required">
+                                        <label for="roundup-type-options2">관리자</label>
+
+                                        <input type="radio" name="admin_type"
+                                               id="roundup-type-options3" class="roundup_type" value=1
+                                               required="required">
+                                        <label for="roundup-type-options3">최고관리자</label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-user btn-block">등록</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- partial:partials/_footer.html -->
+        <th:block th:include="/../hf/footer.html"></th:block>
+        <!-- partial -->
+    </div>
+</div>
+
+<script src="/assets/vendors/js/core.js"></script>
+
+<script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
+<script src="/assets/vendors/chartjs/Chart.min.js"></script>
+<script src="/assets/js/charts/chartjs.addon.js"></script>
+<script src="/assets/js/template.js"></script>
+<script src="/assets/js/dashboard.js"></script>
+<script type="text/javascript">
+
+    function findid() {
+        $("#id-box p").remove();
+        var id = document.getElementById("admin_id").value;
+        var p;
+
+        $.ajax({
+            url: 'findid?admin_id=' + id,
+            type: 'post',
+            success: function (result) {
+                date1 = result
+                if (result == true) {
+                    p = '<p style="color: green;">사용가능한 아이디입니다.</p>';
+                } else {
+                    p = '<p style="color: red;">사용불가능한 아이디입니다.</p>';
+                    document.getElementById("admin_id").value = "";
+                    document.getElementById("admin_id").focus();
+                }
+                $("#id-box").append(p);
+            }
+        })
+    }
+
+    function joinSubmit() {
+        var result = false;
+
+        if (document.getElementById("admin_id").value == "") {
+            document.getElementById("admin_id").focus();
+            alert("아이디 입력해주세요.");
+            return result;
+        }
+        if (document.getElementById("admin_pw").value == "") {
+            document.getElementById("admin_pw").focus();
+            alert("비밀번호 입력해주세요.");
+            return result;
+        }
+        if (date1 == false) {
+            alert("아이디 다시 확인해주세요.");
+            return result;
+        }
+        if(confirm('관리자를 등록 하시게습니까?')){
+            result = true;
+            alert('등록되었습니다.');
+        }
+        return result;
+
+    }
+</script>
+</body>
+
+</html>
