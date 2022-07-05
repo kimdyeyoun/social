@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>BMI 관리자</title>
+    <title>나가자 관리자</title>
     <link rel="stylesheet" href="../assets/vendors/iconfonts/mdi/css/materialdesignicons.css">
     <link rel="stylesheet" href="../assets/css/shared/style.css">
     <link rel="stylesheet" href="../assets/css/demo_1/style.css">
     <link rel="shortcut icon" href="../asssets/images/favicon.ico"/>
 </head>
-<body class="header-fixed" style="display: none">
+<body class="header-fixed">
 
 <!-- partial:partials/_header.html -->
 <th:block th:include="/../hf/header.html"></th:block>
@@ -33,47 +33,28 @@
                                     <tbody>
                                     <tr>
                                         <td>ID</td>
-                                        <input type="hidden" id="admin_no" class="form-control"
-                                               required="required" th:value="${param.admin_no}">
-
-                                        <td th:text="${admin.admin_id}"></td>
-
+                                        <input type="hidden" id="adminId" class="form-control" th:value="${param.adminId}">
+                                        <td th:text="${admin.adminLoginId}"></td>
                                     </tr>
 
                                     <tr>
-
                                         <td>현재 비밀 번호</td>
-                                        <td><input type="password" id="currentPassword" class="form-control"
-                                                   required="required"></td>
-
+                                        <td><input type="password" id="currentPassword" class="form-control" required="required"></td>
                                     </tr>
 
                                     <tr>
-
                                         <td>변경 비밀 번호</td>
-                                        <td>
-                                            <input type="password" id="changeSecretNumber" class="form-control"
-                                                   required="required">
-                                            <span id="changePw" style="display: none; color: red">숫자, 영어, 특수문자를 합성하여 8자리 이상 입력해주세요.</span>
-                                            <span id="completPw" style="display: none; color: red">숫자, 영어, 특수문자를 합성하여 8자리 이상 입력해주세요.</span>
-                                        </td>
-
+                                        <td><input type="password" id="changePassword" class="form-control" required="required"></td>
                                     </tr>
 
                                     <tr>
-
                                         <td>확인 비밀 번호</td>
-                                        <td><input type="password" id="confirmationPassword" name="admin_no"
-                                                   class="form-control"
-                                                   required="required"></td>
-
+                                        <td><input type="password" id="verificationPassword" class="form-control" required="required"></td>
                                     </tr>
                                     </tbody>
                                 </table>
                                 <div style="text-align: center;padding-top: 10px">
-                                    <button type="button" id="adminSub" class="btn btn-primary"
-                                            onclick="update_password();">수정
-                                    </button>
+                                    <button type="button" id="adminSub" class="btn btn-primary" onclick="update_password();">수정</button>
                                 </div>
 
                             </div>
@@ -95,69 +76,40 @@
 <script src="/assets/js/template.js"></script>
 <script src="/assets/js/dashboard.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
 <script>
-    $(document).ready(function () {
-        authAdmin();
-    })
-
-    function authAdmin() {
-        $.ajax({
-            url: `adminUpdAuth`,
-            data: {'admin_no': $("#admin_no").val()},
-            method: 'POST',
-            dataType: "json",
-            success: function (result) {
-                console.log(result)
-                switch (result) {
-                    case 1:
-                        alert("권한이 없습니다.");
-                        history.back();
-                        break;
-                    case 2:
-                        $(".header-fixed").css("display", "block");
-                        break;
-                    case 0:
-                        alert('오류입니다.');
-                }
-            },
-            error: function (request, status, error) {
-                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-            }
-        })
-    }
 
     function update_password() {
         if (confirm('변경 하겠습니까?')) {
 
             let data = {
-                'admin_no': $("#admin_no").val(),
-                'admin_pw': $("#currentPassword").val(),
-                'changeSecretNumber': $("#changeSecretNumber").val(),
-                'confirmationPassword': $("#confirmationPassword").val()
+                'adminId': $("#adminId").val(),
+                'currentPassword': $("#currentPassword").val(),
+                'changePassword': $("#changePassword").val(),
+                'verificationPassword': $("#verificationPassword").val()
             }
             console.log(data);
             $.ajax({
-                url: 'adminUpwUpd',
-                method: 'POST',
+                url: '/admin/changePassWord',
+                method: 'PUT',
                 dataType: "json",
                 data: data,
                 success: function (result) {
                     switch (result) {
-                        case 2:
+
+                        case 0:
+                            alert("올바른 값을 입력 해주십시오.");
+                            break;
+                        case 1:
                             alert('비밀번호가 변경 되었습니다.');
                             location.reload();
                             break;
-                        case 1:
-                            alert('현재비밀번호가 다릅니다.');
-                            break;
-                        case 0:
-                            alert('오류');
+                        case 2:
+                            alert("변경비밀번호와 확인비밀번호를 확인 해주세요.");
                             break;
                         case 3:
-                            alert("변경비밀번호와 확인비밀번호를 확인 해주세요.");
+                            alert('현재 비밀번호가 일치하지 않습니다.');
                             break;
                     }
                 }

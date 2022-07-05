@@ -1,5 +1,9 @@
 package com.nagaja.admin.config.security;
 
+import com.nagaja.admin.service.AdminService;
+import com.nagaja.admin.service.LoginService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -12,13 +16,19 @@ import java.io.IOException;
 
 
 @Component
+@RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler
 {
+
+	private final LoginService service;
+
 	private String defaultUrl = "/index";
 	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException
 	{
+		service.updateLoginTime(authentication.getName());
+
 		HttpSession session = request.getSession();
 		
 		session.setAttribute("login", true);

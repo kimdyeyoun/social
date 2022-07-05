@@ -13,8 +13,14 @@ public class LoginServiceImpl implements LoginService
 	private LoginMapper loginMapper;
 	
 	@Override
-	public Admin loadUserByUsername(String adminLoginId)
+	public Admin loadAdminByUsername(String adminLoginId)
 	{
-		return loginMapper.loadUserByUsername(adminLoginId);
+		return loginMapper.loadAdminByUsername(adminLoginId);
+	}
+
+	@Override
+	public void updateLoginTime(String adminLoginId)
+	{
+		loginMapper.updateLoginTime(adminLoginId);
 	}
 }

@@ -25,7 +25,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException
 	{
-		Admin admin = (Admin) loginService.loadUserByUsername(authentication.getName());
+		Admin admin = (Admin) loginService.loadAdminByUsername(authentication.getName());
 
 		if (!passwordEncoder.matches(authentication.getCredentials().toString(), admin.getPassword()))
 		{

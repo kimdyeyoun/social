@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>BMI 관리자</title>
+    <title>나가자 관리자</title>
     <link rel="stylesheet" href="../assets/vendors/iconfonts/mdi/css/materialdesignicons.css">
     <link rel="stylesheet" href="../assets/css/shared/style.css">
     <link rel="stylesheet" href="../assets/css/demo_1/style.css">
@@ -53,20 +53,56 @@
                                                style="width: 100%; cellspacing: '0'; margin: auto;">
                                             <tbody>
                                             <tr>
-                                                <td>관리자 아이디</td>
-                                                <td><input type="text" class="form-control" id="admin_id"
-                                                           style="width: 500px;"></td>
-                                            </tr>
-                                            <tr>
-                                                <td>관리자 유형</td>
                                                 <td>
-                                                    <select class="form-control" id="admin_type"
-                                                            style="width: 150px;">
-                                                        <option value="99" selected>전체</option>
-                                                        <option value="0">CS</option>
-                                                        <option value="1">최고 관리자</option>
-                                                        <option value="2">관리자</option>
+                                                    가입 일짜
+                                                </td>
+                                                <td>
+                                                    <input type="date" class="form-control" id="startDate" style="width: 250px;">
+                                                    -
+                                                    <input type="date" class="form-control" id="endDate" style="width: 250px;">
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    유저 상태값
+                                                </td>
+                                                <td>
+                                                    <select class="form-control" id="memStatusId" style="width: 150px;">
+                                                        <option value="0" selected>전체</option>
+                                                        <option value="1">유저일반</option>
+                                                        <option value="2">유저탈퇴</option>
+                                                        <option value="3">유저블랙</option>
+                                                        <option value="4">기업일반</option>
+                                                        <option value="5">기업탈퇴</option>
+                                                        <option value="6">기업블랙</option>
+                                                        <option value="7">활동정지</option>
                                                     </select>
+
+                                                    <select class="form-control" id="limit" style="width: 150px;">
+                                                        <option value="10" selected>10개씩 보기</option>
+                                                        <option value="30">30개씩 보기</option>
+                                                        <option value="50">50개씩 보기</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    유저 상태값
+                                                </td>
+                                                <td>
+                                                    <select class="form-control" id="status" style="width: 150px;">
+                                                        <option value="0">전체</option>
+                                                        <option value="1">유저일반</option>
+                                                        <option value="2">유저탈퇴</option>
+                                                        <option value="3">유저블랙</option>
+                                                        <option value="4">기업일반</option>
+                                                        <option value="5">기업탈퇴</option>
+                                                        <option value="6">기업블랙</option>
+                                                        <option value="7">활동정지</option>
+                                                    </select>
+                                                    <input class="form-control" type="text" id="keyword" style="padding-left 10px; width: 500px;">
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -86,24 +122,26 @@
                         <div class="grid" id="grid-width">
                             <p class="grid-header">관리자 목록</p>
                             <div style="text-align: right;padding: 20px 25px 20px;">
-                                <input type="hidden" id="adminType">
-                                <button type="button" class="btn btn-primary"><a style="color: white;text-decoration-line: none;">정보 수정</a></button>
-
-                                <button type="button" id="delete-target" class="btn btn-primary" onclick="delete_target();">관리자 삭제</button>
+                                <a style="color: white;text-decoration-line: none;" th:href="@{/admin/adminUpd(adminId=${user.adminId})}"><button type="button" class="btn btn-primary">정보 수정</button></a>
+                                <a style="color: white;text-decoration-line: none;" th:href="@{/admin/adminIns}"><button type="button" class="btn btn-primary">관리자 등록</button></a>
+                                <input type="hidden" id="type" th:value="${user.adminType}">
                             </div>
                             <div class="grid-body">
                                 <div class="item-wrapper">
                                     <div class="table-responsive">
                                         <table class="table table-bordered" id="dataTable"
-                                               style="width: 100%; cellspacing: '0'; margin: auto;">
+                                               style="width: 100%; cellspacing: '0'; margin: auto; text-align: center">
                                             <tbody>
                                             <tr>
-                                                <td><input type="checkbox" id="txn-checkbox" class="check-all"></td>
                                                 <td>번호</td>
                                                 <td>ID</td>
                                                 <td>관리자</td>
-                                                <td>접속일</td>
-                                                <td>상세정보</td>
+                                                <td>최근접속일</td>
+                                                <th:block th:if="${user.adminType == 'master'}">
+                                                    <td>상세정보</td>
+                                                    <td>항목</td>
+                                                </th:block>
+
                                             </tr>
                                             </tbody>
                                             <tbody id="item_list">
@@ -137,12 +175,12 @@
 
         function SearchBtn(e) {
 
-            var data = {'admin_login_id': $("#admin_login_id").val(), 'admin_type': $("#admin_type").val(), 'page_num': e};
+            var data = {'adminLoginId' : $('#adminLoginId').val(), 'adminType' : $('#adminType').val(), 'limit' : $('#limit').val(), 'pageNum': e};
 
             $.ajax(
                 {
-                    url: 'selectNewAdmin',
-                    method: 'POST',
+                    url: '/admin/selectAdminList',
+                    method: 'GET',
                     dataType: 'json',
                     data: data,
                     success: function (result) {
@@ -152,42 +190,38 @@
                         var page_list = $("#page_list");
                         var page_add = "";
 
-                        // list start
+                        //list start
                         if (result.admin.length == 0) {
                             item_add += '<tr>';
                             item_add += '<td></td>';
                             item_add += '<td></td>';
                             item_add += '<td></td>';
                             item_add += '<td></td>';
-                            if (result.auth.admin_type == 1) {
-                                item_add += '<td></td>';
-                            }
                             item_add += '</tr>';
                         } else {
                             for (var i = 0; i < result.admin.length; i++) {
                                 item_add += '<tr>';
 
-                                item_add += '<td>' + '<input type="checkbox" name="admin_id" id="admin-checkbox" class="list-checkBox" value="' + result.admin[i].admin_id + '">' + '</td>';
+                                item_add += '<td>' + result.admin[i].adminId + '</td>';
 
-                                item_add += '<td>' + result.admin[i].admin_id + '</td>';
+                                item_add += '<td>' + result.admin[i].adminLoginId + '</td>';
 
-                                item_add += '<td>' + result.admin[i].admin_login_id + '</td>';
-
-                                 if (result.admin[i].admin_type == 'common')
-                                 {
-
-                                    item_add += '<td>관리자</td>';
-
-                                } else if (result.admin[i].admin_type == 'master') {
-
+                                if (result.admin[i].adminType == 'master')
+                                {
                                     item_add += '<td>최고관리자</td>';
-
+                                }
+                                else
+                                {
+                                    item_add += '<td>관리자</td>';
                                 }
 
-                                item_add += '<td>' + result.admin[i].admin_create_date + '</td>';
+                                item_add += '<td>' + result.admin[i].adminModifyDate + '</td>';
 
-                                if (result.auth.admin_type == 'master') {
-                                    item_add += '<td><a style="color: blue" href="adminUpd?admin_no=' +result.admin[i].admin_no+'"  data="'+result.admin[i].admin_no+'" onclick="authAdmin('+result.admin[i].admin_no+')"><button class="btn btn-sm btn-primary">세부사항</button></a></td>';
+                                if ($('#type').val() == 'master')
+                                {
+                                    item_add += '<td><a style="color: blue" href="/admin/adminUpd?adminId=' +result.admin[i].adminId+'"><button class="btn btn-sm btn-primary">세부사항</button></a></td>';
+                                    item_add += '<td><button onclick="delBtn('+(result.admin[i].adminId)+')" class="btn btn-sm btn-danger">삭제</button></td>'
+
                                 }
 
                                 item_add += '</tr>';
@@ -196,20 +230,20 @@
                         // list end
 
                         // paging start
-                        if (result.page.page_num > 10) {
-                            page_add += '<button class="paging" onclick="SearchBtn(' + (result.page.start_page - 10) + ')"><</button>';
+                        if (result.pagination.pageNum > 10) {
+                            page_add += '<button class="paging" onclick="SearchBtn(' + (result.pagination.startPage - 10) + ')"><</button>';
                         }
 
-                        for (var i = result.page.start_page; i < (result.page.end_page + 1); i++) {
-                            if (result.page.page_num == i) {
+                        for (var i = result.pagination.startPage; i < (result.pagination.endPage + 1); i++) {
+                            if (result.pagination.pageNum == i) {
                                 page_add += '<button class="current" onclick="SearchBtn(' + i + ')">' + i + '</button>';
-                            } else if (i <= result.page.max_page) {
+                            } else if (i <= result.pagination.maxPage) {
                                 page_add += '<button class="paging" onclick="SearchBtn(' + i + ')">' + i + '</button>';
                             }
                         }
 
-                        if (result.page.start_page + 10 < (result.page.max_page)) {
-                            page_add += '<button class="paging" onclick="SearchBtn(' + (result.page.start_page + 10) + ')">></button>';
+                        if (result.pagination.startPage + 10 < (result.pagination.maxPage)) {
+                            page_add += '<button class="paging" onclick="SearchBtn(' + (result.pagination.startPage + 10) + ')">></button>';
                         }
                         // paging end
 
@@ -222,77 +256,34 @@
                 })
         }
 
-        $(".check-all").click(function () {
-            $(".list-checkBox").prop('checked', this.checked);
-        });
-
-        //체크 항목 삭제
-        function delete_target() {
-
-            var checkArray = [];
-
-            $('.list-checkBox:checked').each(function (i) {
-                checkArray.push($('.list-checkBox:checked:eq(' + i + ')').val());
-            });
-
-            console.log(checkArray);
-            if (checkArray.length > 0) {
-                if (confirm('선택된 관리자 계정을 삭제하시겠습니까?') == true) {
-                    let adminType = $("#adminType").val();
-                    if (adminType != 1) {
-                        alert('권한이 없습니다.')
-                        return false;
-                    }
-                    $.ajax({
-                        url: 'deleteAdmin',
-                        type: 'POST',
-                        dataType: 'json',
-                        data: {
-                            'checkedData': checkArray
-                        },
-                        success: function (data) {
-                            switch (data) {
+        function delBtn(e){
+            if(confirm('삭제하시겠습니까?'))
+            {
+                $.ajax
+                (
+                    {
+                        url : '/admin/deleteAdmin',
+                        method : 'DELETE',
+                        type : 'JSON',
+                        data : {'adminId' : e},
+                        success : function (result)
+                        {
+                            switch (result)
+                            {
                                 case 1:
                                     alert('삭제되었습니다.');
                                     location.reload();
                                     break;
                                 case 0:
-                                    alert('권한이 없습니다.');
-                                    break
+                                    alert('삭제 실패 관리자에게 문의 해주세요.')
+                                    break;
                             }
                         }
-                    });
-                } else {
-                    return false;
-                }
+                    }
+                )
             }
         }
 
-        function authAdmin(no) {
-            console.log(no);
-            $.ajax({
-                url: `adminUpdAuth`,
-                data:{'admin_no': no},
-                method: 'POST',
-                dataType: "json",
-                success: function (result) {
-                    console.log(result)
-                    switch (result) {
-                        case 1:
-                            alert("권한이 없습니다.");
-                            history.back();
-                            break;
-                        case 2:
-                            break;
-                        case 0:
-                            alert('오류입니다.');
-                    }
-                },
-                error: function (request, status, error) {
-                    alert("code:" + request.status + "\n\n\n" + "message:" + request.responseText + "\n\n\n" + "error:" + error);
-                }
-            })
-        }
     </script>
 </body>
 </html>
