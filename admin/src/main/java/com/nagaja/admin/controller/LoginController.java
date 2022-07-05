@@ -14,4 +14,12 @@ public class LoginController
 		
 		return mv;
 	}
+
+	@GetMapping("/findPw")
+	public ModelAndView findPw(ModelAndView mv)
+	{
+		mv.setViewName("login/findPw");
+
+		return mv;
+	}
 }
