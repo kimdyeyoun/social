@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:with="user=${#authentication.principal}">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>나가자 관리자</title>
+	<link rel="stylesheet" href="../assets/vendors/iconfonts/mdi/css/materialdesignicons.css">
+	<link rel="stylesheet" href="../assets/css/shared/style.css">
+	<link rel="stylesheet" href="../assets/css/demo_1/style.css">
+	<link rel="shortcut icon" href="../asssets/images/favicon.ico"/>
+	<style type="text/css">
+		.current {
+			border: 1px solid;
+			background: #696ffb;
+			color: #FFFFFF;
+			margin-right: 3px;
+			border-radius: 4px;
+			width: 3%;
+		}
+		.paging {
+			border: 1px solid #f2f4f9;
+			background: #FFFFFF;
+			margin-right: 3px;
+			border-radius: 4px;
+			width: 3%;
+		}
+	</style>
+</head>
+<body class="header-fixed">
+<th:block th:include="/../hf/header.html"></th:block>
+<div class="page-body">
+	<th:block th:include="/../hf/sidebar.html"></th:block>
+	<div class="page-content-wrapper">
+		<div class="page-content-wrapper-inner">
+			<div id="content-viewport">
+				<div class="row">
+					<div class="col-12" style="margin-bottom: 15px; display: flex; justify-content: space-between;">
+						<h4>회원 통합 관리</h4>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div class="grid">
+							<p class="grid-header">
+								회원 검색
+							</p>
+							<div class="card-body">
+								<br>
+								<div class="grid-body">
+									<div class="item-wrapper">
+										<div class="table-responsive">
+											<table class="table table-bordered" style="width: 100%; cellspacing: '0'; margin: auto;">
+												<tbody>
+												<tbody>
+												<tr>
+													<td>
+														가입 일짜
+													</td>
+													<td>
+														<input type="date" class="form-control" id="startDate" style="width: 250px;">
+														-
+														<input type="date" class="form-control" id="endDate" style="width: 250px;">
+													</td>
+												</tr>
+
+												<tr>
+													<td>
+														유저 상태값
+													</td>
+													<td>
+														<select class="form-control" id="memStatusId" style="width: 150px;">
+															<option value="0" selected>전체</option>
+															<option value="1">유저일반</option>
+															<option value="2">유저탈퇴</option>
+															<option value="3">유저블랙</option>
+														</select>
+
+														<select class="form-control" id="limit" style="width: 150px;">
+															<option value="10" selected>10개씩 보기</option>
+															<option value="30">30개씩 보기</option>
+															<option value="50">50개씩 보기</option>
+														</select>
+													</td>
+												</tr>
+
+												<tr>
+													<td>
+														키워드 검색필터
+													</td>
+													<td>
+														<select class="form-control" id="keywordFilter" style="width: 150px;">
+															<option value="0">전체</option>
+															<option value="1">회원번호</option>
+															<option value="2">이름</option>
+															<option value="3">아이디</option>
+															<option value="4">전화번호</option>
+															<option value="5">주소 국가</option>
+															<option value="6">주소</option>
+															<option value="7">이메일</option>
+															<option value="8">닉네임</option>
+														</select>
+														<input class="form-control" type="text" id="keyword" style="padding-left 10px; width: 500px;">
+													</td>
+												</tr>
+												</tbody>
+											</table>
+												</tbody>
+											</table>
+											<div class="mx-auto" style="text-align: center; margin-top: 10px;">
+												<button type="button" class="search_btn btn btn-primary" onclick="SearchBtn(1);">검색 </button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-12">
+							<div class="grid" id="grid-width">
+								<a type="button" class="search_btn btn btn-primary" id="excelDownload" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;">선택 엑셀다운로드</a>
+								<a type="button" class="search_btn btn btn-primary" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;">전체 엑셀다운로드</a>
+								<p class="grid-header">
+									유저 목록
+								</p>
+
+								<div class="grid-body">
+									<div class="item-wrapper">
+										<div class="table-responsive">
+											<table class="table table-bordered" id="dataTable" style="width: 100%; cellspacing: '0'; margin: auto; text-align: center;">
+												<tbody>
+												<tr>
+													<td><input type="checkbox" id="txn-checkbox" class="check-all"></td>
+													<td>번호</td>
+													<td>회원상태</td>
+													<td>회원번호</td>
+													<td>아이디</td>
+													<td>이메일</td>
+													<td>이름/닉네임</td>
+													<td>전화번호</td>
+													<td>주소 국가</td>
+													<td>주소</td>
+													<td>가입일자</td>
+												</tr>
+												</tbody>
+												<tbody id="item_list">
+												</tbody>
+											</table>
+											<div id="page_list" style="text-align:center; margin: 2% 0 0 0;">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<th:block th:include="/../hf/footer.html"></th:block>
+<script src="/assets/vendors/js/core.js"></script>
+<script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
+<script src="/assets/vendors/chartjs/Chart.min.js"></script>
+<script src="/assets/js/charts/chartjs.addon.js"></script>
+<script src="/assets/js/template.js"></script>
+<script src="/assets/js/dashboard.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+	$(document).ready(function () {
+		SearchBtn(1);
+	});
+
+	function SearchBtn(e) {
+		var data = {'startDate': $("#startDate").val(),
+			'endDate': $("#endDate").val(),
+			'memStatusId': $("#memStatusId").val(),
+			'keywordFilter': $("#keywordFilter").val(),
+			'keyword': $("#keyword").val(),
+			'limit' : $('#limit').val(),
+			'pageNum': e};
+		$.ajax(
+				{
+					url: '/member/selectMember',
+					method: 'GET',
+					dataType : 'json',
+					data : data,
+					success: function (result) {
+						console.log(result);
+						var item_list = $("#item_list");
+						var item_add = "";
+						var page_list = $("#page_list");
+						var page_add = "";
+						// list start
+						if (result.memberList.length == 0) {
+							item_add += '<tr>';
+							item_add += '<td></td>';
+							item_add += '<td></td>';
+							item_add += '<td></td>';
+							item_add += '<td></td>';
+							item_add += '<td></td>';
+							item_add += '<td></td>';
+							item_add += '<td></td>';
+							item_add += '<td></td>';
+							item_add += '<td></td>';
+							item_add += '<td></td>';
+							item_add += '<td></td>';
+							item_add += '</tr>';
+						} else {
+							for (var i = 0; i < result.memberList.length; i++) {
+								item_add += '<tr>';
+								item_add += '<td>' + '<input type="checkbox" name="memId" id="member-checkbox" class="list-checkBox" value="' + result.memberList[i].memId + '">' + '</td>';
+								item_add += '<td>' + result.memberList[i].memId + '</td>';
+
+								if (result.memberList[i].memStatusId == 1)
+								{
+									item_add += '<td>일반</td>';
+								}
+								else if (result.memberList[i].memStatusId == 2)
+								{
+									item_add += '<td>탈퇴</td>';
+								}
+								else if (result.memberList[i].memStatusId == 3)
+								{
+									item_add += '<td>블랙</td>';
+								}
+
+								item_add += '<td>' + result.memberList[i].memNumber + '</td>';
+								item_add += '<td>' + result.memberList[i].memLoginId + '</td>';
+								item_add += '<td>' + result.memberList[i].memEmail + '</td>';
+								item_add += '<td>' + result.memberList[i].memName + '/' + result.memberList[i].memNickname + '</td>';
+								item_add += '<td>' + result.memberList[i].memPhone + '</td>';
+								item_add += '<td>' + result.memberList[i].memNation + '</td>';
+								item_add += '<td>' + result.memberList[i].memAddress + '<br>' + result.memberList[i].memAddressDetail + '</td>';
+								item_add += '<td>' + result.memberList[i].memCreateDate + '</td>';
+
+								item_add += '</tr>';
+							}
+						}
+
+						// paging start
+						if (result.pagination.pageNum > 10) {
+							page_add += '<button class="paging" onclick="SearchBtn(' + (result.pagination.startPage - 10) + ')"><</button>';
+						}
+
+						for (var i = result.pagination.startPage; i < (result.pagination.endPage + 1); i++) {
+							if (result.pagination.pageNum == i) {
+								page_add += '<button class="current" onclick="SearchBtn(' + i + ')">' + i + '</button>';
+							} else if (i <= result.pagination.maxPage) {
+								page_add += '<button class="paging" onclick="SearchBtn(' + i + ')">' + i + '</button>';
+							}
+						}
+
+						if (result.pagination.startPage + 10 < (result.pagination.maxPage)) {
+							page_add += '<button class="paging" onclick="SearchBtn(' + (result.pagination.startPage + 10) + ')">></button>';
+						}
+						// paging end
+
+						item_list.empty();
+						item_list.append(item_add);
+
+						page_list.empty();
+						page_list.append(page_add);
+					},
+					error(e) {
+						console.log(e);
+					}
+				})
+	}
+
+
+
+	// se.shin 엑셀 다운로드 버튼클릭시
+	$('#excelDownload').click(function () {
+
+		if ($("input:checkbox[name=memId]:checked").length == 0)
+		{
+			alert("데이터를 선택해주세요.")
+			return false;
+		}
+
+		var excelUrl = "/member/memberExcelDownload";
+
+		var request = new XMLHttpRequest();
+		request.open('POST', excelUrl, true);
+		request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+		request.responseType = 'blob';
+
+		request.onload = function(e) {
+
+			var filename = "";
+			var disposition = request.getResponseHeader('Content-Disposition');
+			if (disposition && disposition.indexOf('attachment') !== -1) {
+				var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+				var matches = filenameRegex.exec(disposition);
+				if (matches != null && matches[1])
+					filename = decodeURI( matches[1].replace(/['"]/g, '') );
+			}
+
+
+			if (this.status === 200) {
+				var blob = this.response;
+				if(window.navigator.msSaveOrOpenBlob) {
+					window.navigator.msSaveBlob(blob, filename);
+				}
+				else{
+					var downloadLink = window.document.createElement('a');
+					var contentTypeHeader = request.getResponseHeader("Content-Type");
+					downloadLink.href = window.URL.createObjectURL(new Blob([blob], { type: contentTypeHeader }));
+					downloadLink.download = filename;
+					document.body.appendChild(downloadLink);
+					downloadLink.click();
+					document.body.removeChild(downloadLink);
+				}
+			}
+		};
+
+
+		// se.shin 파라미터 세팅
+		var check_list = [];
+		$("input:checkbox[name=memId]:checked").each(function () {
+			check_list.push($(this).val());
+		});
+		console.log(check_list)
+
+		const memId = check_list;
+
+		var params = 'memId=' + memId;
+		request.send(params);
+
+	});
+
+</script>
+</body>
+</html>

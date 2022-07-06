@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nagaja.admin.mapper.MemberMapper">
+
+    <!--TODO 멤버 카운트-->
+    <select id="memberCount" resultType="int">
+        SELECT COUNT(*) FROM member
+        <where>
+            mem_status_id = 1 OR mem_status_id = 2 OR mem_status_id = 3
+            <if test="member.startDate != null and !member.startDate.equals('')">
+                <![CDATA[
+                    AND DATE(mem_create_date) >= DATE(#{member.startDate})
+                ]]>
+            </if>
+
+            <if test="member.endDate != null and !member.endDate.equals('')">
+                <![CDATA[
+                    AND DATE(mem_create_date) <= DATE(#{member.endDate})
+                ]]>
+            </if>
+            <if test="member.memStatusId != null and member.memStatusId != 0">
+                    AND mem_status_id = #{member.memStatusId}
+            </if>
+
+            <choose>
+                <when test="member.keywordFilter == 1">
+                    AND mem_number LIKE CONCAT ('%', #{member.keyword}, '%')
+                </when>
+                <when test="member.keywordFilter == 2">
+                    AND mem_name LIKE CONCAT ('%', #{member.keyword}, '%')
+                </when>
+                <when test="member.keywordFilter == 3">
+                    AND mem_login_id LIKE CONCAT ('%', #{member.keyword}, '%')
+                </when>
+                <when test="member.keywordFilter == 4">
+                    AND mem_phone LIKE CONCAT ('%', #{member.keyword}, '%')
+                </when>
+                <when test="member.keywordFilter == 5">
+                    AND mem_nation LIKE CONCAT ('%', #{member.keyword}, '%')
+                </when>
+                <when test="member.keywordFilter == 6">
+                    AND mem_address LIKE CONCAT ('%', #{member.keyword}, '%')
+                </when>
+                <when test="member.keywordFilter == 7">
+                    AND mem_email LIKE CONCAT ('%', #{member.keyword}, '%')
+                </when>
+                <when test="member.keywordFilter == 8">
+                    AND mem_nickname LIKE CONCAT ('%', #{member.keyword}, '%')
+                </when>
+                <otherwise>
+                    AND (mem_number LIKE CONCAT ('%', #{member.keyword}, '%') OR
+                         mem_name LIKE CONCAT ('%', #{member.keyword}, '%') OR
+                         mem_login_id LIKE CONCAT ('%', #{member.keyword}, '%') OR
+                         mem_phone LIKE CONCAT ('%', #{member.keyword}, '%') OR
+                         mem_nation LIKE CONCAT ('%', #{member.keyword}, '%') OR
+                         mem_address LIKE CONCAT ('%', #{member.keyword}, '%') OR
+                         mem_email LIKE CONCAT ('%', #{member.keyword}, '%') OR
+                         mem_nickname LIKE CONCAT ('%', #{member.keyword}, '%'))
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <!--TODO 멤버 리스트-->
+    <select id="memberList" parameterType="MemberDto" resultType="Member">
+        SELECT * FROM member
+        <where>
+            (mem_status_id = 1 OR mem_status_id = 2 OR mem_status_id = 3)
+            <if test="member.startDate != null and !member.startDate.equals('')">
+                <![CDATA[
+                    AND DATE(mem_create_date) >= DATE(#{member.startDate})
+                ]]>
+            </if>
+
+            <if test="member.endDate != null and !member.endDate.equals('')">
+                <![CDATA[
+                    AND DATE(mem_create_date) <= DATE(#{member.endDate})
+                ]]>
+            </if>
+
+            <choose>
+                <when test="member.keywordFilter == 1">
+                    AND mem_number LIKE CONCAT ('%', #{member.keyword}, '%')
+                </when>
+                <when test="member.keywordFilter == 2">
+                    AND mem_name LIKE CONCAT ('%', #{member.keyword}, '%')
+                </when>
+                <when test="member.keywordFilter == 3">
+                    AND mem_login_id LIKE CONCAT ('%', #{member.keyword}, '%')
+                </when>
+                <when test="member.keywordFilter == 4">
+                    AND mem_phone LIKE CONCAT ('%', #{member.keyword}, '%')
+                </when>
+                <when test="member.keywordFilter == 5">
+                    AND mem_nation LIKE CONCAT ('%', #{member.keyword}, '%')
+                </when>
+                <when test="member.keywordFilter == 6">
+                    AND mem_address LIKE CONCAT ('%', #{member.keyword}, '%')
+                </when>
+                <when test="member.keywordFilter == 7">
+                    AND mem_email LIKE CONCAT ('%', #{member.keyword}, '%')
+                </when>
+                <when test="member.keywordFilter == 8">
+                    AND mem_nickname LIKE CONCAT ('%', #{member.keyword}, '%')
+                </when>
+                <otherwise>
+                    AND (mem_number LIKE CONCAT ('%', #{member.keyword}, '%') OR
+                    mem_name LIKE CONCAT ('%', #{member.keyword}, '%') OR
+                    mem_login_id LIKE CONCAT ('%', #{member.keyword}, '%') OR
+                    mem_phone LIKE CONCAT ('%', #{member.keyword}, '%') OR
+                    mem_nation LIKE CONCAT ('%', #{member.keyword}, '%') OR
+                    mem_address LIKE CONCAT ('%', #{member.keyword}, '%') OR
+                    mem_email LIKE CONCAT ('%', #{member.keyword}, '%') OR
+                    mem_nickname LIKE CONCAT ('%', #{member.keyword}, '%'))
+                </otherwise>
+            </choose>
+        </where>
+        ORDER BY mem_id DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!--TODO 멤버 설렉트-->
+    <select id="selectMember" parameterType="int" resultType="Member">
+        SELECT * FROM member
+        WHERE mem_id = #{memId}
+    </select>
+
+
+</mapper>
