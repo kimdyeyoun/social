@@ -89,7 +89,7 @@
 													</td>
 													<td>
 														<select class="form-control" id="keywordFilter" style="width: 150px;">
-															<option value="0">전체</option>
+															<option value="999">전체</option>
 															<option value="1">회원번호</option>
 															<option value="2">이름</option>
 															<option value="3">아이디</option>
@@ -117,7 +117,7 @@
 						<div class="col-12">
 							<div class="grid" id="grid-width">
 								<a type="button" class="search_btn btn btn-primary" id="excelDownload" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;">선택 엑셀다운로드</a>
-								<a type="button" class="search_btn btn btn-primary" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;">전체 엑셀다운로드</a>
+								<a type="button" class="search_btn btn btn-primary" id="excelDownload2" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;">전체 엑셀다운로드</a>
 								<p class="grid-header">
 									유저 목록
 								</p>
@@ -192,7 +192,7 @@
 						var page_list = $("#page_list");
 						var page_add = "";
 						// list start
-						if (result.memberList.length == 0) {
+						if (result.memberInfoList.length == 0) {
 							item_add += '<tr>';
 							item_add += '<td></td>';
 							item_add += '<td></td>';
@@ -207,32 +207,32 @@
 							item_add += '<td></td>';
 							item_add += '</tr>';
 						} else {
-							for (var i = 0; i < result.memberList.length; i++) {
+							for (var i = 0; i < result.memberInfoList.length; i++) {
 								item_add += '<tr>';
-								item_add += '<td>' + '<input type="checkbox" name="memId" id="member-checkbox" class="list-checkBox" value="' + result.memberList[i].memId + '">' + '</td>';
-								item_add += '<td>' + result.memberList[i].memId + '</td>';
+								item_add += '<td>' + '<input type="checkbox" name="memId" id="member-checkbox" class="list-checkBox" value="' + result.memberInfoList[i].memId + '">' + '</td>';
+								item_add += '<td>' + result.memberInfoList[i].memId + '</td>';
 
-								if (result.memberList[i].memStatusId == 1)
+								if (result.memberInfoList[i].memStatusId == 1)
 								{
 									item_add += '<td>일반</td>';
 								}
-								else if (result.memberList[i].memStatusId == 2)
+								else if (result.memberInfoList[i].memStatusId == 2)
 								{
 									item_add += '<td>탈퇴</td>';
 								}
-								else if (result.memberList[i].memStatusId == 3)
+								else if (result.memberInfoList[i].memStatusId == 3)
 								{
 									item_add += '<td>블랙</td>';
 								}
 
-								item_add += '<td>' + result.memberList[i].memNumber + '</td>';
-								item_add += '<td>' + result.memberList[i].memLoginId + '</td>';
-								item_add += '<td>' + result.memberList[i].memEmail + '</td>';
-								item_add += '<td>' + result.memberList[i].memName + '/' + result.memberList[i].memNickname + '</td>';
-								item_add += '<td>' + result.memberList[i].memPhone + '</td>';
-								item_add += '<td>' + result.memberList[i].memNation + '</td>';
-								item_add += '<td>' + result.memberList[i].memAddress + '<br>' + result.memberList[i].memAddressDetail + '</td>';
-								item_add += '<td>' + result.memberList[i].memCreateDate + '</td>';
+								item_add += '<td>' + result.memberInfoList[i].memNumber + '</td>';
+								item_add += '<td><a href="/member/detailMember?memId='+(result.memberInfoList[i].memId)+'">' + result.memberInfoList[i].memLoginId + '</a></td>';
+								item_add += '<td>' + result.memberInfoList[i].memEmail + '</td>';
+								item_add += '<td>' + result.memberInfoList[i].memName + '/' + result.memberInfoList[i].memNickname + '</td>';
+								item_add += '<td>' + result.memberInfoList[i].memPhone + '</td>';
+								item_add += '<td>' + result.memberInfoList[i].nationInfoName + '</td>';
+								item_add += '<td>' + result.memberInfoList[i].memAddress + '<br>' + result.memberInfoList[i].memAddressDetail + '</td>';
+								item_add += '<td>' + result.memberInfoList[i].memCreateDate + '</td>';
 
 								item_add += '</tr>';
 							}
@@ -326,6 +326,52 @@
 		const memId = check_list;
 
 		var params = 'memId=' + memId;
+		request.send(params);
+
+	});
+
+	// se.shin 엑셀 다운로드 버튼클릭시
+	$('#excelDownload2').click(function () {
+
+
+		var excelUrl = "/member/memberExcelDownload";
+
+		var request = new XMLHttpRequest();
+		request.open('POST', excelUrl, true);
+		request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+		request.responseType = 'blob';
+
+		request.onload = function(e) {
+
+			var filename = "";
+			var disposition = request.getResponseHeader('Content-Disposition');
+			if (disposition && disposition.indexOf('attachment') !== -1) {
+				var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+				var matches = filenameRegex.exec(disposition);
+				if (matches != null && matches[1])
+					filename = decodeURI( matches[1].replace(/['"]/g, '') );
+			}
+
+
+			if (this.status === 200) {
+				var blob = this.response;
+				if(window.navigator.msSaveOrOpenBlob) {
+					window.navigator.msSaveBlob(blob, filename);
+				}
+				else{
+					var downloadLink = window.document.createElement('a');
+					var contentTypeHeader = request.getResponseHeader("Content-Type");
+					downloadLink.href = window.URL.createObjectURL(new Blob([blob], { type: contentTypeHeader }));
+					downloadLink.download = filename;
+					document.body.appendChild(downloadLink);
+					downloadLink.click();
+					document.body.removeChild(downloadLink);
+				}
+			}
+		};
+
+		var params = 'whole=' + 1;
+
 		request.send(params);
 
 	});

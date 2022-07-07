@@ -1,11 +1,13 @@
 package com.nagaja.admin.serviceImpl;
 
 import com.nagaja.admin.dto.MemberDto;
+import com.nagaja.admin.dto.MemberInfoDto;
 import com.nagaja.admin.entity.Member;
 import com.nagaja.admin.entity.Pagination;
 import com.nagaja.admin.mapper.MemberMapper;
 import com.nagaja.admin.service.MemberService;
 import com.nagaja.admin.util.MyUtils;
+import com.nagaja.admin.util.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,21 +30,53 @@ public class MemberServiceImpl implements MemberService {
 
         Pagination page = MyUtils.Paging(count, memberDto.getPageNum(), memberDto.getLimit());
 
-        List<Member> memberList = memberMapper.memberList(memberDto, page.getOffset(), page.getLimit());
+        List<MemberInfoDto> memberList = memberMapper.memberList(memberDto, page.getOffset(), page.getLimit());
 
-        return MemberDto.builder().pagination(page).memberList(memberList).build();
+        return MemberDto.builder().pagination(page).memberInfoList(memberList).build();
+    }
+
+    //TODO 유저 상세조회
+    @Override
+    public MemberInfoDto detailMember(int memId)
+    {
+        return memberMapper.selectMember(memId);
     }
 
     //TODO 엑셀 다온로드
     @Override
-    public void memberExcelDownload(HttpServletResponse response, List<Integer> memId)
+    public void memberExcelDownload(HttpServletResponse response, List<Integer> memId, int whole)
     {
-        List<Member> memberList = new ArrayList<>();
-        for (Integer i : memId)
+        List<MemberInfoDto> memberInfoList = new ArrayList<>();
+        if (whole != 0)
         {
-            memberList.add(memberMapper.selectMember(i));
-        }
+            //TODO 전체 엑셀 다온로드
+            memberInfoList = memberMapper.selectAllMember();
 
-        MyUtils.letExcelDownLoad(response, memberList);
+            MyUtils.letExcelDownLoad(response, memberInfoList);
+        }
+        //TODO 선택 엑셀 다운로드
+        else
+        {
+            for (Integer i : memId)
+            {
+                memberInfoList.add(memberMapper.selectMember(i));
+            }
+
+            MyUtils.letExcelDownLoad(response, memberInfoList);
+        }
+    }
+
+    //TODO 블랙리스트 등록 해제
+    @Override
+    public int memberBlackList(int memId)
+    {
+        return memberMapper.memberBlackList(memId);
+    }
+
+    //TODO 블랙 리스트 탈퇴
+    @Override
+    public int memberSecession(int memId)
+    {
+        return memberMapper.memberSecession(memId);
     }
 }

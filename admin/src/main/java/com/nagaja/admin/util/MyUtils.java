@@ -1,6 +1,6 @@
 package com.nagaja.admin.util;
 
-import com.nagaja.admin.entity.Member;
+import com.nagaja.admin.dto.MemberInfoDto;
 import com.nagaja.admin.entity.Pagination;
 import javax.servlet.http.HttpServletResponse;
 
@@ -43,7 +43,7 @@ public class MyUtils {
     }
 
     //TODO 엑셀 다운로드
-    public static void letExcelDownLoad(HttpServletResponse response, List<Member> list) {
+    public static void letExcelDownLoad(HttpServletResponse response, List<MemberInfoDto> list) {
 
         FileOutputStream fos = null;
         SXSSFWorkbook workbook = null;
@@ -103,7 +103,7 @@ public class MyUtils {
             // dto 호출하여 데이터 가져오는 소스
 
             // 각각의 row 생성
-            for (Member data : list) {
+            for (MemberInfoDto data : list) {
                 row = sheet.createRow(rowNo++);
                 row.createCell(0).setCellValue(data.getMemId());
                 if (data.getMemStatusId() == 1)
@@ -123,7 +123,7 @@ public class MyUtils {
                 row.createCell(4).setCellValue(data.getMemEmail());
                 row.createCell(5).setCellValue(data.getMemName() + "/" + data.getMemNickname());
                 row.createCell(6).setCellValue(data.getMemPhone());
-                row.createCell(7).setCellValue(data.getMemNation());
+                row.createCell(7).setCellValue(data.getNationInfoName());
                 row.createCell(8).setCellValue(data.getMemAddress() + " "  + data.getMemAddressDetail());
                 row.createCell(9).setCellValue(data.getMemCreateDate());
             }
