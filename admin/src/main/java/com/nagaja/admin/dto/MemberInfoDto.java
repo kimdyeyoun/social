@@ -1,4 +1,4 @@
-package com.nagaja.admin.entity;
+package com.nagaja.admin.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,8 +8,8 @@ import org.apache.ibatis.type.Alias;
 @Getter
 @Setter
 @ToString
-@Alias("Member")
-public class Member {
+@Alias("MemberInfoDto")
+public class MemberInfoDto {
 
     private int memId;
     private int memStatusId;
@@ -34,4 +34,11 @@ public class Member {
     private String memModifyDate;
     private Double memLat;
     private Double memLng;
+
+    //TODO 추천인
+    private String referral;
+
+    private String memStatusContent;
+    private String nationInfoName;
+    private int nationInfoNum;
 }

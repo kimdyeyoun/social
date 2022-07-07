@@ -1,6 +1,7 @@
 package com.nagaja.admin.mapper;
 
 import com.nagaja.admin.dto.MemberDto;
+import com.nagaja.admin.dto.MemberInfoDto;
 import com.nagaja.admin.entity.Member;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -13,8 +14,17 @@ public interface MemberMapper {
     int memberCount(@Param("member") MemberDto memberDto);
 
     //TODO 멤버 리스트
-    List<Member> memberList(@Param("member") MemberDto memberDto, @Param("offset") int offset, @Param("limit") int limit);
+    List<MemberInfoDto> memberList(@Param("member") MemberDto memberDto, @Param("offset") int offset, @Param("limit") int limit);
 
     //TODO 멤버 설렉트
-    Member selectMember(@Param("memId") int memId);
+    MemberInfoDto selectMember(@Param("memId") int memId);
+
+    //TODO 멤버 전체 설렉트
+    List<MemberInfoDto> selectAllMember();
+
+    //TODO 멤버 블랙리스트 등록 해제
+    int memberBlackList(@Param("memId") int memId);
+
+    //TODO 멤버 탈퇴
+    int memberSecession(@Param("memId") int memId);
 }

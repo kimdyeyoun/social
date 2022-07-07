@@ -26,5 +26,5 @@ public class MemberDto {
     private int limit;
 
     private Pagination pagination;
-    private List<Member> memberList;
+    private List<MemberInfoDto> memberInfoList;
 }
