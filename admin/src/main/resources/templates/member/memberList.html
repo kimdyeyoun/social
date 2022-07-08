@@ -35,7 +35,7 @@
 			<div id="content-viewport">
 				<div class="row">
 					<div class="col-12" style="margin-bottom: 15px; display: flex; justify-content: space-between;">
-						<h4>회원 통합 관리</h4>
+						<h4>일반회원 통합 관리</h4>
 					</div>
 				</div>
 				<div class="row">
@@ -51,59 +51,56 @@
 										<div class="table-responsive">
 											<table class="table table-bordered" style="width: 100%; cellspacing: '0'; margin: auto;">
 												<tbody>
-												<tbody>
-												<tr>
-													<td>
-														가입 일짜
-													</td>
-													<td>
-														<input type="date" class="form-control" id="startDate" style="width: 250px;">
-														-
-														<input type="date" class="form-control" id="endDate" style="width: 250px;">
-													</td>
-												</tr>
+													<tr>
+														<td>
+															가입 일짜
+														</td>
+														<td>
+															<input type="date" class="form-control" id="startDate" style="width: 250px;">
+															-
+															<input type="date" class="form-control" id="endDate" style="width: 250px;">
+														</td>
+													</tr>
 
-												<tr>
-													<td>
-														유저 상태값
-													</td>
-													<td>
-														<select class="form-control" id="memStatusId" style="width: 150px;">
-															<option value="0" selected>전체</option>
-															<option value="1">유저일반</option>
-															<option value="2">유저탈퇴</option>
-															<option value="3">유저블랙</option>
-														</select>
+													<tr>
+														<td>
+															유저 상태값
+														</td>
+														<td>
+															<select class="form-control" id="memStatusId" style="width: 150px;">
+																<option value="0" selected>전체</option>
+																<option value="1">유저일반</option>
+																<option value="2">유저탈퇴</option>
+																<option value="3">유저블랙</option>
+															</select>
 
-														<select class="form-control" id="limit" style="width: 150px;">
-															<option value="10" selected>10개씩 보기</option>
-															<option value="30">30개씩 보기</option>
-															<option value="50">50개씩 보기</option>
-														</select>
-													</td>
-												</tr>
+															<select class="form-control" id="limit" style="width: 150px;">
+																<option value="10" selected>10개씩 보기</option>
+																<option value="30">30개씩 보기</option>
+																<option value="50">50개씩 보기</option>
+															</select>
+														</td>
+													</tr>
 
-												<tr>
-													<td>
-														키워드 검색필터
-													</td>
-													<td>
-														<select class="form-control" id="keywordFilter" style="width: 150px;">
-															<option value="999">전체</option>
-															<option value="1">회원번호</option>
-															<option value="2">이름</option>
-															<option value="3">아이디</option>
-															<option value="4">전화번호</option>
-															<option value="5">주소 국가</option>
-															<option value="6">주소</option>
-															<option value="7">이메일</option>
-															<option value="8">닉네임</option>
-														</select>
-														<input class="form-control" type="text" id="keyword" style="padding-left 10px; width: 500px;">
-													</td>
-												</tr>
-												</tbody>
-											</table>
+													<tr>
+														<td>
+															키워드 검색필터
+														</td>
+														<td>
+															<select class="form-control" id="keywordFilter" style="width: 150px;">
+																<option value="999">전체</option>
+																<option value="1">회원번호</option>
+																<option value="2">이름</option>
+																<option value="3">아이디</option>
+																<option value="4">전화번호</option>
+																<option value="5">주소 국가</option>
+																<option value="6">주소</option>
+																<option value="7">이메일</option>
+																<option value="8">닉네임</option>
+															</select>
+															<input class="form-control" type="text" id="keyword" style="padding-left 10px; width: 500px;">
+														</td>
+													</tr>
 												</tbody>
 											</table>
 											<div class="mx-auto" style="text-align: center; margin-top: 10px;">

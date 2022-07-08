@@ -38,7 +38,6 @@ public class MemberController {
     @ResponseBody
     public MemberDto selectMember(@ModelAttribute MemberDto memberDto)
     {
-        System.out.println(memberDto);
         return service.selectMember(memberDto);
     }
 
