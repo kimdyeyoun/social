@@ -32,7 +32,7 @@ public class MemberServiceImpl implements MemberService {
 
         List<MemberInfoDto> memberList = memberMapper.memberList(memberDto, page.getOffset(), page.getLimit());
 
-        return MemberDto.builder().pagination(page).memberInfoList(memberList).build();
+        return MemberDto.builder().memberInfoList(memberList).pagination(page).build();
     }
 
     //TODO 유저 상세조회

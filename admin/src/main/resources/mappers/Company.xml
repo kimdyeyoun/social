@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nagaja.admin.mapper.CompanyMapper">
+
+
+    <!--TODO 기업회원 카운트-->
+    <select id="companyCount" resultType="int">
+        SELECT COUNT(*) FROM company c
+        LEFT JOIN member m ON m.mem_id = c.mem_id
+        LEFT JOIN nation_info ni ON ni.nation_info_id = m.nation_info_id
+        LEFT JOIN member_status ms ON ms.mem_status_id = m.mem_status_id
+        LEFT JOIN board_category bc ON bc.board_category_id = c.board_category_id
+        <where>
+            <if test="company.startDate != null and !company.startDate.equals('')">
+                <![CDATA[
+                        AND DATE(c.company_approval_date) >= DATE(#{company.startDate})
+                    ]]>
+            </if>
+
+            <if test="company.endDate != null and !company.endDate.equals('')">
+                <![CDATA[
+                        AND DATE(c.company_approval_date) <= DATE(#{company.endDate})
+                    ]]>
+            </if>
+        </where>
+    </select>
+
+    <!--TODO 기업회원 리스트-->
+    <select id="companyList" resultType="CompanyInfoDto">
+        SELECT *,(SELECT COUNT(*) FROM regular r WHERE r.company_id = c.company_id) AS regularPeople FROM company c
+        LEFT JOIN member m ON m.mem_id = c.mem_id
+        LEFT JOIN nation_info ni ON ni.nation_info_id = m.nation_info_id
+        LEFT JOIN member_status ms ON ms.mem_status_id = m.mem_status_id
+        LEFT JOIN board_category bc ON bc.board_category_id = c.board_category_id
+        LIMIT #{offset}, #{limit}
+    </select>
+
+
+</mapper>
