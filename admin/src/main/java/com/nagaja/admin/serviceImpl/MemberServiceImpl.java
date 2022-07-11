@@ -2,18 +2,15 @@ package com.nagaja.admin.serviceImpl;
 
 import com.nagaja.admin.dto.MemberDto;
 import com.nagaja.admin.dto.MemberInfoDto;
-import com.nagaja.admin.entity.Member;
 import com.nagaja.admin.entity.Pagination;
 import com.nagaja.admin.mapper.MemberMapper;
 import com.nagaja.admin.service.MemberService;
 import com.nagaja.admin.util.MyUtils;
-import com.nagaja.admin.util.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -46,23 +43,22 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void memberExcelDownload(HttpServletResponse response, List<Integer> memId, int whole)
     {
-        List<MemberInfoDto> memberInfoList = new ArrayList<>();
         if (whole != 0)
         {
             //TODO 전체 엑셀 다온로드
-            memberInfoList = memberMapper.selectAllMember();
-
-            MyUtils.letExcelDownLoad(response, memberInfoList);
+            MyUtils.memberExcelDownLoad(response, memberMapper.selectAllMember());
         }
         //TODO 선택 엑셀 다운로드
         else
         {
+            List<MemberInfoDto> memberInfoList = new ArrayList<>();
+
             for (Integer i : memId)
             {
                 memberInfoList.add(memberMapper.selectMember(i));
             }
 
-            MyUtils.letExcelDownLoad(response, memberInfoList);
+            MyUtils.memberExcelDownLoad(response, memberInfoList);
         }
     }
 

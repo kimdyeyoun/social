@@ -53,7 +53,7 @@
 												<tbody>
 												<tr>
 													<td>
-														가입 일짜
+														가입 일자
 													</td>
 													<td>
 														<input type="date" class="form-control" id="startDate" style="width: 250px;">
@@ -67,11 +67,18 @@
 														유저 상태값
 													</td>
 													<td>
-														<select class="form-control" id="nationInfoId" style="width: 150px;">
+														<select class="form-control" id="memStatusId" style="width: 150px;">
 															<option value="0" selected>전체</option>
 															<option value="4">기업일반</option>
 															<option value="5">기업탈퇴</option>
 															<option value="6">기업블랙</option>
+														</select>
+
+														<select class="form-control" id="nationInfoId" style="width: 150px;">
+															<option value="0" selected>전체</option>
+															<th:block th:each="data : ${nation}">
+																<option th:value="${data.nationInfoId}" th:text="${data.nationInfoName}"></option>
+															</th:block>
 														</select>
 
 														<select class="form-control" id="limit" style="width: 150px;">
@@ -88,17 +95,14 @@
 													</td>
 													<td>
 														<select class="form-control" id="keywordFilter" style="width: 150px;">
-															<option value="999">전체</option>
-															<option value="1">회원번호</option>
-															<option value="2">이름</option>
-															<option value="3">아이디</option>
-															<option value="4">전화번호</option>
-															<option value="5">주소 국가</option>
-															<option value="6">주소</option>
-															<option value="7">이메일</option>
-															<option value="8">닉네임</option>
+															<option value="0">전체</option>
+															<option value="1">아이디</option>
+															<option value="2">기업 카테고리</option>
+															<option value="3">기업명</option>
+															<option value="4">주소</option>
+															<option value="5">전화번호</option>
 														</select>
-														<input class="form-control" type="text" id="keyword" style="padding-left 10px; width: 500px;">
+														<input class="form-control" type="text" id="keyword" style="padding-left : 10px; width: 500px;">
 													</td>
 												</tr>
 												</tbody>
@@ -171,6 +175,7 @@
 		var data = {'startDate': $("#startDate").val(),
 			'endDate': $("#endDate").val(),
 			'memStatusId': $("#memStatusId").val(),
+			'nationInfoId' : $("#nationInfoId").val(),
 			'keywordFilter': $("#keywordFilter").val(),
 			'keyword': $("#keyword").val(),
 			'limit' : $('#limit').val(),
@@ -204,11 +209,11 @@
 						} else {
 							for (var i = 0; i < result.companyInfoList.length; i++) {
 								item_add += '<tr>';
-								item_add += '<td>' + '<input type="checkbox" name="memId" id="member-checkbox" class="list-checkBox" value="' + result.companyInfoList[i].companyId + '">' + '</td>';
+								item_add += '<td>' + '<input type="checkbox" name="memId" id="member-checkbox" class="list-checkBox" value="' + result.companyInfoList[i].memId + '">' + '</td>';
 								item_add += '<td>' + result.companyInfoList[i].companyId + '</td>';
 								item_add += '<td><a href="/member/detailMember?memId='+(result.companyInfoList[i].memId)+'">' + result.companyInfoList[i].memLoginId + '</a></td>';
 								item_add += '<td>' + result.companyInfoList[i].boardCategoryTitle + '</td>';
-								item_add += '<td>' + result.companyInfoList[i].companyName + '</td>';
+								item_add += '<td><a href="/company/detailCompany?memId='+(result.companyInfoList[i].memId)+'">' + result.companyInfoList[i].companyName + '</a></td>';
 								item_add += '<td>' + result.companyInfoList[i].nationInfoName + '</td>';
 								item_add += '<td>' + result.companyInfoList[i].companyAddress + '</td>';
 								item_add += '<td>' + result.companyInfoList[i].companyPhone + '</td>';
@@ -250,6 +255,111 @@
 					}
 				})
 	}
+
+	// se.shin 엑셀 다운로드 버튼클릭시
+	$('#excelDownload').click(function () {
+
+		if ($("input:checkbox[name=memId]:checked").length == 0)
+		{
+			alert("데이터를 선택해주세요.")
+			return false;
+		}
+
+		var excelUrl = "/company/companyExcelDownload";
+
+		var request = new XMLHttpRequest();
+		request.open('POST', excelUrl, true);
+		request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+		request.responseType = 'blob';
+
+		request.onload = function(e) {
+
+			var filename = "";
+			var disposition = request.getResponseHeader('Content-Disposition');
+			if (disposition && disposition.indexOf('attachment') !== -1) {
+				var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+				var matches = filenameRegex.exec(disposition);
+				if (matches != null && matches[1])
+					filename = decodeURI( matches[1].replace(/['"]/g, '') );
+			}
+
+
+			if (this.status === 200) {
+				var blob = this.response;
+				if(window.navigator.msSaveOrOpenBlob) {
+					window.navigator.msSaveBlob(blob, filename);
+				}
+				else{
+					var downloadLink = window.document.createElement('a');
+					var contentTypeHeader = request.getResponseHeader("Content-Type");
+					downloadLink.href = window.URL.createObjectURL(new Blob([blob], { type: contentTypeHeader }));
+					downloadLink.download = filename;
+					document.body.appendChild(downloadLink);
+					downloadLink.click();
+					document.body.removeChild(downloadLink);
+				}
+			}
+		};
+
+
+		// se.shin 파라미터 세팅
+		var check_list = [];
+		$("input:checkbox[name=memId]:checked").each(function () {
+			check_list.push($(this).val());
+		});
+		console.log(check_list)
+
+		const memId = check_list;
+
+		var params = 'memId=' + memId;
+		request.send(params);
+
+	});
+
+	// se.shin 엑셀 다운로드 버튼클릭시
+	$('#excelDownload2').click(function () {
+
+		var excelUrl = "/company/companyExcelDownload";
+
+		var request = new XMLHttpRequest();
+		request.open('POST', excelUrl, true);
+		request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+		request.responseType = 'blob';
+
+		request.onload = function(e) {
+
+			var filename = "";
+			var disposition = request.getResponseHeader('Content-Disposition');
+			if (disposition && disposition.indexOf('attachment') !== -1) {
+				var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+				var matches = filenameRegex.exec(disposition);
+				if (matches != null && matches[1])
+					filename = decodeURI( matches[1].replace(/['"]/g, '') );
+			}
+
+
+			if (this.status === 200) {
+				var blob = this.response;
+				if(window.navigator.msSaveOrOpenBlob) {
+					window.navigator.msSaveBlob(blob, filename);
+				}
+				else{
+					var downloadLink = window.document.createElement('a');
+					var contentTypeHeader = request.getResponseHeader("Content-Type");
+					downloadLink.href = window.URL.createObjectURL(new Blob([blob], { type: contentTypeHeader }));
+					downloadLink.download = filename;
+					document.body.appendChild(downloadLink);
+					downloadLink.click();
+					document.body.removeChild(downloadLink);
+				}
+			}
+		};
+
+		var params = 'whole=' + 1;
+
+		request.send(params);
+
+	});
 
 </script>
 </body>

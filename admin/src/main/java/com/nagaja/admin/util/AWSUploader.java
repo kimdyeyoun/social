@@ -5,6 +5,11 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +19,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Date;
 
 @Service
@@ -126,6 +132,28 @@ public class AWSUploader
 			return null;
 		}
 	}
+
+	// 파일 다운로드
+	private static final String BUCKET_NAME = "pref-bucket/images";
+	public ResponseEntity<byte[]> getObject(String path, String storedFileName) throws IOException {
+		S3Object o = amazonS3.getObject(new GetObjectRequest(BUCKET_NAME,  path + "/" + storedFileName.trim()));
+
+		S3ObjectInputStream objectInputStream = o.getObjectContent();
+		byte[] bytes = IOUtils.toByteArray(objectInputStream);
+
+		String fileName = URLEncoder.encode(storedFileName, "UTF-8")
+				.replaceAll("\\+", "%20");
+
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		httpHeaders.setContentLength(bytes.length);
+		int idx = fileName.indexOf("_");
+		String str = fileName.substring(idx+1);
+		httpHeaders.setContentDispositionFormData("attachment", str);
+
+		return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
+	}
+
 
 	public File imageResize(File file)
 	{

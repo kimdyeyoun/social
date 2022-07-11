@@ -138,8 +138,8 @@
                                                     회원정보 사용여부
                                                 </th>
                                                 <td>
-                                                    <span th:if="${member.memStatusId == 1}">Y</span>
-                                                    <span th:if="${member.memStatusId == 2 || member.memStatusId == 3}">N</span>
+                                                    <span th:if="${member.memStatusId == 1 || member.memStatusId == 4 || member.memStatusId == 7}">Y</span>
+                                                    <span th:unless="${member.memStatusId == 1 || member.memStatusId == 4 || member.memStatusId == 7}">N</span>
                                                 </td>
                                                 <th>
                                                     이용내역

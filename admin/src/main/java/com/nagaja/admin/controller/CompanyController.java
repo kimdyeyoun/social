@@ -1,14 +1,15 @@
 package com.nagaja.admin.controller;
 
 import com.nagaja.admin.dto.CompanyDto;
+import com.nagaja.admin.dto.CompanyInfoDto;
 import com.nagaja.admin.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -29,10 +30,10 @@ public class CompanyController {
 
     //TODO 기업 회원 상세페이지
     @GetMapping("/detailCompany")
-    public ModelAndView detailCompany(ModelAndView mv)
+    public ModelAndView detailCompany(ModelAndView mv, @RequestParam(value = "memId") int memId)
     {
+        mv.addObject("company", companyService.detailCompany(memId));
         mv.setViewName("company/detailCompany");
-
         return mv;
     }
 
@@ -44,5 +45,20 @@ public class CompanyController {
         return companyService.selectCompany(companyDto);
     }
 
+    //TODO 기업 엑셀 다운로드
+    @PostMapping("/companyExcelDownload")
+    @ResponseBody
+    public void companyExcelDownload(HttpServletResponse response, @RequestParam(value = "memId", required = false) List<Integer> memId, @RequestParam(value = "whole", defaultValue = "0") int whole)
+    {
+        companyService.companyExcelDownload(response, memId, whole);
+    }
+
+    //TODO 공공기업 인증 업데이트
+    @PutMapping("/changeCompanyAuth")
+    @ResponseBody
+    public int changeCompanyAuth(@ModelAttribute CompanyInfoDto dto)
+    {
+        return companyService.changeCompanyAuth(dto.getCompanyId(), dto.getCompanyPublic());
+    }
 
 }

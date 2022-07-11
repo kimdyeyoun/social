@@ -25,13 +25,18 @@ public class Company {
     private String companyLicense;
     private String companyLicenseOrigin;
     private String companyText;
+    private int companyAuth;
     private int companyDelivery;
     private int companyReservation;
     private int companyPickup;
     private int companyParking;
     private int companyPet;
+    private int companyStatus;
+    private int companyPublic;
     private int companyManageMax;
     private Double companyLat;
     private Double companyLon;
+    private String companyApplicationDate;
+    private String companyApprovalDate;
 
 }
