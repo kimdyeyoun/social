@@ -86,9 +86,6 @@ public class AdminServiceImpl implements AdminService
                 //TODO 변경 비밀번호 확인비밀번호 비교
                 if (password.getChangePassword().equals(password.getVerificationPassword()))
                 {
-                    System.out.println(password.getCurrentPassword());
-                    System.out.println(password.getChangePassword());
-                    System.out.println(password.getVerificationPassword());
                     Admin vo = new Admin();
                     vo.setAdminId(password.getAdminId());
                     vo.setAdminLoginPw(passwordEncoder.encode(password.getChangePassword()));

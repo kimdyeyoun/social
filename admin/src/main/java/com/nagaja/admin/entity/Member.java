@@ -25,7 +25,6 @@ public class Member {
     private String memNumber;
     private String memAddress;
     private String memAddressDetail;
-    private String memAddressZipcode;
     private int memAgreeEvent;
     private int memAgreeService;
     private int memMailAuth;

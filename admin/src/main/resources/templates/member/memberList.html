@@ -72,6 +72,7 @@
 																<option value="1">유저일반</option>
 																<option value="2">유저탈퇴</option>
 																<option value="3">유저블랙</option>
+																<option value="7">기업관리자</option>
 															</select>
 
 															<select class="form-control" id="limit" style="width: 150px;">
@@ -88,7 +89,7 @@
 														</td>
 														<td>
 															<select class="form-control" id="keywordFilter" style="width: 150px;">
-																<option value="999">전체</option>
+																<option value="0">전체</option>
 																<option value="1">회원번호</option>
 																<option value="2">이름</option>
 																<option value="3">아이디</option>
@@ -220,6 +221,10 @@
 								else if (result.memberInfoList[i].memStatusId == 3)
 								{
 									item_add += '<td>블랙</td>';
+								}
+								else if (result.memberInfoList[i].memStatusId == 7)
+								{
+									item_add += '<td>기업관리자</td>';
 								}
 
 								item_add += '<td>' + result.memberInfoList[i].memNumber + '</td>';

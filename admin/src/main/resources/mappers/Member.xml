@@ -24,7 +24,7 @@
                     AND m.mem_status_id = #{member.memStatusId}
                 </when>
                 <otherwise>
-                    AND (m.mem_status_id = 1 OR m.mem_status_id = 2 OR m.mem_status_id = 3)
+                    AND (m.mem_status_id = 1 OR m.mem_status_id = 2 OR m.mem_status_id = 3 OR m.mem_status_id = 7)
                 </otherwise>
             </choose>
 
@@ -89,7 +89,7 @@
                     AND m.mem_status_id = #{member.memStatusId}
                 </when>
                 <otherwise>
-                    AND (m.mem_status_id = 1 OR m.mem_status_id = 2 OR m.mem_status_id = 3)
+                    AND (m.mem_status_id = 1 OR m.mem_status_id = 2 OR m.mem_status_id = 3 OR m.mem_status_id = 7)
                 </otherwise>
             </choose>
 
@@ -130,7 +130,7 @@
                 </otherwise>
             </choose>
         </where>
-        ORDER BY m.mem_id DESC
+        ORDER BY m.mem_create_date DESC
         LIMIT #{offset}, #{limit}
     </select>
 
@@ -143,10 +143,11 @@
         WHERE m.mem_id = #{memId}
     </select>
 
-    <!--TODO 멤버 설렉트-->
+    <!--TODO 멤버 ALL 설렉트-->
     <select id="selectAllMember" resultType="MemberInfoDto">
         SELECT * FROM member m
         LEFT JOIN nation_info ni ON m.nation_info_id = ni.nation_info_id
+        WHERE mem_status_id = 1 OR mem_status_id = 2 OR mem_status_id = 3 OR mem_status_id = 7
     </select>
 
     <!--TODO 멤버 블랙리스트 등록/해제-->
@@ -174,10 +175,6 @@
             <when test="status == 6">
                 mem_status_id = 4
             </when>
-            <!-- TODO 활동정지일시-->
-            <when test="status == 7">
-                mem_status_id = 6
-            </when>
         </choose>
         WHERE mem_id = #{memId}
     </update>
@@ -191,7 +188,7 @@
         UPDATE member
         SET
             <choose>
-                <when test="status == 1 or status == 3 or status == 8">
+                <when test="status == 1 or status == 3 or status == 7">
                     mem_status_id = 2
                 </when>
                 <otherwise>

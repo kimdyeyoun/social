@@ -2,7 +2,7 @@ package com.nagaja.admin.serviceImpl;
 
 import com.nagaja.admin.dto.CompanyDto;
 import com.nagaja.admin.dto.CompanyInfoDto;
-import com.nagaja.admin.dto.MemberDto;
+import com.nagaja.admin.entity.NationInfo;
 import com.nagaja.admin.entity.Pagination;
 import com.nagaja.admin.mapper.CompanyMapper;
 import com.nagaja.admin.service.CompanyService;
@@ -10,6 +10,8 @@ import com.nagaja.admin.util.MyUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,5 +31,52 @@ public class CompanyServiceImpl implements CompanyService {
         List<CompanyInfoDto> companyInfoList = companyMapper.companyList(companyDto, pagination.getOffset(), pagination.getLimit());
 
         return CompanyDto.builder().companyInfoList(companyInfoList).pagination(pagination).build();
+    }
+
+    //TODO 국가 정보 설렉트
+    @Override
+    public List<NationInfo> selectNation()
+    {
+        return companyMapper.selectNation();
+    }
+
+    //TODO 기업 상세 설렉트
+    @Override
+    public CompanyInfoDto detailCompany(int memId)
+    {
+        CompanyInfoDto company = companyMapper.selectCompany(memId);
+        company.setImages(companyMapper.selectCompanyImages(company.getCompanyId()));
+        return company;
+    }
+
+    //TODO 기업 엑셀 다운로드
+    @Override
+    public void companyExcelDownload(HttpServletResponse response, List<Integer> memId, int whole)
+    {
+
+        if (whole != 0)
+        {
+            //TODO 전체 엑셀 다온로드
+            MyUtils.companyExcelDownLoad(response, companyMapper.selectCompanyAll());
+        }
+        //TODO 선택 엑셀 다운로드
+        else
+        {
+            List<CompanyInfoDto> companyInfoList = new ArrayList<>();
+
+            for (Integer i : memId)
+            {
+                companyInfoList.add(companyMapper.selectCompany(i));
+            }
+
+            MyUtils.companyExcelDownLoad(response, companyInfoList);
+        }
+    }
+
+    //TODO 공공기업 업데이트
+    @Override
+    public int changeCompanyAuth(int companyId, int companyPublic)
+    {
+        return companyMapper.changeCompanyAuth(companyId, companyPublic);
     }
 }

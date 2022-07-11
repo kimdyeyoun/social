@@ -24,7 +24,7 @@
                 <div class="row">
                     <div class="col-12" style="margin-bottom: 15px; display: flex; justify-content: space-between;">
                         <!-- Page Heading -->
-                        <h4>인테리어업체 정보</h4>
+                        <h4>기업 회원 상세</h4>
                         <p class="text-gray">
                         </p>
                     </div>
@@ -33,287 +33,214 @@
                     <div class="col-12">
                         <div class="grid">
                             <p class="grid-header">
-                                <span th:text="${'유저 : (' + detailInterior.user_nickname} + ')님'"></span>
+                                <span th:text="${'기업 : (' + company.companyName} + ')님'"></span>
                             </p>
                             <div class="grid-body">
                                 <div class="item-wrapper">
                                     <div class="table-responsive">
                                         <table class="table table-bordered" style="width: 100%; cellspacing: '0'; margin: auto;">
                                             <tbody>
-                                            <input type="hidden" name="interior_id" th:value="${param.interior_id}">
+                                            <input type="hidden" id="companyId" th:value="${company.companyId}">
 
                                             <tr>
-                                                <td>
-                                                    회원 유형
-                                                </td>
-                                                <td>
-                                                    <span th:if="${detailInterior.user_united==0}">일반</span>
-                                                    <span th:if="${detailInterior.user_united==1}">카카오</span>
-                                                    <span th:if="${detailInterior.user_united==2}">구글</span>
-                                                    <span th:if="${detailInterior.user_united==3}">네이버</span>
+                                                <th>
+                                                    공공기관 등록 여부
+                                                </th>
+                                                <td colspan="3">
+                                                    <input style="margin-left: 100px" type="radio" name="companyPublic" id="companyPublic1" class="roundup_type" value=1 th:checked="${company.companyPublic == 1}" required="required">
+                                                    <label for="companyPublic1">Y</label>
+                                                    <input style="margin-left: 100px" type="radio" name="companyPublic" id="companyPublic2" class="roundup_type" value=0 th:checked="${company.companyPublic == 0}" required="required">
+                                                    <label for="companyPublic2">N</label>
+                                                    <button style="margin-left: 100px" type="button" class="search_btn btn btn-primary" onclick="updBtn()">수정</button>
                                                 </td>
                                             </tr>
 
                                             <tr>
-                                                <td>
-                                                    ID
+                                                <th>
+                                                    카테고리
+                                                </th>
+                                                <td th:text="${company.boardCategoryTitle}">
                                                 </td>
-                                                <td>
-                                                    <span th:text="${detailInterior.user_email}"></span>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>
-                                                    담당자 닉네임
-                                                </td>
-                                                <td>
-                                                    <span th:text="${detailInterior.user_nickname}"></span>
+                                                <th>
+                                                    업체명
+                                                </th>
+                                                <td th:text="${company.companyName}">
                                                 </td>
                                             </tr>
 
                                             <tr>
-                                                <td>
-                                                    프로필
+                                                <th>
+                                                    주소 국가
+                                                </th>
+                                                <td th:text="${company.nationInfoName}">
                                                 </td>
-                                                <td>
-                                                    <img th:if="${detailInterior.user_profile != null}" th:src="|https://pref-bucket.s3.ap-northeast-2.amazonaws.com/images/${detailInterior.user_profile}|" style="width:100px; height:100px; border : solid 1px #fff">
-                                                    <img th:unless="${detailInterior.user_profile != null}" style="width:100px; height:100px; border : solid 1px #fff">
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>
-                                                    담당자 연락처
-                                                </td>
-                                                <td>
-                                                    <span th:text="${detailInterior.user_phone}"></span>
+                                                <th>
+                                                    주소
+                                                </th>
+                                                <td th:text="${company.companyAddress}">
                                                 </td>
                                             </tr>
 
                                             <tr>
-                                                <td>
-                                                    회원가입 계기
-                                                </td>
-                                                <td>
-                                                    <span th:if="${detailInterior.user_join_path==1}">지인추천</span>
-                                                    <span th:if="${detailInterior.user_join_path==2}">인터넷 검색</span>
-                                                    <span th:if="${detailInterior.user_join_path==3}">방송시청</span>
-                                                    <span th:if="${detailInterior.user_join_path==4}">기타</span>
+                                                <th>
+                                                    위도 / 경도
+                                                </th>
+                                                <td colspan="3" th:text="${company.companyLat + ', ' + company.companyLon}">
                                                 </td>
                                             </tr>
 
                                             <tr>
-                                                <td>
-                                                    상태
+                                                <th>
+                                                    전화번호
+                                                </th>
+                                                <td th:text="${company.companyPhone}">
                                                 </td>
-                                                <td>
-                                                    <span th:if="${detailInterior.user_status==1}">정상</span>
-                                                    <span th:if="${detailInterior.user_status==2}">제제</span>
-                                                    <span th:if="${detailInterior.user_status==3}">탈퇴</span>
-                                                    <span th:if="${detailInterior.user_status==4}">강제탈퇴</span>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>
-                                                    알림 수신
-                                                </td>
-                                                <td>
-                                                    <span th:if="${detailInterior.user_notice_agree==1}">동의</span>
-                                                    <span th:if="${detailInterior.user_notice_agree==0}">비동의</span>
-                                                </td>
-                                            </tr>
-
-
-                                            <tr>
-                                                <td>
-                                                    email 수신
-                                                </td>
-                                                <td>
-                                                    <span th:if="${detailInterior.user_email_agree==1}">동의</span>
-                                                    <span th:if="${detailInterior.user_email_agree==0}">비동의</span>
+                                                <th>
+                                                    기업 회원 등록일자
+                                                </th>
+                                                <td th:text="${company.companyApprovalDate}">
                                                 </td>
                                             </tr>
 
                                             <tr>
+                                                <th>
+                                                    인증마크
+                                                </th>
                                                 <td>
-                                                    sms 수신
+                                                    <span th:if="${company.companyAuth == 1}">Y</span>
+                                                    <span th:unless="${company.companyAuth == 1}">N</span>
                                                 </td>
-                                                <td>
-                                                    <span th:if="${detailInterior.user_sms_agree==1}">동의</span>
-                                                    <span th:if="${detailInterior.user_sms_agree==0}">비동의</span>
+                                                <th>
+                                                    단골 수
+                                                </th>
+                                                <td th:text="${company.regularPeople}">
                                                 </td>
                                             </tr>
 
                                             <tr>
-                                                <td>
-                                                    push 수신
-                                                </td>
-                                                <td>
-                                                    <span th:if="${detailInterior.user_push_agree==1}">동의</span>
-                                                    <span th:if="${detailInterior.user_push_agree==0}">비동의</span>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>
-                                                    가입날짜
-                                                </td>
-                                                <td th:text="${detailInterior.user_create_date}">
+                                                <th>
+                                                    사업자 등록증
+                                                </th>
+                                                <td colspan="3">
+                                                    <span th:text="${company.companyLicenseOrigin}"></span>
+                                                    <span><a th:href="@{/file/download(companyLicense=${company.companyLicense})}">다운로드</a></span>
                                                 </td>
                                             </tr>
 
                                             <tr>
-                                                <td>
-                                                    최근 로그인
-                                                </td>
-                                                <td th:text="${detailInterior.user_modify_date}">
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                        <div class="mx-auto" style="text-align: center; margin-top: 10px;">
-                                            <span>
-                                                <a th:href="@{/user/detailUpdUsers(user_id=${detailInterior.user_id})}"><button type="button" class="search_btn btn btn-primary">수정</button></a>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <br>
-
-                <div class="row">
-                    <div class="col-12">
-                        <div class="grid">
-                            <p class="grid-header">
-                                <span th:text="${'회사 : (' + detailInterior.interior_name} + ')정보'"></span>
-                            </p>
-                            <div class="grid-body">
-                                <div class="item-wrapper">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered" id="dataTable" style="width: 100%; cellspacing: '0'; margin: auto;">
-                                            <tbody>
-                                            <tr>
-                                                <td>
-                                                    회사명
-                                                </td>
-                                                <td th:text="${detailInterior.interior_name}">
-                                                </td>
-                                                <td style="text-align: center">메모장</td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>
-                                                    대표자명
-                                                </td>
-                                                <td th:text="${detailInterior.interior_owner_name}">
-                                                </td>
-
-                                                <td rowspan="9">
-                                                    <textarea style="width: 100%; height: 800px;" readonly th:utext="${detailInterior.interior_text}"></textarea>
-                                                </td>
-                                            </tr>
-
-                                            <th:block th:if="${agency != null}" >
-                                                <tr>
-                                                    <td>
-                                                        대리점 명
-                                                    </td>
-                                                    <td>
-                                                        <span th:text="${agency.interior_name}"></span>
-                                                    </td>
-                                                </tr>
-
-                                                <tr>
-                                                    <td>
-                                                        대리점 담당자
-                                                    </td>
-                                                    <td>
-                                                        <span th:text="${agency.interior_manager_name}"></span>
-                                                    </td>
-                                                </tr>
-                                            </th:block>
-
-                                            <th:block th:unless="${agency != null}" >
-                                                <tr>
-                                                    <td>
-                                                        대리점
-                                                    </td>
-                                                    <td>
-                                                        <span>지정된 대리점이 없습니다</span>
-                                                    </td>
-                                                </tr>
-                                            </th:block>
-
-                                            <tr>
-                                                <td>
-                                                    사업자등록증
-                                                </td>
-                                                <td>
-                                                    <span th:if="${detailInterior.interior_origin_license != null}">
-                                                        <a id="dnmFile" download th:text="${detailInterior.interior_origin_license}">
-                                                        </a>
-                                                        <input type="hidden" id="interior_license" th:value="${detailInterior.interior_license}">
-                                                    </span>
-                                                    <span th:unless="${detailInterior.interior_origin_license != null}">
-                                                        등록된 파일이 없습니다.
-                                                    </span>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>
-                                                    인테리어 사진
-                                                </td>
-                                                <td>
-                                                    <th:block th:each="files,index : ${files}">
-                                                        <span>
-                                                            <img th:src="|https://pref-bucket.s3.ap-northeast-2.amazonaws.com/images/${files.interior_file}|" style="width:100px; height:100px; border : solid 1px #fff">
-                                                            <th:block th:if="${(index.index+1) % 5 == 0}">
-                                                                <br>
-                                                                <br>
-                                                            </th:block>
-                                                        </span>
+                                                <th>
+                                                    대표 이미지
+                                                </th>
+                                                <td colspan="3">
+                                                    <th:block th:each="files,index : ${company.images}">
+                                                                <span>
+                                                                    <img th:src="|https://pref-bucket.s3.ap-northeast-2.amazonaws.com/images/${files.companyImageName}|" style="width:100px; height:100px; border : solid 1px #fff">
+                                                                    <th:block th:if="${(index.index+1) % 5 == 0}">
+                                                                        <br>
+                                                                    </th:block>
+                                                                </span>
                                                     </th:block>
                                                 </td>
                                             </tr>
 
                                             <tr>
-                                                <td>
-                                                    사업장 우편번호
-                                                </td>
-                                                <td th:text="${detailInterior.interior_post}">
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>
-                                                    사업장 주소
-                                                </td>
-                                                <td th:text="${detailInterior.interior_address + ' ' + detailInterior.interior_address_detail}">
+                                                <th>
+                                                    기업설명
+                                                </th>
+                                                <td colspan="3">
+                                                    <span th:text="${company.companyText}"></span>
                                                 </td>
                                             </tr>
 
                                             <tr>
+                                                <th>
+                                                    영업시간
+                                                </th>
                                                 <td>
-                                                    세금계산서 이메일
+                                                    <span th:text="${company.companyLiveTime}"></span>
                                                 </td>
-                                                <td th:text="${detailInterior.interior_email}">
+                                                <th>
+                                                    브레이크 타임
+                                                </th>
+                                                <td>
+                                                    <span th:text="${company.companyBreakTime}"></span>
                                                 </td>
                                             </tr>
 
+                                            <tr>
+                                                <th>
+                                                    배달 가능 여부
+                                                </th>
+                                                <td>
+                                                    <span th:if="${company.companyDelivery == 1}">Y</span>
+                                                    <span th:unless="${company.companyDelivery == 1}">N</span>
+                                                </td>
+                                                <th>
+                                                    예약 가능 여부
+                                                </th>
+                                                <td>
+                                                    <span th:text="${company.companyReservationTime}"></span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>
+                                                    픽업/드랍 여부
+                                                </th>
+                                                <td>
+                                                    <span th:if="${company.companyPickup == 1}">Y</span>
+                                                    <span th:unless="${company.companyPickup == 1}">N</span>
+                                                </td>
+                                                <th>
+                                                    결제 수단
+                                                </th>
+                                                <td>
+                                                    <span th:text="${company.companyPayType}"></span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>
+                                                    주차가능 여부
+                                                </th>
+                                                <td>
+                                                    <span th:if="${company.companyParking == 1}">Y</span>
+                                                    <span th:unless="${company.companyParking == 1}">N</span>
+                                                </td>
+                                                <th>
+                                                    반려동물 동반 가능 여부
+                                                </th>
+                                                <td>
+                                                    <span th:if="${company.companyPet == 1}">Y</span>
+                                                    <span th:unless="${company.companyPet == 1}">N</span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>
+                                                    구인 글 등록
+                                                </th>
+                                                <td>
+                                                    <span>1건</span>
+                                                </td>
+                                                <th>
+                                                    기업 관리자 회원
+                                                </th>
+                                                <td>
+                                                    <span th:text="${company.adminPeople + ' 명'}"></span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>
+                                                    신고 수
+                                                </th>
+                                                <td colspan="3">
+                                                    <span>1건</span>
+                                                </td>
+                                            </tr>
                                             </tbody>
                                         </table>
-                                        <div class="mx-auto" style="text-align: center; margin-top: 10px;">
-                                            <span>
-                                                <a th:href="@{/interior/detailUpdInterior(interior_id=${detailInterior.interior_id})}"><button type="button" class="search_btn btn btn-primary">수정</button></a>
-                                            </span>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -333,13 +260,34 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
+    function updBtn() {
+        if (confirm('변경 하겠습니까?')) {
 
-    $(document).ready(function () {
-        let dnmFile = $("#dnmFile");
-        let link = 'https://pref-bucket.s3.ap-northeast-2.amazonaws.com/images/' + $("#interior_license").val();
-        dnmFile.prop('href', link)
-    });
+            let data = {
+                'companyId': $("#companyId").val(),
+                'companyPublic': $('input:radio[name=companyPublic]:checked').val()
+            }
+            console.log(data);
+            $.ajax({
+                url: '/company/changeCompanyAuth',
+                method: 'PUT',
+                dataType: "json",
+                data: data,
+                success: function (result) {
+                    switch (result) {
 
+                        case 0:
+                            alert("변경 실패 관리자에게 문의해주십시오.");
+                            break;
+                        case 1:
+                            alert('변경 되었습니다.');
+                            location.reload();
+                            break;
+                    }
+                }
+            })
+        }
+    }
 </script>
 </script>
 </body>
