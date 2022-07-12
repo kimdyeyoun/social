@@ -8,6 +8,28 @@
     <link rel="stylesheet" href="../assets/css/shared/style.css">
     <link rel="stylesheet" href="../assets/css/demo_1/style.css">
     <link rel="shortcut icon" href="../asssets/images/favicon.ico"/>
+
+    <style type="text/css">
+        .modal-dialog {
+            max-width: 1200px;
+            margin: 1.75rem auto;
+        }
+        .current {
+            border: 1px solid;
+            background: #696ffb;
+            color: #FFFFFF;
+            margin-right: 3px;
+            border-radius: 4px;
+            width: 3%;
+        }
+        .paging {
+            border: 1px solid #f2f4f9;
+            background: #FFFFFF;
+            margin-right: 3px;
+            border-radius: 4px;
+            width: 3%;
+        }
+    </style>
 </head>
 <body class="header-fixed">
 <!-- partial:partials/_header.html -->
@@ -24,16 +46,13 @@
                 <div class="row">
                     <div class="col-12" style="margin-bottom: 15px; display: flex; justify-content: space-between;">
                         <!-- Page Heading -->
-                        <h4>회원 상세 정보</h4>
-                        <p class="text-gray">
-                        </p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12">
                         <div class="grid">
                             <p class="grid-header">
-                                <span th:text="${'유저 : (' + member.memNickname + ')님'}"></span>
+                                <span th:text="${'회원 상세 정보'}"></span>
                             </p>
                             <div class="grid-body">
                                 <div class="item-wrapper">
@@ -184,7 +203,7 @@
                                                     단골 기업 수
                                                 </th>
                                                 <td>
-                                                    2건
+                                                    <span id="point-modal-btn" data-toggle="modal" data-target="#regulars"  style="color: blue; cursor: pointer" th:text="${member.regulars + '건'}"></span>
                                                 </td>
                                                 <th>
                                                     기업 관리자 회원
@@ -209,6 +228,66 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--TODO 단골기업 모달창-->
+<div class="modal fade" id="regulars" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel" style="margin : 0 auto;">단골 기업 목록 팝업</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="grid-body">
+                    <div class="item-wrapper">
+                        <div class="table-responsive">
+                            <div style="text-align: center">
+                                <span>
+                                    <select class="form-control" id="keywordFilter" style="width: 150px;">
+                                            <option value="0">전체</option>
+                                            <option value="1">기업 카테고리</option>
+                                            <option value="2">기업명</option>
+                                            <option value="3">주소국가</option>
+                                            <option value="4">주소</option>
+                                            <option value="5">전화번호</option>
+                                </select>
+                                </span>
+                                <span>
+                                    <input class="form-control" type="text" id="keyword" style="padding-left : 10px; width: 500px;">
+                                </span>
+                                <span>
+                                    <button type="button" class="search_btn btn btn-primary" onclick="SearchBtn(1);">검색 </button>
+                                </span>
+                            </div>
+                            <table class="table table-bordered"  style="width: 100%; cellspacing: '0'; margin: auto; text-align: center;">
+                                <tbody>
+                                <br>
+                                <br>
+                                <br>
+                                <tr>
+                                    <td>기업카테고리</td>
+                                    <td>기업명</td>
+                                    <td>주소 국가</td>
+                                    <td>주소</td>
+                                    <td>전화번호</td>
+                                    <td>단골 수</td>
+                                </tr>
+                                </tbody>
+                                <tbody id="item_list">
+                                </tbody>
+                            </table>
+                            <div id="page_list" style="text-align:center; margin: 2% 0 0 0;">
                             </div>
                         </div>
                     </div>
@@ -319,6 +398,89 @@
                 }
             )
         }
+    }
+
+    $(document).ready(function () {
+        SearchBtn(1);
+    });
+
+    function SearchBtn(e) {
+        var data = {
+            'memId': $("#memId").val(),
+            'keywordFilter': $("#keywordFilter").val(),
+            'keyword': $("#keyword").val(),
+            'limit' : 5,
+            'pageNum': e};
+        $.ajax(
+            {
+                url: '/company/selectRegulars',
+                method: 'GET',
+                dataType : 'json',
+                data : data,
+                success: function (result) {
+                    console.log(result);
+                    var item_list = $("#item_list");
+                    var item_add = "";
+                    var page_list = $("#page_list");
+                    var page_add = "";
+                    // list start
+                    if (result.companyInfoList.length == 0) {
+                        item_add += '<tr>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '</tr>';
+                    } else {
+                        for (var i = 0; i < result.companyInfoList.length; i++) {
+                            item_add += '<tr>';
+                            item_add += '<td>' + result.companyInfoList[i].boardCategoryTitle + '</td>';
+                            item_add += '<td>' + result.companyInfoList[i].companyName + '</td>';
+                            item_add += '<td>' + result.companyInfoList[i].nationInfoName + '</td>';
+                            item_add += '<td>' + result.companyInfoList[i].companyAddress + '</td>';
+                            item_add += '<td>' + result.companyInfoList[i].companyPhone + '</td>';
+                            item_add += '<td>' + result.companyInfoList[i].regularPeople + '</td>';
+
+
+
+                            item_add += '</tr>';
+                        }
+                    }
+
+                    // paging start
+                    if (result.pagination.pageNum > 10) {
+                        page_add += '<button class="paging" onclick="SearchBtn(' + (result.pagination.startPage - 10) + ')"><</button>';
+                    }
+
+                    for (var i = result.pagination.startPage; i < (result.pagination.endPage + 1); i++) {
+                        if (result.pagination.pageNum == i) {
+                            page_add += '<button class="current" onclick="SearchBtn(' + i + ')">' + i + '</button>';
+                        } else if (i <= result.pagination.maxPage) {
+                            page_add += '<button class="paging" onclick="SearchBtn(' + i + ')">' + i + '</button>';
+                        }
+                    }
+
+                    if (result.pagination.startPage + 10 < (result.pagination.maxPage)) {
+                        page_add += '<button class="paging" onclick="SearchBtn(' + (result.pagination.startPage + 10) + ')">></button>';
+                    }
+                    // paging end
+
+                    item_list.empty();
+                    item_list.append(item_add);
+
+                    page_list.empty();
+                    page_list.append(page_add);
+                },
+                error(e) {
+                    console.log(e);
+                }
+            })
     }
 </script>
 </body>

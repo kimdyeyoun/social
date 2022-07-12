@@ -136,7 +136,7 @@
 
     <!--TODO 멤버 설렉트-->
     <select id="selectMember" parameterType="int" resultType="MemberInfoDto">
-        SELECT *
+        SELECT *,(SELECT COUNT(*) FROM regular r WHERE r.mem_id = m.mem_id) AS regulars
         FROM member m
         LEFT JOIN nation_info ni ON m.nation_info_id = ni.nation_info_id
         LEFT JOIN member_status ms ON m.mem_status_id = ms.mem_status_id

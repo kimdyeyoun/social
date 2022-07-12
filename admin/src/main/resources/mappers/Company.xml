@@ -53,13 +53,6 @@
                 <when test="company.keywordFilter == 5">
                     AND c.company_phone LIKE CONCAT ('%', #{company.keyword}, '%')
                 </when>
-                <otherwise>
-                    AND (m.mem_login_id LIKE CONCAT ('%', #{company.keyword}, '%') OR
-                    bc.board_category_title LIKE CONCAT ('%', #{company.keyword}, '%') OR
-                    c.company_name LIKE CONCAT ('%', #{company.keyword}, '%') OR
-                    c.company_address LIKE CONCAT ('%', #{company.keyword}, '%') OR
-                    c.company_phone LIKE CONCAT ('%', #{company.keyword}, '%'))
-                </otherwise>
             </choose>
         </where>
     </select>
@@ -68,7 +61,8 @@
     <select id="companyList" resultType="CompanyInfoDto">
         SELECT *,
                (SELECT COUNT(*) FROM regular r WHERE r.company_id = c.company_id) AS regularPeople ,
-               (SELECT COUNT(*) FROM company_admin ca WHERE ca.company_id = c.company_id) AS adminPeople FROM company c
+               (SELECT COUNT(*) FROM company_admin ca WHERE ca.company_id = c.company_id) AS adminPeople
+        FROM company c
         LEFT JOIN member m ON m.mem_id = c.mem_id
         LEFT JOIN nation_info ni ON ni.nation_info_id = m.nation_info_id
         LEFT JOIN member_status ms ON ms.mem_status_id = m.mem_status_id
@@ -116,31 +110,103 @@
                 <when test="company.keywordFilter == 5">
                     AND c.company_phone LIKE CONCAT ('%', #{company.keyword}, '%')
                 </when>
-                <otherwise>
-                    AND (m.mem_login_id LIKE CONCAT ('%', #{company.keyword}, '%') OR
-                    bc.board_category_title LIKE CONCAT ('%', #{company.keyword}, '%') OR
-                    c.company_name LIKE CONCAT ('%', #{company.keyword}, '%') OR
-                    c.company_address LIKE CONCAT ('%', #{company.keyword}, '%') OR
-                    c.company_phone LIKE CONCAT ('%', #{company.keyword}, '%'))
-                </otherwise>
             </choose>
         </where>
         ORDER BY c.company_approval_date DESC
         LIMIT #{offset}, #{limit}
     </select>
 
+    <!--TODO 기업회원 아이디 설렉트-->
+    <select id="regularsCount" resultType="int">
+        SELECT COUNT(*) FROM member m
+        LEFT JOIN regular r ON r.mem_id = m.mem_id
+        LEFT JOIN company c ON c.company_id = r.company_id
+        LEFT JOIN board_category bc ON bc.board_category_id = c.board_category_id
+        LEFT JOIN member m2 ON m2.mem_id = c.mem_id
+        LEFT JOIN nation_info ni ON ni.nation_info_id = m2.nation_info_id
+
+        <where>
+            m.mem_id = #{regular.memId}
+            <choose>
+                <when test="regular.keywordFilter == 1">
+                    AND bc.board_category_title LIKE CONCAT ('%', #{regular.keyword}, '%')
+                </when>
+                <when test="regular.keywordFilter == 2">
+                    AND c.company_name LIKE CONCAT ('%', #{regular.keyword}, '%')
+                </when>
+                <when test="regular.keywordFilter == 3">
+                    AND ni.nation_info_name LIKE CONCAT ('%', #{regular.keyword}, '%')
+                </when>
+                <when test="regular.keywordFilter == 3">
+                    AND c.company_address LIKE CONCAT ('%', #{regular.keyword}, '%')
+                </when>
+                <when test="regular.keywordFilter == 3">
+                    AND c.company_phone LIKE CONCAT ('%', #{regular.keyword}, '%')
+                </when>
+            </choose>
+        </where>
+    </select>
+
+    <!--TODO 기업회원 pk 설렉트-->
+    <select id="selectCompanyId" resultType="RegularInfoDto">
+        SELECT r.company_id FROM member m
+        LEFT JOIN regular r ON r.mem_id = m.mem_id
+        LEFT JOIN company c ON c.company_id = r.company_id
+        LEFT JOIN member m2 ON m2.mem_id = c.mem_id
+        LEFT JOIN board_category bc ON bc.board_category_id = c.board_category_id
+        LEFT JOIN nation_info ni ON ni.nation_info_id = m2.nation_info_id
+        <where>
+            m.mem_id = #{regular.memId}
+            <choose>
+                <when test="regular.keywordFilter == 1">
+                    AND bc.board_category_title LIKE CONCAT ('%', #{regular.keyword}, '%')
+                </when>
+                <when test="regular.keywordFilter == 2">
+                    AND c.company_name LIKE CONCAT ('%', #{regular.keyword}, '%')
+                </when>
+                <when test="regular.keywordFilter == 3">
+                    AND ni.nation_info_name LIKE CONCAT ('%', #{regular.keyword}, '%')
+                </when>
+                <when test="regular.keywordFilter == 3">
+                    AND c.company_address LIKE CONCAT ('%', #{regular.keyword}, '%')
+                </when>
+                <when test="regular.keywordFilter == 3">
+                    AND c.company_phone LIKE CONCAT ('%', #{regular.keyword}, '%')
+                </when>
+            </choose>
+        </where>
+        LIMIT #{offset}, #{limit}
+    </select>
+
     <!--TODO 기업회원 설렉트-->
     <select id="selectCompany" parameterType="int" resultType="CompanyInfoDto">
         SELECT *,(SELECT COUNT(*) FROM regular r WHERE r.company_id = c.company_id) AS regularPeople,
-                 (SELECT COUNT(*) FROM company_admin ca WHERE ca.company_id = c.company_id) AS adminPeople FROM company c
+               (SELECT COUNT(*) FROM company_admin ca WHERE ca.company_id = c.company_id) AS adminPeople FROM company c
         LEFT JOIN member m ON m.mem_id = c.mem_id
+        LEFT JOIN company_master cm ON cm.company_id = c.company_id
         LEFT JOIN nation_info ni ON ni.nation_info_id = m.nation_info_id
         LEFT JOIN member_status ms ON ms.mem_status_id = m.mem_status_id
         LEFT JOIN board_category bc ON bc.board_category_id = c.board_category_id
+        LEFT JOIN company_product cp ON cp.company_id = c.company_id
         WHERE c.mem_id = #{memId}
     </select>
 
     <!--TODO 기업회원 설렉트-->
+    <select id="selectCompanyInfo" resultType="CompanyInfoDto">
+        SELECT *,(SELECT COUNT(*) FROM regular r WHERE r.company_id = c.company_id) AS regularPeople,
+               (SELECT COUNT(*) FROM company_admin ca WHERE ca.company_id = c.company_id) AS adminPeople
+        FROM company c
+        LEFT JOIN member m ON m.mem_id = c.mem_id
+        LEFT JOIN nation_info ni ON ni.nation_info_id = m.nation_info_id
+        LEFT JOIN company_master cm ON cm.company_id = c.company_id
+        LEFT JOIN member_status ms ON ms.mem_status_id = m.mem_status_id
+        LEFT JOIN board_category bc ON bc.board_category_id = c.board_category_id
+        <where>
+            c.company_id = #{companyId}
+        </where>
+    </select>
+
+    <!--TODO 기업회원 이미지 설렉트-->
     <select id="selectCompanyImages" parameterType="int" resultType="CompanyImage">
         SELECT * FROM company_image
         WHERE company_id = #{companyId}
@@ -151,6 +217,7 @@
         SELECT *,(SELECT COUNT(*) FROM regular r WHERE r.company_id = c.company_id) AS regularPeople FROM company c
         LEFT JOIN member m ON m.mem_id = c.mem_id
         LEFT JOIN nation_info ni ON ni.nation_info_id = m.nation_info_id
+        LEFT JOIN company_master cm ON cm.company_id = c.company_id
         LEFT JOIN member_status ms ON ms.mem_status_id = m.mem_status_id
         LEFT JOIN board_category bc ON bc.board_category_id = c.board_category_id
         WHERE m.mem_status_id = 4 OR m.mem_status_id = 5 OR m.mem_status_id = 6

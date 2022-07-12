@@ -2,7 +2,7 @@ package com.nagaja.admin.service;
 
 import com.nagaja.admin.dto.CompanyDto;
 import com.nagaja.admin.dto.CompanyInfoDto;
-import com.nagaja.admin.dto.MemberDto;
+import com.nagaja.admin.dto.RegularInfoDto;
 import com.nagaja.admin.entity.NationInfo;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,9 +19,13 @@ public interface CompanyService {
     //TODO 기업 상세 설렉트
     CompanyInfoDto detailCompany(int memId);
 
+    //TODO 단골 기업 설렉트
+    CompanyDto selectRegulars(RegularInfoDto dto);
+
     //TODO 기업 엑셀 다운로드
     void companyExcelDownload(HttpServletResponse response, List<Integer> memId, int whole);
 
     //TODO 공공기업 업데이트
     int changeCompanyAuth(int companyId, int companyPublic);
+
 }
