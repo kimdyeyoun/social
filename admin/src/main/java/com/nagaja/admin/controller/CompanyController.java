@@ -2,6 +2,7 @@ package com.nagaja.admin.controller;
 
 import com.nagaja.admin.dto.CompanyDto;
 import com.nagaja.admin.dto.CompanyInfoDto;
+import com.nagaja.admin.dto.RegularInfoDto;
 import com.nagaja.admin.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -43,6 +44,14 @@ public class CompanyController {
     public CompanyDto selectCompany(@ModelAttribute CompanyDto companyDto)
     {
         return companyService.selectCompany(companyDto);
+    }
+
+    //TODO 단골기업 검색
+    @GetMapping("/selectRegulars")
+    @ResponseBody
+    public CompanyDto selectRegulars(@ModelAttribute RegularInfoDto dto)
+    {
+        return companyService.selectRegulars(dto);
     }
 
     //TODO 기업 엑셀 다운로드

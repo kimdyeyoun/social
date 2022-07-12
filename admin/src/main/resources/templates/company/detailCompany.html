@@ -24,16 +24,13 @@
                 <div class="row">
                     <div class="col-12" style="margin-bottom: 15px; display: flex; justify-content: space-between;">
                         <!-- Page Heading -->
-                        <h4>기업 회원 상세</h4>
-                        <p class="text-gray">
-                        </p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12">
                         <div class="grid">
                             <p class="grid-header">
-                                <span th:text="${'기업 : (' + company.companyName} + ')님'"></span>
+                                <span th:text="${'기업 회원 상세'}"></span>
                             </p>
                             <div class="grid-body">
                                 <div class="item-wrapper">
@@ -247,6 +244,119 @@
                         </div>
                     </div>
                 </div>
+
+                <br>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="grid">
+                            <p class="grid-header">
+                                <span th:text="${'기업 담당자 정보'}"></span>
+                            </p>
+                            <div class="grid-body">
+                                <div class="item-wrapper">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" style="width: 100%; cellspacing: '0'; margin: auto;">
+                                            <tbody>
+
+                                                <tr>
+                                                    <th>
+                                                        이름
+                                                    </th>
+                                                    <td th:text="${company.companyMasterName}">
+                                                    </td>
+                                                    <th>
+                                                        전화번호
+                                                    </th>
+                                                    <td th:text="${company.companyMasterPhone}">
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <th>
+                                                        메일주소
+                                                    </th>
+                                                    <td th:text="${company.companyMasterEmail}">
+                                                    </td>
+                                                    <th>
+                                                        SNS(페이스북)
+                                                    </th>
+                                                    <td th:text="${company.companyMasterFacebook}">
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <th>
+                                                        SNS(카카오톡)
+                                                    </th>
+                                                    <td th:text="${company.companyMasterKakao}">
+                                                    </td>
+                                                    <th>
+                                                        SNS(라인)
+                                                    </th>
+                                                    <td th:text="${company.companyMasterLine}">
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="grid">
+                            <p class="grid-header">
+                                <span th:text="${'기업 상품 정보'}"></span>
+                            </p>
+                            <div class="grid-body">
+                                <div class="item-wrapper">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" style="width: 100%; cellspacing: '0'; margin: auto;">
+                                            <tbody>
+
+                                            <tr>
+                                                <th>
+                                                    메뉴판 이미지
+                                                </th>
+                                                <td colspan="3">
+                                                    <th:block th:each="files,index : ${company.images}">
+                                                    <span>
+                                                        <img th:src="|https://pref-bucket.s3.ap-northeast-2.amazonaws.com/images/${files.companyImageName}|" style="width:100px; height:100px; border : solid 1px #fff">
+                                                        <th:block th:if="${(index.index+1) % 5 == 0}">
+                                                            <br>
+                                                        </th:block>
+                                                    </span>
+                                                    </th:block>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>
+                                                    메뉴 이름<br><p th:text="${'(' + company.companyProductTitle + ')'}"></p>
+                                                </th>
+                                                <td colspan="3">
+                                                    <div th:text="${'₱' + company.companyProductPeso}"></div>
+                                                    <div th:text="${company.companyProductUsd + '$'}"></div>
+                                                    <div th:text="${company.companyProductKrw  + '원'}"></div>
+                                                </td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

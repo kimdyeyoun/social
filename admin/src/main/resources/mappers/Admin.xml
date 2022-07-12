@@ -57,12 +57,4 @@
         WHERE admin_id = #{adminId}
     </delete>
 
-    <select id="getTeacherToken" resultType="String">
-        SELECT u.user_sendbird_token
-        FROM users u
-                 LEFT JOIN teacher t
-                           ON u.user_no = t.user_no_teacher
-        WHERE u.school_no_user = #{school_no_user} AND u.user_grade = #{user_grade} AND u.user_class = #{user_class} AND user_role = 'USER_T';
-    </select>
-
 </mapper>

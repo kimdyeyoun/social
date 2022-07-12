@@ -278,6 +278,13 @@ public class MyUtils {
             headerRow.createCell(19).setCellValue("구인 글 등록");
             headerRow.createCell(20).setCellValue("기업 관리자 회원");
             headerRow.createCell(21).setCellValue("신고 수");
+            headerRow.createCell(22).setCellValue("기업 담당자 이름");
+            headerRow.createCell(23).setCellValue("기업 담당자 전화번호");
+            headerRow.createCell(24).setCellValue("기업 담당자 메일주소");
+            headerRow.createCell(25).setCellValue("기업 담당자 페이스북");
+            headerRow.createCell(26).setCellValue("기업 담당자 카카오");
+            headerRow.createCell(27).setCellValue("기업 담당자 라인");
+
 
             // 헤드 스타일 적용
             for(int i=0; i<=cellRange; i++){
@@ -366,6 +373,14 @@ public class MyUtils {
                 row.createCell(19).setCellValue("1건");
                 row.createCell(20).setCellValue("1명");
                 row.createCell(21).setCellValue("1건");
+
+                row.createCell(22).setCellValue(data.getCompanyMasterName());
+                row.createCell(24).setCellValue(data.getCompanyMasterPhone());
+                row.createCell(23).setCellValue(data.getCompanyMasterEmail());
+                row.createCell(25).setCellValue(data.getCompanyMasterFacebook());
+                row.createCell(26).setCellValue(data.getCompanyMasterKakao());
+                row.createCell(27).setCellValue(data.getCompanyMasterLine());
+
             }
 
             // se.shin 엑세파일명

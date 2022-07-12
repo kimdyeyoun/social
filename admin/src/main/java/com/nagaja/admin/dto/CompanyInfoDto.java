@@ -1,6 +1,7 @@
 package com.nagaja.admin.dto;
 
 import com.nagaja.admin.entity.CompanyImage;
+import com.nagaja.admin.entity.CompanyMaster;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -56,5 +57,20 @@ public class CompanyInfoDto {
 
     //TODO 기업 관련 이미지
     private List<CompanyImage> images;
+    //TODO 기업 관리자 정보
+    private int companyMasterId;
+    private String companyMasterName;
+    private String companyMasterPhone;
+    private String companyMasterEmail;
+    private String companyMasterFacebook;
+    private String companyMasterKakao;
+    private String companyMasterLine;
+
+    //TODO 기업 상품 정보
+    private int companyProductId;
+    private String companyProductTitle;
+    private int companyProductPeso;
+    private int companyProductUsd;
+    private int companyProductKrw;
 
 }

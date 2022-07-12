@@ -2,6 +2,7 @@ package com.nagaja.admin.serviceImpl;
 
 import com.nagaja.admin.dto.CompanyDto;
 import com.nagaja.admin.dto.CompanyInfoDto;
+import com.nagaja.admin.dto.RegularInfoDto;
 import com.nagaja.admin.entity.NationInfo;
 import com.nagaja.admin.entity.Pagination;
 import com.nagaja.admin.mapper.CompanyMapper;
@@ -25,12 +26,37 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyDto selectCompany(CompanyDto companyDto)
     {
         int count = companyMapper.companyCount(companyDto);
-        System.out.println(count);
+
         Pagination pagination = MyUtils.Paging(count, companyDto.getPageNum(), companyDto.getLimit());
 
         List<CompanyInfoDto> companyInfoList = companyMapper.companyList(companyDto, pagination.getOffset(), pagination.getLimit());
 
         return CompanyDto.builder().companyInfoList(companyInfoList).pagination(pagination).build();
+    }
+
+    //TODO 단골 기업 설렉트
+    @Override
+    public CompanyDto selectRegulars(RegularInfoDto dto)
+    {
+
+        int count = companyMapper.regularsCount(dto);
+
+        List<CompanyInfoDto> lists = new ArrayList<>();
+
+        Pagination pagination = MyUtils.Paging(count, dto.getPageNum(), dto.getLimit());
+
+        List<RegularInfoDto> list = companyMapper.selectCompanyId(dto, pagination.getOffset(), pagination.getLimit());
+
+        if (list != null && list.get(0) != null)
+        {
+            for (RegularInfoDto data : list)
+            {
+                lists.add(companyMapper.selectCompanyInfo(data.getCompanyId()));
+            }
+        }
+
+
+        return CompanyDto.builder().companyInfoList(lists).pagination(pagination).build();
     }
 
     //TODO 국가 정보 설렉트

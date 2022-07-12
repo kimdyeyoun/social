@@ -36,6 +36,8 @@ public class MemberInfoDto {
 
     //TODO 추천인
     private String referral;
+    //TODO 멤버 단골 수
+    private int regulars;
 
     private String memStatusContent;
     private String nationInfoName;
