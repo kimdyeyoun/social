@@ -305,7 +305,7 @@ public class MyUtils {
                     row.createCell(0).setCellValue("N");
                 }
                 row.createCell(1).setCellValue(data.getBoardCategoryTitle());
-                row.createCell(2).setCellValue(data.getCompanyName());
+                row.createCell(2).setCellValue(data.getCompanyNameEng() + "/" + data.getCompanyNameKor() + "/" + data.getCompanyNamePhp() + "/" + data.getCompanyNameChn() + "/" + data.getCompanyNameJpn());
                 row.createCell(3).setCellValue(data.getNationInfoName());
                 row.createCell(4).setCellValue("주소");
                 row.createCell(5).setCellValue(data.getCompanyLat() + "/" + data.getCompanyLon());

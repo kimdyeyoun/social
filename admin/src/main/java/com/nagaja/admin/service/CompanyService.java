@@ -1,8 +1,6 @@
 package com.nagaja.admin.service;
 
-import com.nagaja.admin.dto.CompanyDto;
-import com.nagaja.admin.dto.CompanyInfoDto;
-import com.nagaja.admin.dto.RegularInfoDto;
+import com.nagaja.admin.dto.*;
 import com.nagaja.admin.entity.NationInfo;
 
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +10,12 @@ public interface CompanyService {
 
     //TODO 기업 회원 검색
     CompanyDto selectCompany(CompanyDto companyDto);
+
+    //TODO 기업 리뷰 검색
+    CompanyReviewDto selectReviews(CompanyReviewDto companyReviewDto);
+
+    //TODO 어드민 검색
+    CompanyAdminDto selectCompanyAdmin(CompanyAdminDto dto);
 
     //TODO 국가 정보 설렉트
     List<NationInfo> selectNation();
@@ -27,5 +31,8 @@ public interface CompanyService {
 
     //TODO 공공기업 업데이트
     int changeCompanyAuth(int companyId, int companyPublic);
+
+    //TODO 리뷰 업데이트
+    int changeReviewStatus(int companyReviewId, int companyReviewStatus);
 
 }
