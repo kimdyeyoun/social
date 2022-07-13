@@ -1,10 +1,7 @@
 package com.nagaja.admin.mapper;
 
-import com.nagaja.admin.dto.CompanyDto;
-import com.nagaja.admin.dto.CompanyInfoDto;
-import com.nagaja.admin.dto.RegularInfoDto;
-import com.nagaja.admin.entity.CompanyImage;
-import com.nagaja.admin.entity.NationInfo;
+import com.nagaja.admin.dto.*;
+import com.nagaja.admin.entity.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -37,10 +34,34 @@ public interface CompanyMapper {
     //TODO 기업회원 파일 설렉트
     List<CompanyImage> selectCompanyImages(@Param("companyId") int companyId);
 
+    //TODO 기업회원 설렉트
+    List<CompanyProduct> selectCompanyProduct(@Param("companyId") int companyId);
+
+    //TODO 기업 리뷰 리스트 설렉트
+    List<CompanyReviewInfoDto> selectReviewList(@Param("companyId") int companyId, @Param("offset") int offset, @Param("limit") int limit);
+
+    //TODO 기업어드민 카운트
+    int selectCompanyAdminCount(@Param("companyId") int companyId);
+
+    //TODO 기업리스트 설렉트
+    List<CompanyAdminInfoDto> selectCompanyAdminList(@Param("companyId") int companyId, @Param("offset") int offset, @Param("limit") int limit);
+
+    //TODO 기업 리뷰 카운트
+    int selectReviewsCount(@Param("companyId") int companyId);
+
+    //TODO 기업상품 파일 설렉트
+    List<CompanyProductImage> selectCompanyProductImages(@Param("companyId") int companyId);
+
+    //TODO 기업리뷰 파일 설렉트
+    List<CompanyReviewImage> selectReviewImages(@Param("companyReviewId") int companyReviewId);
+
     //TODO 전체 국가 설렉트
     List<NationInfo> selectNation();
 
     //TODO 공공기업 업데이트
     int changeCompanyAuth(@Param("companyId") int companyId, @Param("companyPublic") int companyPublic);
+
+    //TODO 리뷰 업데이트
+    int changeReviewStatus(@Param("companyReviewId") int companyReviewId, @Param("companyReviewStatus") int companyReviewStatus);
 
 }

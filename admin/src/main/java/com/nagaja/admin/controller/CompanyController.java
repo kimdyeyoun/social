@@ -1,8 +1,7 @@
 package com.nagaja.admin.controller;
 
-import com.nagaja.admin.dto.CompanyDto;
-import com.nagaja.admin.dto.CompanyInfoDto;
-import com.nagaja.admin.dto.RegularInfoDto;
+import com.nagaja.admin.dto.*;
+import com.nagaja.admin.entity.CompanyReview;
 import com.nagaja.admin.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -46,12 +45,28 @@ public class CompanyController {
         return companyService.selectCompany(companyDto);
     }
 
+    //TODO 기업 리뷰 검색
+    @GetMapping("/selectReviews")
+    @ResponseBody
+    public CompanyReviewDto selectReviews(@ModelAttribute CompanyReviewDto companyReviewDto)
+    {
+        return companyService.selectReviews(companyReviewDto);
+    }
+
     //TODO 단골기업 검색
     @GetMapping("/selectRegulars")
     @ResponseBody
     public CompanyDto selectRegulars(@ModelAttribute RegularInfoDto dto)
     {
         return companyService.selectRegulars(dto);
+    }
+
+    //TODO 기업 관리자 검색
+    @GetMapping("/selectCompanyAdmin")
+    @ResponseBody
+    public CompanyAdminDto selectCompanyAdmin(@ModelAttribute CompanyAdminDto dto)
+    {
+        return companyService.selectCompanyAdmin(dto);
     }
 
     //TODO 기업 엑셀 다운로드
@@ -70,4 +85,11 @@ public class CompanyController {
         return companyService.changeCompanyAuth(dto.getCompanyId(), dto.getCompanyPublic());
     }
 
+    //TODO 리뷰 업데이트
+    @PutMapping("/changeReviewStatus")
+    @ResponseBody
+    public int changeReviewStatus(@ModelAttribute CompanyReview review)
+    {
+        return companyService.changeReviewStatus(review.getCompanyReviewId(), review.getCompanyReviewStatus());
+    }
 }

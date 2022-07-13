@@ -12,7 +12,7 @@ import org.apache.ibatis.type.Alias;
 public class CompanyProductImage {
 
     private int companyProductImageId;
-    private int companyProductId;
+    private int companyId;
     private String companyProductImageOrigin;
     private String companyProductImageName;
 

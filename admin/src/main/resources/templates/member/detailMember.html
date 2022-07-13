@@ -53,6 +53,7 @@
                         <div class="grid">
                             <p class="grid-header">
                                 <span th:text="${'회원 상세 정보'}"></span>
+                                <span style="float: right;"><a href="/company/companyList">목록</a></span>
                             </p>
                             <div class="grid-body">
                                 <div class="item-wrapper">
@@ -203,7 +204,7 @@
                                                     단골 기업 수
                                                 </th>
                                                 <td>
-                                                    <span id="point-modal-btn" data-toggle="modal" data-target="#regulars"  style="color: blue; cursor: pointer" th:text="${member.regulars + '건'}"></span>
+                                                    <span data-toggle="modal" data-target="#regulars"  style="color: blue; cursor: pointer" th:text="${member.regulars + '건'}"></span>
                                                 </td>
                                                 <th>
                                                     기업 관리자 회원
@@ -221,9 +222,6 @@
                                                 <span th:if="${member.memStatusId == 1 || member.memStatusId == 2 || member.memStatusId == 4 || member.memStatusId == 5 || member.memStatusId == 7 || member.memStatusId == 8}"><button class="search_btn btn btn-dark" onclick="blackBtn(1)">블랙</button></span>
                                                 <span th:if="${member.memStatusId == 3 || member.memStatusId == 6}"><button class="search_btn btn btn-dark" onclick="blackBtn(2)">블랙해제</button></span>
                                                 <span><button class="search_btn btn btn-danger" th:onclick="delBtn([[${member.memStatusId}]])">탈퇴</button></span>
-                                            </div>
-                                            <div style="float: right">
-                                                <span><a href="/member/memberList"><button class="search_btn btn btn-primary">목록</button></a></span>
                                             </div>
                                         </div>
                                     </div>
@@ -441,7 +439,7 @@
                         for (var i = 0; i < result.companyInfoList.length; i++) {
                             item_add += '<tr>';
                             item_add += '<td>' + result.companyInfoList[i].boardCategoryTitle + '</td>';
-                            item_add += '<td>' + result.companyInfoList[i].companyName + '</td>';
+                            item_add += '<td>' + result.companyInfoList[i].companyNameEng + '</td>';
                             item_add += '<td>' + result.companyInfoList[i].nationInfoName + '</td>';
                             item_add += '<td>' + result.companyInfoList[i].companyAddress + '</td>';
                             item_add += '<td>' + result.companyInfoList[i].companyPhone + '</td>';
