@@ -1,12 +1,13 @@
 package com.nagaja.admin.serviceImpl;
 
 import com.nagaja.admin.dto.*;
-import com.nagaja.admin.entity.Company;
+import com.nagaja.admin.entity.CompanyReturn;
 import com.nagaja.admin.entity.NationInfo;
 import com.nagaja.admin.entity.Pagination;
 import com.nagaja.admin.mapper.CompanyMapper;
 import com.nagaja.admin.service.CompanyService;
 import com.nagaja.admin.util.MyUtils;
+import com.nagaja.admin.util.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,19 @@ public class CompanyServiceImpl implements CompanyService {
         Pagination pagination = MyUtils.Paging(count, companyDto.getPageNum(), companyDto.getLimit());
 
         List<CompanyInfoDto> companyInfoList = companyMapper.companyList(companyDto, pagination.getOffset(), pagination.getLimit());
+
+        return CompanyDto.builder().companyInfoList(companyInfoList).pagination(pagination).build();
+    }
+
+    //TODO 기업 회원 신청 검색
+    @Override
+    public CompanyDto selectInsCompany(CompanyDto companyDto, int companyStatus)
+    {
+        int count = companyMapper.insCompanyCount(companyDto, companyStatus);
+
+        Pagination pagination = MyUtils.Paging(count, companyDto.getPageNum(), companyDto.getLimit());
+
+        List<CompanyInfoDto> companyInfoList = companyMapper.insCompanyList(companyDto, companyStatus, pagination.getOffset(), pagination.getLimit());
 
         return CompanyDto.builder().companyInfoList(companyInfoList).pagination(pagination).build();
     }
@@ -80,7 +94,7 @@ public class CompanyServiceImpl implements CompanyService {
 
         List<RegularInfoDto> list = companyMapper.selectCompanyId(dto, pagination.getOffset(), pagination.getLimit());
 
-        if (list != null && list.get(0) != null)
+        if (list != null)
         {
             for (RegularInfoDto data : list)
             {
@@ -117,10 +131,14 @@ public class CompanyServiceImpl implements CompanyService {
     public void companyExcelDownload(HttpServletResponse response, List<Integer> memId, int whole)
     {
 
-        if (whole != 0)
+        if (whole == 1)
         {
             //TODO 전체 엑셀 다온로드
             MyUtils.companyExcelDownLoad(response, companyMapper.selectCompanyAll());
+        }
+        else if (whole == 2)
+        {
+            MyUtils.companyExcelDownLoad(response, companyMapper.selectInsCompanyAll());
         }
         //TODO 선택 엑셀 다운로드
         else
@@ -138,9 +156,15 @@ public class CompanyServiceImpl implements CompanyService {
 
     //TODO 공공기업 업데이트
     @Override
-    public int changeCompanyAuth(int companyId, int companyPublic)
+    public int changeCompanyAuth(int companyId, int companyPublic, int status)
     {
-        return companyMapper.changeCompanyAuth(companyId, companyPublic);
+        int result = companyMapper.changeCompanyAuth(companyId, companyPublic, status);
+
+        if (result == 0)
+        {
+            return Status.ZERO;
+        }
+        return Status.FIRST;
     }
 
     //TODO 리뷰 업데이트
@@ -155,5 +179,50 @@ public class CompanyServiceImpl implements CompanyService {
         {
             return companyMapper.changeReviewStatus(companyReviewId, 1);
         }
+    }
+
+    //TODO 기업회원 신청 상태 업데이트
+    @Override
+    public int changeInsCompanyStatus(List<Integer> memId)
+    {
+        List<Integer> list = new ArrayList<>();
+        if (memId != null)
+        {
+            for (Integer i : memId)
+            {
+                if (i != 0)
+                {
+                    list.add(i);
+                }
+            }
+        }
+        System.out.println(list);
+        int result = companyMapper.changeInsCompanyStatus(list);
+
+        if (result == 0)
+        {
+            return Status.ZERO;
+        }
+        return Status.FIRST;
+    }
+
+    //TODO 기업회원 반려 업데이트
+    @Override
+    public int returnCompany(CompanyReturn dto)
+    {
+        if (dto.getCompanyReturnContents() == null || dto.getCompanyReturnContents().trim().equals(""))
+        {
+            return Status.SECOND;
+        }
+
+        companyMapper.returnUpdCompany(dto.getCompanyId());
+
+        int result = companyMapper.returnInsCompany(dto);
+
+        if (result == 0)
+        {
+            return Status.ZERO;
+        }
+        return Status.FIRST;
     }
 }

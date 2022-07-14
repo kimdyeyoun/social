@@ -16,6 +16,9 @@ public interface CompanyMapper {
     //TODO 단골 기업 카운트
     int regularsCount(@Param("regular") RegularInfoDto regular);
 
+    //TODO 기업회원 신청 카운트
+    int insCompanyCount(@Param("company") CompanyDto companyDto, @Param("companyStatus") int companyStatus);
+
     //TODO 단골 리스트 컴퍼니 pk 설렉트
     List<RegularInfoDto> selectCompanyId(@Param("regular") RegularInfoDto regular, @Param("offset") int offset, @Param("limit") int limit);
 
@@ -25,8 +28,14 @@ public interface CompanyMapper {
     //TODO 기업회원 리스트
     List<CompanyInfoDto> companyList(@Param("company") CompanyDto companyDto, @Param("offset") int offset, @Param("limit") int limit);
 
+    //TODO 기업회원 리스트
+    List<CompanyInfoDto> insCompanyList(@Param("company") CompanyDto companyDto, @Param("companyStatus") int companyStatus, @Param("offset") int offset, @Param("limit") int limit);
+
     //TODO 기업회원 ALL 설렉트
     List<CompanyInfoDto> selectCompanyAll();
+
+    //TODO 기업회원 신청 ALL 설렉트
+    List<CompanyInfoDto> selectInsCompanyAll();
 
     //TODO 기업회원 설렉트
     CompanyInfoDto selectCompany(@Param("memId") Integer memId);
@@ -58,10 +67,19 @@ public interface CompanyMapper {
     //TODO 전체 국가 설렉트
     List<NationInfo> selectNation();
 
+    //TODO 기업 반려 사유 인서트
+    int returnInsCompany(@Param("company") CompanyReturn dto);
+
     //TODO 공공기업 업데이트
-    int changeCompanyAuth(@Param("companyId") int companyId, @Param("companyPublic") int companyPublic);
+    int changeCompanyAuth(@Param("companyId") int companyId, @Param("companyPublic") int companyPublic, @Param("status") int status);
 
     //TODO 리뷰 업데이트
     int changeReviewStatus(@Param("companyReviewId") int companyReviewId, @Param("companyReviewStatus") int companyReviewStatus);
+
+    //TODO 기업회원 신청 상태 업데이트
+    int changeInsCompanyStatus(@Param("memId") List<Integer> memId);
+
+    //TODO 기업 상태 반려 업데이트
+    void returnUpdCompany(@Param("companyId") int companyId);
 
 }

@@ -168,6 +168,7 @@
 	$(document).ready(function () {
 		SearchBtn(1);
 	});
+	var num = 1;
 
 	function SearchBtn(e) {
 		var data = {'startDate': $("#startDate").val(),
@@ -208,8 +209,13 @@
 							for (var i = 0; i < result.memberInfoList.length; i++) {
 								item_add += '<tr>';
 								item_add += '<td>' + '<input type="checkbox" name="memId" id="member-checkbox" class="list-checkBox" value="' + result.memberInfoList[i].memId + '">' + '</td>';
-								item_add += '<td>' + result.memberInfoList[i].memId + '</td>';
-
+								var num = i+1
+								if (e != 1)
+								{
+									num = num + ((e-1)*10);
+								}
+								item_add += '<td>' + num + '</td>';
+								num++;
 								if (result.memberInfoList[i].memStatusId == 1)
 								{
 									item_add += '<td>일반</td>';
@@ -372,7 +378,7 @@
 			}
 		};
 
-		var params = 'whole=' + 1;
+		var params = 'whole=' + 2;
 
 		request.send(params);
 

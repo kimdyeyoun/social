@@ -208,9 +208,14 @@
 							item_add += '</tr>';
 						} else {
 							for (var i = 0; i < result.companyInfoList.length; i++) {
+								var num = i+1
+								if (e != 1)
+								{
+									num = num + ((e-1)*10);
+								}
 								item_add += '<tr>';
 								item_add += '<td>' + '<input type="checkbox" name="memId" id="member-checkbox" class="list-checkBox" value="' + result.companyInfoList[i].memId + '">' + '</td>';
-								item_add += '<td>' + result.companyInfoList[i].companyId + '</td>';
+								item_add += '<td>' + num + '</td>';
 								item_add += '<td><a href="/member/detailMember?memId='+(result.companyInfoList[i].memId)+'">' + result.companyInfoList[i].memLoginId + '</a></td>';
 								item_add += '<td>' + result.companyInfoList[i].boardCategoryTitle + '</td>';
 								item_add += '<td><a href="/company/detailCompany?memId='+(result.companyInfoList[i].memId)+'">' + result.companyInfoList[i].companyNameEng + '</a></td>';

@@ -252,38 +252,39 @@ public class MyUtils {
 
             //... 엑셀 내용 작성 ...
             int rowNo = 0;	// row number 카운팅 변수
-            final int cellRange = 21;	// 헤더 셀 크기
+            final int cellRange = 28;	// 헤더 셀 크기
 
             // se.shin 테이블 헤더부분
             Row headerRow = sheet.createRow(rowNo++);
             headerRow.createCell(0).setCellValue("공공기관 등록 여부");
-            headerRow.createCell(1).setCellValue("카테고리");
-            headerRow.createCell(2).setCellValue("업체명");
-            headerRow.createCell(3).setCellValue("주소 국가");
-            headerRow.createCell(4).setCellValue("주소");
-            headerRow.createCell(5).setCellValue("위도/경도");
-            headerRow.createCell(6).setCellValue("전화번호");
-            headerRow.createCell(7).setCellValue("기업 회원 등록 일자");
-            headerRow.createCell(8).setCellValue("인증마크");
-            headerRow.createCell(9).setCellValue("단골 수");
-            headerRow.createCell(10).setCellValue("기업 설명");
-            headerRow.createCell(11).setCellValue("영업시간");
-            headerRow.createCell(12).setCellValue("브레이크 타임");
-            headerRow.createCell(13).setCellValue("배달 가능 여부");
-            headerRow.createCell(14).setCellValue("예약 가능 여부");
-            headerRow.createCell(15).setCellValue("픽업/드랍 여부");
-            headerRow.createCell(16).setCellValue("결제수단");
-            headerRow.createCell(17).setCellValue("주차가능 여부");
-            headerRow.createCell(18).setCellValue("반려동물 동반 가능 여부");
-            headerRow.createCell(19).setCellValue("구인 글 등록");
-            headerRow.createCell(20).setCellValue("기업 관리자 회원");
-            headerRow.createCell(21).setCellValue("신고 수");
-            headerRow.createCell(22).setCellValue("기업 담당자 이름");
-            headerRow.createCell(23).setCellValue("기업 담당자 전화번호");
-            headerRow.createCell(24).setCellValue("기업 담당자 메일주소");
-            headerRow.createCell(25).setCellValue("기업 담당자 페이스북");
-            headerRow.createCell(26).setCellValue("기업 담당자 카카오");
-            headerRow.createCell(27).setCellValue("기업 담당자 라인");
+            headerRow.createCell(1).setCellValue("신청상태");
+            headerRow.createCell(2).setCellValue("카테고리");
+            headerRow.createCell(3).setCellValue("업체명");
+            headerRow.createCell(4).setCellValue("주소 국가");
+            headerRow.createCell(5).setCellValue("주소");
+            headerRow.createCell(6).setCellValue("위도/경도");
+            headerRow.createCell(7).setCellValue("전화번호");
+            headerRow.createCell(8).setCellValue("기업 회원 등록 일자");
+            headerRow.createCell(9).setCellValue("인증마크");
+            headerRow.createCell(10).setCellValue("단골 수");
+            headerRow.createCell(11).setCellValue("기업 설명");
+            headerRow.createCell(12).setCellValue("영업시간");
+            headerRow.createCell(13).setCellValue("브레이크 타임");
+            headerRow.createCell(14).setCellValue("배달 가능 여부");
+            headerRow.createCell(15).setCellValue("예약 가능 여부");
+            headerRow.createCell(16).setCellValue("픽업/드랍 여부");
+            headerRow.createCell(17).setCellValue("결제수단");
+            headerRow.createCell(18).setCellValue("주차가능 여부");
+            headerRow.createCell(19).setCellValue("반려동물 동반 가능 여부");
+            headerRow.createCell(20).setCellValue("구인 글 등록");
+            headerRow.createCell(21).setCellValue("기업 관리자 회원");
+            headerRow.createCell(22).setCellValue("신고 수");
+            headerRow.createCell(23).setCellValue("기업 담당자 이름");
+            headerRow.createCell(24).setCellValue("기업 담당자 전화번호");
+            headerRow.createCell(25).setCellValue("기업 담당자 메일주소");
+            headerRow.createCell(26).setCellValue("기업 담당자 페이스북");
+            headerRow.createCell(27).setCellValue("기업 담당자 카카오");
+            headerRow.createCell(28).setCellValue("기업 담당자 라인");
 
 
             // 헤드 스타일 적용
@@ -304,64 +305,69 @@ public class MyUtils {
                 {
                     row.createCell(0).setCellValue("N");
                 }
-                row.createCell(1).setCellValue(data.getBoardCategoryTitle());
-                row.createCell(2).setCellValue(data.getCompanyNameEng() + "/" + data.getCompanyNameKor() + "/" + data.getCompanyNamePhp() + "/" + data.getCompanyNameChn() + "/" + data.getCompanyNameJpn());
-                row.createCell(3).setCellValue(data.getNationInfoName());
-                row.createCell(4).setCellValue("주소");
-                row.createCell(5).setCellValue(data.getCompanyLat() + "/" + data.getCompanyLon());
-                row.createCell(6).setCellValue(data.getCompanyPhone());
-                row.createCell(7).setCellValue(data.getCompanyApprovalDate());
-                if (data.getCompanyAuth() == 0)
+
+                if (data.getCompanyStatus() == 1)
                 {
-                    row.createCell(8).setCellValue("N");
+                    row.createCell(1).setCellValue("신청완료");
                 }
-                else
+                else if (data.getCompanyStatus() == 2)
                 {
-                    row.createCell(8).setCellValue("Y");
+                    row.createCell(1).setCellValue("등록완료");
                 }
-                row.createCell(9).setCellValue(data.getRegularPeople());
-                row.createCell(10).setCellValue(data.getCompanyText());
-                row.createCell(11).setCellValue(data.getCompanyLiveTime());
-                row.createCell(12).setCellValue(data.getCompanyBreakTime());
-                if (data.getCompanyDelivery() == 0)
+                else if (data.getCompanyStatus() == 3)
                 {
-                    row.createCell(13).setCellValue("N");
-                }
-                else
-                {
-                    row.createCell(13).setCellValue("Y");
+                    row.createCell(1).setCellValue("반려");
                 }
 
-                if (data.getCompanyReservation() == 0)
+                row.createCell(2).setCellValue(data.getBoardCategoryTitle());
+                row.createCell(3).setCellValue(data.getCompanyNameEng() + "/" + data.getCompanyNameKor() + "/" + data.getCompanyNamePhp() + "/" + data.getCompanyNameChn() + "/" + data.getCompanyNameJpn());
+                row.createCell(4).setCellValue(data.getNationInfoName());
+                row.createCell(5).setCellValue("주소");
+                row.createCell(6).setCellValue(data.getCompanyLat() + "/" + data.getCompanyLng());
+                row.createCell(7).setCellValue(data.getCompanyPhone());
+                row.createCell(8).setCellValue(data.getCompanyApprovalDate());
+                if (data.getCompanyAuth() == 0)
+                {
+                    row.createCell(9).setCellValue("N");
+                }
+                else
+                {
+                    row.createCell(9).setCellValue("Y");
+                }
+                row.createCell(10).setCellValue(data.getRegularPeople());
+                row.createCell(11).setCellValue(data.getCompanyText());
+                row.createCell(12).setCellValue(data.getCompanyLiveTime());
+                row.createCell(13).setCellValue(data.getCompanyBreakTime());
+                if (data.getCompanyDelivery() == 0)
                 {
                     row.createCell(14).setCellValue("N");
                 }
                 else
                 {
-                    row.createCell(14).setCellValue("Y" + "(" + data.getCompanyReservationTime() + ")");
+                    row.createCell(14).setCellValue("Y");
                 }
 
-                if (data.getCompanyPickup() == 0)
+                if (data.getCompanyReservation() == 0)
                 {
                     row.createCell(15).setCellValue("N");
                 }
                 else
                 {
-                    row.createCell(15).setCellValue("Y");
+                    row.createCell(15).setCellValue("Y" + "(" + data.getCompanyReservationTime() + ")");
                 }
 
-                row.createCell(16).setCellValue(data.getCompanyPayType());
-
-                if (data.getCompanyParking() == 0)
+                if (data.getCompanyPickup() == 0)
                 {
-                    row.createCell(17).setCellValue("N");
+                    row.createCell(16).setCellValue("N");
                 }
                 else
                 {
-                    row.createCell(17).setCellValue("Y");
+                    row.createCell(16).setCellValue("Y");
                 }
 
-                if (data.getCompanyPet() == 0)
+                row.createCell(17).setCellValue(data.getCompanyPayType());
+
+                if (data.getCompanyParking() == 0)
                 {
                     row.createCell(18).setCellValue("N");
                 }
@@ -370,16 +376,25 @@ public class MyUtils {
                     row.createCell(18).setCellValue("Y");
                 }
 
-                row.createCell(19).setCellValue("1건");
-                row.createCell(20).setCellValue("1명");
-                row.createCell(21).setCellValue("1건");
+                if (data.getCompanyPet() == 0)
+                {
+                    row.createCell(19).setCellValue("N");
+                }
+                else
+                {
+                    row.createCell(19).setCellValue("Y");
+                }
 
-                row.createCell(22).setCellValue(data.getCompanyMasterName());
+                row.createCell(20).setCellValue("1건");
+                row.createCell(21).setCellValue("1명");
+                row.createCell(22).setCellValue("1건");
+
+                row.createCell(23).setCellValue(data.getCompanyMasterName());
                 row.createCell(24).setCellValue(data.getCompanyMasterPhone());
-                row.createCell(23).setCellValue(data.getCompanyMasterEmail());
-                row.createCell(25).setCellValue(data.getCompanyMasterFacebook());
-                row.createCell(26).setCellValue(data.getCompanyMasterKakao());
-                row.createCell(27).setCellValue(data.getCompanyMasterLine());
+                row.createCell(25).setCellValue(data.getCompanyMasterEmail());
+                row.createCell(26).setCellValue(data.getCompanyMasterFacebook());
+                row.createCell(27).setCellValue(data.getCompanyMasterKakao());
+                row.createCell(28).setCellValue(data.getCompanyMasterLine());
 
             }
 

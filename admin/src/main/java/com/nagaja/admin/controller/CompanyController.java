@@ -1,6 +1,7 @@
 package com.nagaja.admin.controller;
 
 import com.nagaja.admin.dto.*;
+import com.nagaja.admin.entity.CompanyReturn;
 import com.nagaja.admin.entity.CompanyReview;
 import com.nagaja.admin.service.CompanyService;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,33 @@ public class CompanyController {
         return mv;
     }
 
-    //TODO 기업 회원 검색
+    //TODO 기업신청 회원 리스트 페이지
+    @GetMapping("/insCompanyList")
+    public ModelAndView detailCompany(ModelAndView mv)
+    {
+        mv.addObject("nation", companyService.selectNation());
+        mv.setViewName("company/insCompanyList");
+        return mv;
+    }
+
+    //TODO 기업신청 회원 상세페이지
+    @GetMapping("/detailInsCompany")
+    public ModelAndView detailInsCompany(ModelAndView mv, @RequestParam(value = "memId") int memId)
+    {
+        mv.addObject("company", companyService.detailCompany(memId));
+        mv.setViewName("company/detailInsCompany");
+        return mv;
+    }
+
+    //TODO 기업 회원 페이지
+    @GetMapping("/selectInsCompany")
+    @ResponseBody
+    public CompanyDto selectInsCompany(@ModelAttribute CompanyDto companyDto, @RequestParam(value = "companyStatus",defaultValue = "0") int companyStatus)
+    {
+        return companyService.selectInsCompany(companyDto, companyStatus);
+    }
+
+    //TODO 기업신청 회원 검색
     @GetMapping("/selectCompany")
     @ResponseBody
     public CompanyDto selectCompany(@ModelAttribute CompanyDto companyDto)
@@ -77,12 +104,12 @@ public class CompanyController {
         companyService.companyExcelDownload(response, memId, whole);
     }
 
-    //TODO 공공기업 인증 업데이트
-    @PutMapping("/changeCompanyAuth")
+    //TODO 공공기업 인증 업데이트/및 기업 승인인
+   @PutMapping("/changeCompanyAuth")
     @ResponseBody
-    public int changeCompanyAuth(@ModelAttribute CompanyInfoDto dto)
+    public int changeCompanyAuth(@ModelAttribute CompanyInfoDto dto,@RequestParam(value = "status", defaultValue = "0") int status)
     {
-        return companyService.changeCompanyAuth(dto.getCompanyId(), dto.getCompanyPublic());
+        return companyService.changeCompanyAuth(dto.getCompanyId(), dto.getCompanyPublic(), status);
     }
 
     //TODO 리뷰 업데이트
@@ -91,5 +118,21 @@ public class CompanyController {
     public int changeReviewStatus(@ModelAttribute CompanyReview review)
     {
         return companyService.changeReviewStatus(review.getCompanyReviewId(), review.getCompanyReviewStatus());
+    }
+
+    //TODO 기업회원 신청 업데이트
+    @PutMapping("/changeInsCompanyStatus")
+    @ResponseBody
+    public int changeInsCompanyStatus(@ModelAttribute ChangeCompanyStatusDto dto)
+    {
+        return companyService.changeInsCompanyStatus(dto.getMemId());
+    }
+
+    //TODO 기업회원 반려 업데이트
+    @PutMapping("/returnCompany")
+    @ResponseBody
+    public int returnCompany(@ModelAttribute CompanyReturn dto)
+    {
+        return companyService.returnCompany(dto);
     }
 }

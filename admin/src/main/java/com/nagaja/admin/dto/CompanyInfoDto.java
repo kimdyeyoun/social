@@ -19,7 +19,6 @@ public class CompanyInfoDto {
     private int companyId;
     private int memId;
     private int boardCategoryId;
-    private int companyTimeId;
     private String companyAddress;
     private String companyPhone;
     private String companyLiveTime;
@@ -40,7 +39,7 @@ public class CompanyInfoDto {
     private int companyPublic;
     private int companyManageMax;
     private Double companyLat;
-    private Double companyLon;
+    private Double companyLng;
     private String companyApplicationDate;
     private String companyApprovalDate;
 
