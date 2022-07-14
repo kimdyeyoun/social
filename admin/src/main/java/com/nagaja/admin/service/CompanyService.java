@@ -1,6 +1,7 @@
 package com.nagaja.admin.service;
 
 import com.nagaja.admin.dto.*;
+import com.nagaja.admin.entity.CompanyReturn;
 import com.nagaja.admin.entity.NationInfo;
 
 import javax.servlet.http.HttpServletResponse;
@@ -10,6 +11,9 @@ public interface CompanyService {
 
     //TODO 기업 회원 검색
     CompanyDto selectCompany(CompanyDto companyDto);
+
+    //TODO 기업 회원 신청 검색
+    CompanyDto selectInsCompany(CompanyDto companyDto, int companyStatus);
 
     //TODO 기업 리뷰 검색
     CompanyReviewDto selectReviews(CompanyReviewDto companyReviewDto);
@@ -30,9 +34,14 @@ public interface CompanyService {
     void companyExcelDownload(HttpServletResponse response, List<Integer> memId, int whole);
 
     //TODO 공공기업 업데이트
-    int changeCompanyAuth(int companyId, int companyPublic);
+    int changeCompanyAuth(int companyId, int companyPublic, int status);
 
     //TODO 리뷰 업데이트
     int changeReviewStatus(int companyReviewId, int companyReviewStatus);
 
+    //TODO 기업회원 신청 상태 업데이트
+    int changeInsCompanyStatus(List<Integer> memId);
+
+    //TODO 기업회원 반려 업데이트
+    int returnCompany(CompanyReturn dto);
 }
