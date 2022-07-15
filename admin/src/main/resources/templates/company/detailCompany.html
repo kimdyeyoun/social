@@ -119,7 +119,19 @@
                                                 <th>
                                                     위도 / 경도
                                                 </th>
-                                                <td colspan="3" th:text="${company.companyLat + ', ' + company.companyLng}">
+                                                <td th:text="${company.companyLat + ', ' + company.companyLng}">
+                                                </td>
+                                                <th>
+                                                    휴무일
+                                                </th>
+                                                <td>
+                                                    <span th:if="${company.companyClosedMon == 1}">월 </span>
+                                                    <span th:if="${company.companyClosedTue == 1}">화 </span>
+                                                    <span th:if="${company.companyClosedWed == 1}">수 </span>
+                                                    <span th:if="${company.companyClosedThu == 1}">목 </span>
+                                                    <span th:if="${company.companyClosedFri == 1}">금 </span>
+                                                    <span th:if="${company.companyClosedSat == 1}">토 </span>
+                                                    <span th:if="${company.companyClosedSun == 1}">일 </span>
                                                 </td>
                                             </tr>
 

@@ -40,57 +40,28 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <div class="grid">
+                        <div class="grid" id="grid-width">
                             <p class="grid-header">
-                                카테고리 검색
+                                카테고리 목록
                             </p>
-                            <div class="card-body">
-                                <br>
-                                <div class="grid-body">
-                                    <div class="item-wrapper">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered" style="width: 100%; cellspacing: '0'; margin: auto;">
-                                                <tbody>
-                                                <tr>
-                                                    <td>
-                                                        카테고리 등록
-                                                    </td>
-                                                    <td>
-                                                        <input class="form-control" type="text" id="keyword" style="padding-left : 10px; width: 500px;">
-                                                        <button type="button" class="search_btn btn btn-primary" >등록 </button>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="grid" id="grid-width">
-                                <p class="grid-header">
-                                    카테고리 목록
-                                </p>
-                                <div class="grid-body">
-                                    <div class="item-wrapper">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered" id="dataTable" style="width: 100%; cellspacing: '0'; margin: auto; text-align: center">
-                                                <tbody>
-                                                <tr>
-                                                    <td><input type="checkbox" id="txn-checkbox" class="check-all"></td>
-                                                    <td>순서</td>
-                                                    <td>상태</td>
-                                                    <td>아이콘 이미지</td>
-                                                    <td>카테고리명</td>
-                                                    <td>최근 수정일자</td>
-                                                </tr>
-                                                </tbody>
-                                                <tbody id="item_list">
-                                                </tbody>
-                                            </table>
-                                            <div id="page_list" style="text-align:center; margin: 2% 0 0 0;">
-                                            </div>
+                            <div class="grid-body">
+                                <div class="item-wrapper">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="dataTable" style="width: 100%; cellspacing: '0'; margin: auto; text-align: center">
+                                            <tbody>
+                                            <tr>
+                                                <td><input type="checkbox" id="txn-checkbox" class="check-all"></td>
+                                                <td>순서</td>
+                                                <td>상태</td>
+                                                <td>아이콘 이미지</td>
+                                                <td>카테고리명</td>
+                                                <td>최근 수정일자</td>
+                                            </tr>
+                                            </tbody>
+                                            <tbody id="item_list">
+                                            </tbody>
+                                        </table>
+                                        <div id="page_list" style="text-align:center; margin: 2% 0 0 0;">
                                         </div>
                                     </div>
                                 </div>
@@ -118,6 +89,7 @@
 
     function SearchBtn(e) {
         var data = {
+            'boardCategoryId' : 0,
             'limit' : 10,
             'pageNum': e};
         $.ajax(

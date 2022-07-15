@@ -14,4 +14,44 @@
         WHERE board_category_parent = 0
         LIMIT #{offset}, #{limit}
     </select>
+
+    <!--TODO 카테고리 카운트(board_category_parent = 0인값)-->
+    <select id="lowerRankCategoryCount" resultType="int">
+        SELECT COUNT(*) FROM board_category
+        WHERE board_category_parent = #{boardCategoryId}
+    </select>
+
+    <!--TODO 카테고리 리스트(board_category_parent = 0인값)-->
+    <select id="lowerRankCategoryList" resultType="BoardCategory">
+        SELECT * FROM board_category
+        WHERE board_category_parent = #{boardCategoryId}
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!--TODO 디테일 카테고리-->
+    <select id="detailCategory" resultType="BoardCategory">
+        SELECT * FROM board_category
+        WHERE board_category_id = #{boardCategoryId}
+    </select>
+
+    <!--TODO 카테고리 업데이트-->
+    <update id="updateCategory">
+        UPDATE board_category
+        <choose>
+            <when test="category.boardCategoryImageOrigin != null">
+                SET board_category_title = #{category.boardCategoryTitle},
+                    board_category_image_name = #{category.boardCategoryImageName},
+                    board_category_image_origin = #{category.boardCategoryImageOrigin},
+                    board_category_show = #{category.boardCategoryShow},
+                    board_category_modify_date = NOW()
+            </when>
+            <otherwise>
+                SET board_category_title = #{category.boardCategoryTitle},
+                    board_category_show = #{category.boardCategoryShow},
+                    board_category_modify_date = NOW()
+            </otherwise>
+        </choose>
+        WHERE board_category_id = #{category.boardCategoryId}
+    </update>
+
 </mapper>

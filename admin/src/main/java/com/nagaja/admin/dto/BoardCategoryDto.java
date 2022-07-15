@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 @Alias("BoardCategoryDto")
 public class BoardCategoryDto {
-
+    private int boardCategoryId;
     private int pageNum;
     private int limit;
 
