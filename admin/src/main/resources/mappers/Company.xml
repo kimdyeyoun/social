@@ -305,6 +305,7 @@
         LEFT JOIN nation_info ni ON ni.nation_info_id = m.nation_info_id
         LEFT JOIN member_status ms ON ms.mem_status_id = m.mem_status_id
         LEFT JOIN board_category bc ON bc.board_category_id = c.board_category_id
+        LEFT JOIN company_closed cc ON cc.company_id = c.company_id
         WHERE c.mem_id = #{memId}
     </select>
 
@@ -319,6 +320,7 @@
         LEFT JOIN company_master cm ON cm.company_id = c.company_id
         LEFT JOIN member_status ms ON ms.mem_status_id = m.mem_status_id
         LEFT JOIN board_category bc ON bc.board_category_id = c.board_category_id
+        LEFT JOIN company_closed cc ON cc.company_id = c.company_id
         <where>
             c.company_id = #{companyId}
         </where>
@@ -385,10 +387,11 @@
         LEFT JOIN company_master cm ON cm.company_id = c.company_id
         LEFT JOIN member_status ms ON ms.mem_status_id = m.mem_status_id
         LEFT JOIN board_category bc ON bc.board_category_id = c.board_category_id
+        LEFT JOIN company_closed cc ON cc.company_id = c.company_id
         WHERE c.company_status = 2
     </select>
 
-    <!--TODO 기업회원 ALL 설렉트-->
+    <!--TODO 기업회원 신청 ALL 설렉트-->
     <select id="selectInsCompanyAll" resultType="CompanyInfoDto">
         SELECT *,(SELECT COUNT(*) FROM regular r WHERE r.company_id = c.company_id) AS regularPeople FROM company c
         LEFT JOIN member m ON m.mem_id = c.mem_id
@@ -397,6 +400,7 @@
         LEFT JOIN company_master cm ON cm.company_id = c.company_id
         LEFT JOIN member_status ms ON ms.mem_status_id = m.mem_status_id
         LEFT JOIN board_category bc ON bc.board_category_id = c.board_category_id
+        LEFT JOIN company_closed cc ON cc.company_id = c.company_id
         WHERE c.company_status = 1 OR c.company_status = 2 OR c.company_status = 3
     </select>
 
