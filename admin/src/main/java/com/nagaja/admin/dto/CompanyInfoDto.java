@@ -1,5 +1,6 @@
 package com.nagaja.admin.dto;
 
+import com.nagaja.admin.entity.CompanyClosed;
 import com.nagaja.admin.entity.CompanyImage;
 import com.nagaja.admin.entity.CompanyProduct;
 import com.nagaja.admin.entity.CompanyProductImage;
@@ -76,6 +77,16 @@ public class CompanyInfoDto {
     private String companyMasterFacebook;
     private String companyMasterKakao;
     private String companyMasterLine;
+
+    //TODO 기업 휴무일
+    private int companyClosedId;
+    private int companyClosedMon;
+    private int companyClosedTue;
+    private int companyClosedWed;
+    private int companyClosedThu;
+    private int companyClosedFri;
+    private int companyClosedSat;
+    private int companyClosedSun;
 
 
 
