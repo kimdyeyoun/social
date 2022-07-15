@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nagaja.admin.mapper.CategoryMapper">
+
+    <!--TODO 카테고리 카운트(board_category_parent = 0인값)-->
+    <select id="categoryCount" resultType="int">
+        SELECT COUNT(*) FROM board_category
+        WHERE board_category_parent = 0
+    </select>
+
+    <!--TODO 카테고리 리스트(board_category_parent = 0인값)-->
+    <select id="categoryList" resultType="BoardCategory">
+        SELECT * FROM board_category
+        WHERE board_category_parent = 0
+        LIMIT #{offset}, #{limit}
+    </select>
+</mapper>
