@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:with="user=${#authentication.principal}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>나가자 관리자</title>
+    <link rel="stylesheet" href="../assets/vendors/iconfonts/mdi/css/materialdesignicons.css">
+    <link rel="stylesheet" href="../assets/css/shared/style.css">
+    <link rel="stylesheet" href="../assets/css/demo_1/style.css">
+    <link rel="shortcut icon" href="../asssets/images/favicon.ico"/>
+    <style type="text/css">
+        .current {
+            border: 1px solid;
+            background: #696ffb;
+            color: #FFFFFF;
+            margin-right: 3px;
+            border-radius: 4px;
+            width: 3%;
+        }
+        .paging {
+            border: 1px solid #f2f4f9;
+            background: #FFFFFF;
+            margin-right: 3px;
+            border-radius: 4px;
+            width: 3%;
+        }
+    </style>
+</head>
+<body class="header-fixed">
+<th:block th:include="/../hf/header.html"></th:block>
+<div class="page-body">
+    <th:block th:include="/../hf/sidebar.html"></th:block>
+    <div class="page-content-wrapper">
+        <div class="page-content-wrapper-inner">
+            <div id="content-viewport">
+                <div class="row">
+                    <div class="col-12" style="margin-bottom: 15px; display: flex; justify-content: space-between;">
+                        <h4>카테고리 통합 관리</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="grid">
+                            <p class="grid-header">
+                                카테고리 검색
+                            </p>
+                            <div class="card-body">
+                                <br>
+                                <div class="grid-body">
+                                    <div class="item-wrapper">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" style="width: 100%; cellspacing: '0'; margin: auto;">
+                                                <tbody>
+                                                <tr>
+                                                    <td>
+                                                        카테고리 등록
+                                                    </td>
+                                                    <td>
+                                                        <input class="form-control" type="text" id="keyword" style="padding-left : 10px; width: 500px;">
+                                                        <button type="button" class="search_btn btn btn-primary" >등록 </button>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="grid" id="grid-width">
+                                <p class="grid-header">
+                                    카테고리 목록
+                                </p>
+                                <div class="grid-body">
+                                    <div class="item-wrapper">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="dataTable" style="width: 100%; cellspacing: '0'; margin: auto; text-align: center">
+                                                <tbody>
+                                                <tr>
+                                                    <td><input type="checkbox" id="txn-checkbox" class="check-all"></td>
+                                                    <td>순서</td>
+                                                    <td>상태</td>
+                                                    <td>아이콘 이미지</td>
+                                                    <td>카테고리명</td>
+                                                    <td>최근 수정일자</td>
+                                                </tr>
+                                                </tbody>
+                                                <tbody id="item_list">
+                                                </tbody>
+                                            </table>
+                                            <div id="page_list" style="text-align:center; margin: 2% 0 0 0;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:include="/../hf/footer.html"></th:block>
+<script src="/assets/vendors/js/core.js"></script>
+<script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
+<script src="/assets/vendors/chartjs/Chart.min.js"></script>
+<script src="/assets/js/charts/chartjs.addon.js"></script>
+<script src="/assets/js/template.js"></script>
+<script src="/assets/js/dashboard.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    $(document).ready(function () {
+        SearchBtn(1);
+    });
+
+    function SearchBtn(e) {
+        var data = {
+            'limit' : 10,
+            'pageNum': e};
+        $.ajax(
+            {
+                url: '/category/selectCategory',
+                method: 'GET',
+                dataType : 'json',
+                data : data,
+                success: function (result) {
+                    console.log(result);
+                    var item_list = $("#item_list");
+                    var item_add = "";
+                    var page_list = $("#page_list");
+                    var page_add = "";
+                    // list start
+                    if (result.boardCategoryList.length == 0) {
+                        item_add += '<tr>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '<td></td>';
+                        item_add += '</tr>';
+                    } else {
+                        for (var i = 0; i < result.boardCategoryList.length; i++) {
+                            item_add += '<tr>';
+                            item_add += '<td>' + '<input type="checkbox" name="boardCategoryId" id="member-checkbox" class="list-checkBox" value="' + result.boardCategoryList[i].boardCategoryId + '">' + '</td>';
+                            item_add += '<td>' + i + '</td>';
+                            if (result.boardCategoryList[i].boardCategoryShow == 0)
+                            {
+                                item_add += '<td>' + '미사용' + '</td>';
+                            }
+                            else
+                            {
+                                item_add += '<td>' + '사용' + '</td>';
+                            }
+
+                            item_add += '<td>' + '<img src="https://pref-bucket.s3.ap-northeast-2.amazonaws.com/images/'+(result.boardCategoryList[i].boardCategoryImageName)+'" style="width: 100px;height: 100px"/>' + '</td>';
+
+                            item_add += '<td>' + result.boardCategoryList[i].boardCategoryTitle + '</td>';
+
+                            item_add += '<td>' + result.boardCategoryList[i].boardCategoryModifyDate + '</td>';
+
+                            item_add += '</tr>';
+                        }
+                    }
+
+                    // paging start
+                    if (result.pagination.pageNum > 10) {
+                        page_add += '<button class="paging" onclick="SearchBtn(' + (result.pagination.startPage - 10) + ')"><</button>';
+                    }
+
+                    for (var i = result.pagination.startPage; i < (result.pagination.endPage + 1); i++) {
+                        if (result.pagination.pageNum == i) {
+                            page_add += '<button class="current" onclick="SearchBtn(' + i + ')">' + i + '</button>';
+                        } else if (i <= result.pagination.maxPage) {
+                            page_add += '<button class="paging" onclick="SearchBtn(' + i + ')">' + i + '</button>';
+                        }
+                    }
+
+                    if (result.pagination.startPage + 10 < (result.pagination.maxPage)) {
+                        page_add += '<button class="paging" onclick="SearchBtn(' + (result.pagination.startPage + 10) + ')">></button>';
+                    }
+                    // paging end
+
+                    item_list.empty();
+                    item_list.append(item_add);
+
+                    page_list.empty();
+                    page_list.append(page_add);
+                },
+                error(e) {
+                    console.log(e);
+                }
+            })
+    }
+</script>
+</body>
+</html>
