@@ -157,7 +157,7 @@
 
                             item_add += '<td>' + '<img src="https://pref-bucket.s3.ap-northeast-2.amazonaws.com/images/'+(result.boardCategoryList[i].boardCategoryImageName)+'" style="width: 100px;height: 100px"/>' + '</td>';
 
-                            item_add += '<td>' + result.boardCategoryList[i].boardCategoryTitle + '</td>';
+                            item_add += '<td><a href="/category/detailCategory?boardCategoryId='+(result.boardCategoryList[i].boardCategoryId)+'">' + result.boardCategoryList[i].boardCategoryTitle + '</a></td>';
 
                             item_add += '<td>' + result.boardCategoryList[i].boardCategoryModifyDate + '</td>';
 
