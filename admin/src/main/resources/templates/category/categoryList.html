@@ -7,8 +7,24 @@
     <link rel="stylesheet" href="../assets/vendors/iconfonts/mdi/css/materialdesignicons.css">
     <link rel="stylesheet" href="../assets/css/shared/style.css">
     <link rel="stylesheet" href="../assets/css/demo_1/style.css">
+    <link rel="stylesheet" href="../assets/css/shared/dragula.min.css">
     <link rel="shortcut icon" href="../asssets/images/favicon.ico"/>
     <style type="text/css">
+        .gu-mirror {
+            border: 1px solid red;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .gu-mirror td {
+            border: 1px solid blue;
+        }
+
+        .mirrorContainer {
+            border: 1px solid blue;
+        }
+
         .current {
             border: 1px solid;
             background: #696ffb;
@@ -106,6 +122,7 @@
 <script src="/assets/vendors/js/core.js"></script>
 <script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
 <script src="/assets/vendors/chartjs/Chart.min.js"></script>
+<script src="/assets/vendors/drag/dragula.min.js"></script>
 <script src="/assets/js/charts/chartjs.addon.js"></script>
 <script src="/assets/js/template.js"></script>
 <script src="/assets/js/dashboard.js"></script>
@@ -193,7 +210,26 @@
                     console.log(e);
                 }
             })
-    }
+    };
+
+
+
+    // drag
+    const darg = dragula([document.getElementById('item_list')]);
+    darg.on('drag', function(el) {
+        
+    })
+    darg.on('drop', function(el) {
+        console.log(el, 'drop');
+
+    })
+
+
+
+
+
+
+
 </script>
 </body>
 </html>
