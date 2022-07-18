@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nagaja.admin.mapper.BoardMapper">
+
+    <!--TODO 중고 마켓 하위 카테고리 설렉트-->
+    <select id="boardDetail" resultType="BoardCategory">
+        SELECT * FROM board_category
+        WHERE board_category_parent = 1
+    </select>
+
+    <select id="marketBoardCount" resultType="int">
+        SELECT COUNT(*) FROM board b
+        LEFT JOIN member m ON m.mem_id = b.mem_id
+        LEFT JOIN used_market um ON um.board_id = b.board_id
+        LEFT JOIN board_category bc ON bc.board_category_id = b.board_category_id
+        <where>
+            <if test="market.startDate != null and !market.startDate.equals('')">
+                <![CDATA[
+                        AND DATE(b.board_create_date) >= DATE(#{market.startDate})
+                    ]]>
+            </if>
+
+            <if test="market.endDate != null and !market.endDate.equals('')">
+                <![CDATA[
+                        AND DATE(b.board_create_date) <= DATE(#{market.endDate})
+                    ]]>
+            </if>
+
+            <if test="market.usedMarketStatus != null and market.usedMarketStatus != 0">
+                AND um.used_market_status = #{market.usedMarketStatus}
+            </if>
+
+            <if test="market.boardCategoryId != null and market.boardCategoryId != 0">
+                AND bc.board_category_id = #{market.boardCategoryId}
+            </if>
+
+            <choose>
+                <when test="market.keywordFilter == 1">
+                    AND b.board_title LIKE CONCAT('%', #{market.keyword} ,'%')
+                </when>
+                <when test="market.keywordFilter == 2">
+                    AND b.board_content LIKE CONCAT('%', #{market.keyword} ,'%')
+                </when>
+                <when test="market.keywordFilter == 3">
+                    AND m.mem_name LIKE CONCAT('%', #{market.keyword} ,'%')
+                </when>
+            </choose>
+        </where>
+    </select>
+
+    <!--TODO 중코 마켓  검색-->
+    <select id="marketBoardList" resultType="MarketBoardInfoDto">
+        SELECT * FROM board b
+        LEFT JOIN member m ON m.mem_id = b.mem_id
+        LEFT JOIN used_market um ON um.board_id = b.board_id
+        LEFT JOIN board_category bc ON bc.board_category_id = b.board_category_id
+        LEFT JOIN board_image bi ON bi.board_id = b.board_id
+
+        <where>
+            <if test="market.startDate != null and !market.startDate.equals('')">
+                <![CDATA[
+                        AND DATE(b.board_create_date) >= DATE(#{market.startDate})
+                    ]]>
+            </if>
+
+            <if test="market.endDate != null and !market.endDate.equals('')">
+                <![CDATA[
+                        AND DATE(b.board_create_date) <= DATE(#{market.endDate})
+                    ]]>
+            </if>
+
+            <if test="market.usedMarketStatus != null and market.usedMarketStatus != 0">
+                AND um.used_market_status = #{market.usedMarketStatus}
+            </if>
+
+            <if test="market.boardCategoryId != null and market.boardCategoryId != 0">
+                AND bc.board_category_id = #{market.boardCategoryId}
+            </if>
+
+            <choose>
+                <when test="market.keywordFilter == 1">
+                    AND b.board_title LIKE CONCAT('%', #{market.keyword} ,'%')
+                </when>
+                <when test="market.keywordFilter == 2">
+                    AND b.board_content LIKE CONCAT('%', #{market.keyword} ,'%')
+                </when>
+                <when test="market.keywordFilter == 3">
+                    AND m.mem_name LIKE CONCAT('%', #{market.keyword} ,'%')
+                </when>
+            </choose>
+        </where>
+        GROUP BY b.board_id
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!--TODO 게시판 디테일 설렉트-->
+    <select id="selectDetailMarket" resultType="MarketBoardInfoDto">
+        SELECT * FROM board b
+        LEFT JOIN member m ON m.mem_id = b.mem_id
+        LEFT JOIN used_market um ON um.board_id = b.board_id
+        LEFT JOIN board_category bc ON bc.board_category_id = b.board_category_id
+        WHERE b.board_id = #{boardId}
+    </select>
+
+    <!--TODO 게시판 디테일 설렉트-->
+    <select id="selectBoardImages" resultType="BoardImage">
+        SELECT * FROM board_image
+        WHERE board_id = #{boardId}
+    </select>
+
+    <!--TODO NEW 표기일 설렉트-->
+    <select id="newSelect" resultType="int">
+        SELECT new_item_marking_date FROM new_item_marking
+        WHERE new_item_marking_id = 1
+    </select>
+
+    <!--TODO 중고 마켓 공개/비공개 설정-->
+    <update id="updateBoardMarket">
+        UPDATE board
+        SET board_status = #{market.boardStatus}
+        <where>
+            <if test="market.boardId != null and market.boardId.size() != 0">
+                <foreach item="boardId" collection="market.boardId" open="(" close=")" separator="OR">
+                    board_id = #{boardId}
+                </foreach>
+            </if>
+        </where>
+    </update>
+
+    <!--TODO NEW 표기일 변경-->
+    <update id="updNewMarkingDate">
+        UPDATE new_item_marking
+        SET new_item_marking_date = #{newItemMarkingDate}
+    </update>
+</mapper>
