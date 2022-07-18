@@ -55,6 +55,18 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.detailCategory(boardCategoryId);
     }
 
+    //TODO 카테고리 인서트
+    public int insertCategory(BoardCategory boardCategoryId)
+    {
+        int result = categoryMapper.insertCategory(boardCategoryId);
+
+        if (result == 0)
+        {
+            return Status.ZERO;
+        }
+        return Status.FIRST;
+    }
+
     //TODO 카테고리 업데이트
     @Override
     public int updateCategory(CategoryUpdateDto dto)
@@ -83,6 +95,21 @@ public class CategoryServiceImpl implements CategoryService {
 
         }
         int result = categoryMapper.updateCategory(dto);
+
+        if (result == 0)
+        {
+            return Status.ZERO;
+        }
+        return Status.FIRST;
+    }
+
+    //TODO 서브카테고리 삭제
+    @Override
+    public int deleteCategory(BoardCategory dto, int parentPk)
+    {
+        int result = categoryMapper.deleteCategory(dto);
+
+        categoryMapper.updateFirstOfAllCategory(dto, parentPk);
 
         if (result == 0)
         {

@@ -15,6 +15,12 @@ public interface CategoryService {
     //TODO 카테고리 디테일
     BoardCategory detailCategory(int boardCategoryId);
 
+    //TODO 카테고리 인서트
+    int insertCategory(BoardCategory boardCategoryId);
+
     //TODO 카테고리 업데이트
     int updateCategory(CategoryUpdateDto dto);
+
+    //TODO 서브카테고리 삭제
+    int deleteCategory(BoardCategory dto, int parentPk);
 }

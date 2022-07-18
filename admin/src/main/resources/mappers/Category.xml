@@ -34,6 +34,18 @@
         WHERE board_category_id = #{boardCategoryId}
     </select>
 
+    <!--TODO 디테일 카테고리 인서트-->
+    <insert id="insertCategory" >
+        <selectKey  keyProperty="board_sequence" resultType="integer" order="BEFORE">
+            SELECT MAX(board_sequence) FROM board_category
+            WHERE board_category_parent = #{category.boardCategoryId}
+        </selectKey>
+        INSERT INTO board_category
+        (board_category_parent, board_category_title, board_sequence)
+        VALUES
+        (#{category.boardCategoryId}, #{category.boardCategoryTitle}, #{board_sequence} + 1)
+    </insert>
+
     <!--TODO 카테고리 업데이트-->
     <update id="updateCategory">
         UPDATE board_category
@@ -53,5 +65,22 @@
         </choose>
         WHERE board_category_id = #{category.boardCategoryId}
     </update>
+
+    <!--TODO 서브카테고리 우선순위 업데이트-->
+    <update id="updateFirstOfAllCategory">
+        <selectKey  keyProperty="board_sequence_max" resultType="integer" order="BEFORE">
+            SELECT MAX(board_sequence) FROM board_category
+            WHERE board_category_parent = #{parentPk}
+        </selectKey>
+        UPDATE board_category
+        SET board_sequence = board_sequence - 1
+        WHERE board_category_parent = #{parentPk} AND (board_sequence BETWEEN #{category.boardSequence} AND #{board_sequence_max})
+    </update>
+
+    <!--TODO 서브카테고리 삭제-->
+    <delete id="deleteCategory">
+        DELETE FROM board_category
+        WHERE board_category_id = #{category.boardCategoryId}
+    </delete>
 
 </mapper>
