@@ -11,19 +11,33 @@
     <link rel="shortcut icon" href="../asssets/images/favicon.ico"/>
     <style type="text/css">
         .gu-mirror {
-            border: 1px solid red;
             display: flex;
-            align-items: center;
             justify-content: space-between;
         }
 
         .gu-mirror td {
             border: 1px solid #f2f4f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
         }
 
-        .mirrorContainer {
-            border: 1px solid blue;
+        .gu-mirror td:nth-child(1),
+        .gu-mirror td:nth-child(2),
+        .gu-mirror td:nth-child(3) {
+            flex: 1;
         }
+        
+        .gu-mirror td:nth-child(4),
+        .gu-mirror td:nth-child(5) {
+            flex: 1.5
+        }
+        
+        .gu-mirror td:nth-child(6) {
+            flex: 2;
+        }
+
 
         .current {
             border: 1px solid;
@@ -265,6 +279,13 @@
     }
 
 
+    
+    let thisListId; // 바꾼 리스트의 체크 박스 값
+    let thisListNum; // 바꾼 리스트의 순서 값
+
+    let siblingListId; // 바뀌기 전 리스트의 체크박스 값  
+    let siblingListNum; // 바뀌기 전 리스트의 순서 값
+
     function dargFuc() {
         // drag
         const darg = dragula([document.getElementById('item_list')]);
@@ -289,24 +310,29 @@
         // darg.on('drag', function(el) {
             
         // });
-        darg.on('drop', function(el) {
+        darg.on('drop', function(el, target, source, sibling) {
+            console.log(el,target, source, sibling);
+            thisListId = el.querySelectorAll('td')[0].querySelector('input').value;
+            thisListNum = el.querySelectorAll('td')[1].innerText;
+
+            siblingListId = sibling.querySelectorAll('td')[0].querySelector('input').value;
+            siblingListNum = sibling.querySelectorAll('td')[1].innerText;
+
+            console.log(thisListId, thisListNum, siblingListId, siblingListNum);
             modal.classList.add('on');
         });
-    
+        
+
+
+
+        // 모달 변경 버튼
         changeBtn.addEventListener('click', () => {
-            // $.ajax({
-            //     url: '',
-            //     method: 'GET',
-            //     dataType : 'json',
-            //     data : data,
-            //     success: function (result) {
-                    
-            //     },
-            //     error(e) {
-                    
-            //     }
-            // });
-    
+            // thisListId // 바꾼 리스트의 체크 박스 값
+            // thisListNum // 바꾼 리스트의 순서 값
+
+            // siblingListId // 바뀌기 전 리스트의 체크박스 값  
+            // siblingListNum // 바뀌기 전 리스트의 순서 값
+           
             modal.classList.remove('on');
         });
     
