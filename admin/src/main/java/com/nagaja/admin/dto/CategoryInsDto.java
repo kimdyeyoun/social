@@ -1,15 +1,18 @@
-package com.nagaja.admin.entity;
+package com.nagaja.admin.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.apache.ibatis.type.Alias;
+import org.springframework.web.multipart.MultipartFile;
 
-@Getter
+import java.util.List;
+
 @Setter
+@Getter
 @ToString
-@Alias("BoardCategory")
-public class BoardCategory {
+@Alias("CategoryInsDto")
+public class CategoryInsDto {
 
     private int boardCategoryId;
     private String boardCategoryTitle;
@@ -23,4 +26,6 @@ public class BoardCategory {
     private String boardCategoryCreateDate;
     private String boardCategoryModifyDate;
 
+    private MultipartFile file;
+    private List<String> subCategoryTitle;
 }

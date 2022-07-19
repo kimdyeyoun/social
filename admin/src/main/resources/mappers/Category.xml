@@ -12,19 +12,21 @@
     <select id="categoryList" resultType="BoardCategory">
         SELECT * FROM board_category
         WHERE board_category_parent = 0
+        ORDER BY board_sequence ASC
         LIMIT #{offset}, #{limit}
     </select>
 
-    <!--TODO 카테고리 카운트(board_category_parent = 0인값)-->
+    <!--TODO 하위 카테고리 카운트-->
     <select id="lowerRankCategoryCount" resultType="int">
         SELECT COUNT(*) FROM board_category
         WHERE board_category_parent = #{boardCategoryId}
     </select>
 
-    <!--TODO 카테고리 리스트(board_category_parent = 0인값)-->
+    <!--TODO 하위 카테고리 리스트-->
     <select id="lowerRankCategoryList" resultType="BoardCategory">
         SELECT * FROM board_category
         WHERE board_category_parent = #{boardCategoryId}
+        ORDER BY board_sequence ASC
         LIMIT #{offset}, #{limit}
     </select>
 
@@ -34,8 +36,33 @@
         WHERE board_category_id = #{boardCategoryId}
     </select>
 
+    <!--TODO 카테고리 인서트-->
+    <insert id="insertCategory">
+        <selectKey  keyProperty="board_sequence" resultType="integer" order="BEFORE">
+            SELECT MAX(board_sequence) FROM board_category
+            WHERE board_category_parent = 0
+        </selectKey>
+        INSERT INTO board_category
+            (board_category_title, board_sequence, board_category_type, board_category_status, board_category_show, board_category_image_name, board_category_image_origin)
+        VALUES
+            (#{category.boardCategoryTitle}, (#{board_sequence} + 1), 1, #{category.boardCategoryStatus}, #{category.boardCategoryShow}, #{category.boardCategoryImageName}, #{category.boardCategoryImageOrigin})
+    </insert>
+
+    <!--TODO 서브카테고리 인서트-->
+    <insert id="parentInSubCategory" >
+        <selectKey resultType="integer" keyProperty="board_category_id" order="BEFORE">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        <foreach item="title" collection="subCategoryTitle" index="index" separator=";" close=";">
+            INSERT INTO board_category
+            (board_category_parent, board_category_title, board_sequence)
+            VALUES
+            (#{board_category_id}, #{title}, (#{index} + 1))
+        </foreach>
+    </insert>
+
     <!--TODO 디테일 카테고리 인서트-->
-    <insert id="insertCategory" >
+    <insert id="insertSubCategory" >
         <selectKey  keyProperty="board_sequence" resultType="integer" order="BEFORE">
             SELECT MAX(board_sequence) FROM board_category
             WHERE board_category_parent = #{category.boardCategoryId}
@@ -43,7 +70,7 @@
         INSERT INTO board_category
         (board_category_parent, board_category_title, board_sequence)
         VALUES
-        (#{category.boardCategoryId}, #{category.boardCategoryTitle}, #{board_sequence} + 1)
+        (#{category.boardCategoryId}, #{category.boardCategoryTitle}, (#{board_sequence} + 1))
     </insert>
 
     <!--TODO 카테고리 업데이트-->
@@ -75,6 +102,20 @@
         UPDATE board_category
         SET board_sequence = board_sequence - 1
         WHERE board_category_parent = #{parentPk} AND (board_sequence BETWEEN #{category.boardSequence} AND #{board_sequence_max})
+    </update>
+
+    <!--TODO 현재 카테고리 -> 변경 카테고리-->
+    <update id="currentCategory">
+        UPDATE board_category
+        SET board_sequence = #{getSiblingListNum}
+        WHERE board_category_id = #{thisListId}
+    </update>
+
+    <!--TODO 현재 카테고리 -> 변경 카테고리-->
+    <update id="changeCategory">
+        UPDATE board_category
+        SET board_sequence = #{thisListNum}
+        WHERE board_category_id = #{siblingListId}
     </update>
 
     <!--TODO 서브카테고리 삭제-->

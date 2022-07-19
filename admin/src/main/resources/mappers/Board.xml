@@ -48,7 +48,7 @@
         </where>
     </select>
 
-    <!--TODO 중코 마켓  검색-->
+    <!--TODO 중고 마켓  검색-->
     <select id="marketBoardList" resultType="MarketBoardInfoDto">
         SELECT * FROM board b
         LEFT JOIN member m ON m.mem_id = b.mem_id
@@ -116,12 +116,13 @@
 
     <!--TODO 중고 마켓 공개/비공개 설정-->
     <update id="updateBoardMarket">
-        UPDATE board
-        SET board_status = #{market.boardStatus}
+        UPDATE board A INNER JOIN used_market B ON A.board_id = B.board_id
+        SET A.board_status = #{market.boardStatus},
+            B.used_market_status = #{market.usedMarketStatus}
         <where>
             <if test="market.boardId != null and market.boardId.size() != 0">
                 <foreach item="boardId" collection="market.boardId" open="(" close=")" separator="OR">
-                    board_id = #{boardId}
+                    A.board_id = #{boardId}
                 </foreach>
             </if>
         </where>

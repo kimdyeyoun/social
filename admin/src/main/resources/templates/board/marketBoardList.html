@@ -120,8 +120,8 @@
                                 <p class="grid-header">
                                     <span id="count"></span>
                                     <button style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;" type="button" data-toggle="modal" data-target="#returnCompany" class="search_btn btn btn-danger" >새상품 표기 등록 설정</button>
-                                    <a type="button" class="search_btn btn btn-danger" id="excelDownload2" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;" onclick="updBtn(0)">전체 비공개</a>
-                                    <a type="button" class="search_btn btn btn-dark" id="excelDownload" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;" onclick="updBtn(1)">선택 공개</a>
+                                    <a type="button" class="search_btn btn btn-danger" id="excelDownload2" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;" onclick="updBtn(0, 3)">선택 비공개</a>
+                                    <a type="button" class="search_btn btn btn-dark" id="excelDownload" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;" onclick="updBtn(1, 1)">선택 공개</a>
                                 </p>
 
                                 <div class="grid-body">
@@ -310,7 +310,7 @@
     }
 
 
-    function updBtn(e) {
+    function updBtn(e, i) {
 
         var check_list = [];
         $("input:checkbox[name=boardId]:checked").each(function () {
@@ -321,7 +321,7 @@
             alert("변경할 글들을 선택 하십시오.")
             return false;
         }
-        var data = {'boardId' : check_list, 'boardStatus' : e}
+        var data = {'boardId' : check_list, 'boardStatus' : e, 'usedMarketStatus' : i}
 
         let message = '';
         if (e == 1)

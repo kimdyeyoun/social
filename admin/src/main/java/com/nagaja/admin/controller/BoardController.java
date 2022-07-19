@@ -1,6 +1,7 @@
 package com.nagaja.admin.controller;
 
 import com.nagaja.admin.dto.BoardMarketUpdDto;
+import com.nagaja.admin.dto.CategorySequenceDto;
 import com.nagaja.admin.dto.MarketBoardDto;
 import com.nagaja.admin.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +58,5 @@ public class BoardController {
     {
         return boardService.updNewMarkingDate(newItemMarkingDate);
     }
-
 
 }

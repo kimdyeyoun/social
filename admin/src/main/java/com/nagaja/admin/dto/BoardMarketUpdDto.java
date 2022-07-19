@@ -14,5 +14,6 @@ import java.util.List;
 public class BoardMarketUpdDto {
 
     private int boardStatus;
+    private int usedMarketStatus;
     private List<Integer> boardId;
 }
