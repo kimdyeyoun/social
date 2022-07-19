@@ -142,6 +142,7 @@
                         <div class="grid" id="grid-width">
                             <p class="grid-header">
                                 카테고리 목록
+                                <a href="/category/insCategory"><button style="float: right;padding-right: 20px;" class="btn btn-primary" >카테고리 등록</button></a>
                             </p>
                             <div class="grid-body">
                                 <div class="item-wrapper">
@@ -227,7 +228,7 @@
                         for (var i = 0; i < result.boardCategoryList.length; i++) {
                             item_add += '<tr>';
                             item_add += '<td>' + '<input type="checkbox" name="boardCategoryId" id="member-checkbox" class="list-checkBox" value="' + result.boardCategoryList[i].boardCategoryId + '">' + '</td>';
-                            item_add += '<td>' + i + '</td>';
+                            item_add += '<td>' + result.boardCategoryList[i].boardSequence + '</td>';
                             if (result.boardCategoryList[i].boardCategoryShow == 0)
                             {
                                 item_add += '<td>' + '미사용' + '</td>';
@@ -321,29 +322,40 @@
             console.log(thisListId, thisListNum, siblingListId, siblingListNum);
             modal.classList.add('on');
         });
-        
-
-
 
         // 모달 변경 버튼
         changeBtn.addEventListener('click', () => {
-            // thisListId // 바꾼 리스트의 체크 박스 값
-            // thisListNum // 바꾼 리스트의 순서 값
 
-            // siblingListId // 바뀌기 전 리스트의 체크박스 값  
-            // siblingListNum // 바뀌기 전 리스트의 순서 값
+            var data = {'thisListId' : thisListId, 'thisListNum' : thisListNum, 'siblingListId' : siblingListId, 'siblingListNum' : siblingListNum}
+            $.ajax
+            (
+                {
+                    url: '/category/changeCategory',
+                    type: 'PUT',
+                    dataType : 'json',
+                    data : data,
+                    success: function (result) {
+                        switch (result) {
+                            case 1:
+                                alert("변경 되었습니다.")
+                                location.href="/category/categoryList";
+                                break;
+
+                            case 0:
+                                alert('오류 관리자에게 문의 해주십시오.');
+                                break;
+                        }
+
+                    }
+                }
+            )
            
             modal.classList.remove('on');
+
         });
     
         cancelBtn.addEventListener('click', () => location.reload());
     }
-
-
-
-
-
-
 
 </script>
 </body>

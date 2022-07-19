@@ -8,8 +8,10 @@ import com.nagaja.admin.mapper.AdminMapper;
 import com.nagaja.admin.service.AdminService;
 import com.nagaja.admin.util.MyUtils;
 import com.nagaja.admin.util.Status;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +56,7 @@ public class AdminServiceImpl implements AdminService
         int count = mapper.selectAdminCount(admin);
 
         String pw = passwordEncoder.encode(admin.getAdminLoginPw());
+
         admin.setAdminLoginPw(pw);
 
         if (admin.getAdminLoginId().trim().equals("") || admin.getAdminLoginPw().equals(""))

@@ -14,6 +14,7 @@ public class Company {
     private int companyId;
     private int memId;
     private int boardCategoryId;
+    private int boardCategorySubId;
     private String companyAddress;
     private String companyPhone;
     private String companyLiveTime;

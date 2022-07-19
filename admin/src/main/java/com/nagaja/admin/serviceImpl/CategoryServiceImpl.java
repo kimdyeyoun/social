@@ -1,6 +1,8 @@
 package com.nagaja.admin.serviceImpl;
 
 import com.nagaja.admin.dto.BoardCategoryDto;
+import com.nagaja.admin.dto.CategoryInsDto;
+import com.nagaja.admin.dto.CategorySequenceDto;
 import com.nagaja.admin.dto.CategoryUpdateDto;
 import com.nagaja.admin.entity.BoardCategory;
 import com.nagaja.admin.entity.Pagination;
@@ -12,6 +14,7 @@ import com.nagaja.admin.util.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -56,9 +59,52 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     //TODO 카테고리 인서트
-    public int insertCategory(BoardCategory boardCategoryId)
+    @Override
+    public int insertCategory(CategoryInsDto dto)
     {
-        int result = categoryMapper.insertCategory(boardCategoryId);
+
+        if (dto.getFile() != null && !dto.getFile().isEmpty())
+        {
+
+            String aws_name = AWSUploader.changeFileName(dto.getFile());
+            boolean uploadAWS = AWSUploader.uploadToWithNameAwsS3("nagaja/category", dto.getFile(), aws_name);
+
+            if(uploadAWS)
+            {
+
+                String file_name = "nagaja/category/" + aws_name;
+
+                dto.setBoardCategoryImageName(file_name);
+                dto.setBoardCategoryImageOrigin(dto.getFile().getOriginalFilename());
+            }
+
+        }
+        else
+        {
+            return Status.THIRD;
+        }
+
+        int result = categoryMapper.insertCategory(dto);
+
+        if (dto.getSubCategoryTitle() != null && !dto.getSubCategoryTitle().isEmpty())
+        {
+            System.out.println(dto.getSubCategoryTitle());
+            categoryMapper.parentInSubCategory(dto.getSubCategoryTitle());
+        }
+
+        if (result == 0)
+        {
+            return Status.ZERO;
+        }
+        return Status.FIRST;
+    }
+
+
+    //TODO 서브 카테고리 인서트
+    @Override
+    public int insertSubCategory(BoardCategory boardCategoryId)
+    {
+        int result = categoryMapper.insertSubCategory(boardCategoryId);
 
         if (result == 0)
         {
@@ -80,7 +126,7 @@ public class CategoryServiceImpl implements CategoryService {
 
             if(uploadAWS)
             {
-                if(dto.getBoardCategoryImageName() != null)
+                if(dto.getBoardCategoryImageName() != null && !dto.getBoardCategoryImageName().trim().equals(""))
                 {
                     String[] imageName = dto.getBoardCategoryImageName().split("/");
                     String path = imageName[0] + "/" + imageName[1];
@@ -101,6 +147,23 @@ public class CategoryServiceImpl implements CategoryService {
             return Status.ZERO;
         }
         return Status.FIRST;
+    }
+
+    //TODO 우선순위 변경
+    @Override
+    public int changeCategory(CategorySequenceDto categorySequenceDto)
+    {
+        //TODO 현재 카테고리 -> 변경 카테고리
+       int data1 = categoryMapper.currentCategory(categorySequenceDto.getThisListId(), categorySequenceDto.getSiblingListNum());
+       //TODO 변경 카테고리 -> 현재 카테고리
+       int data2 = categoryMapper.changeCategory(categorySequenceDto.getSiblingListId(), categorySequenceDto.getThisListNum());
+
+       if (data1 == 0 || data2 == 0)
+       {
+           return Status.ZERO;
+       }
+
+       return Status.FIRST;
     }
 
     //TODO 서브카테고리 삭제

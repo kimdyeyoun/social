@@ -29,9 +29,9 @@ public class MarketBoardInfoDto {
     private String usedMarketPrice;
     private int usedMarketPriceType;
     private int usedMarketStatus;
-    private int usedMarketComplete;
+    private String usedMarketComplete;
     private int liftCount;
-    private int liftDate;
+    private String liftDate;
     private int areaId;
 
     private String boardCategoryTitle;

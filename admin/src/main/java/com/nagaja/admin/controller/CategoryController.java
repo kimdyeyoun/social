@@ -1,6 +1,8 @@
 package com.nagaja.admin.controller;
 
 import com.nagaja.admin.dto.BoardCategoryDto;
+import com.nagaja.admin.dto.CategoryInsDto;
+import com.nagaja.admin.dto.CategorySequenceDto;
 import com.nagaja.admin.dto.CategoryUpdateDto;
 import com.nagaja.admin.entity.BoardCategory;
 import com.nagaja.admin.service.CategoryService;
@@ -34,6 +36,15 @@ public class CategoryController {
 
         return mv;
     }
+    //TODO 카테고리 디테일 페이지
+    @GetMapping("/insCategory")
+    public ModelAndView insCategory(ModelAndView mv)
+    {
+        mv.setViewName("/category/insCategory");
+
+        return mv;
+    }
+
 
     //TODO 카테고리 리스트 설렉트
     @GetMapping("/selectCategory")
@@ -54,10 +65,17 @@ public class CategoryController {
     //TODO 카테고리 인서트
     @PostMapping("/insertCategory")
     @ResponseBody
+    public int insertCategory(@ModelAttribute CategoryInsDto category)
+    {
+        return categoryService.insertCategory(category);
+    }
+
+    //TODO 서브 카테고리 인서트
+    @PostMapping("/insertSubCategory")
+    @ResponseBody
     public int insertCategory(@ModelAttribute BoardCategory category)
     {
-        System.out.println("asdasdasd" + category);
-        return categoryService.insertCategory(category);
+        return categoryService.insertSubCategory(category);
     }
 
     //TODO 카테고리 업데이트
@@ -66,6 +84,14 @@ public class CategoryController {
     public int updateCategory(@ModelAttribute CategoryUpdateDto dto)
     {
         return categoryService.updateCategory(dto);
+    }
+
+    //TODO 우선순위 변경
+    @PutMapping("/changeCategory")
+    @ResponseBody
+    public int changeCategory(@ModelAttribute CategorySequenceDto categorySequenceDto)
+    {
+        return categoryService.changeCategory(categorySequenceDto);
     }
 
     //TODO 서브 카테고리 삭제

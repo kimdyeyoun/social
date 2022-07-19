@@ -1,6 +1,7 @@
 package com.nagaja.admin.service;
 
 import com.nagaja.admin.dto.BoardMarketUpdDto;
+import com.nagaja.admin.dto.CategorySequenceDto;
 import com.nagaja.admin.dto.MarketBoardDto;
 import com.nagaja.admin.dto.MarketBoardInfoDto;
 import com.nagaja.admin.entity.BoardCategory;
