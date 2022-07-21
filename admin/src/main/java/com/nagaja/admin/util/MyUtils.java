@@ -2,6 +2,7 @@ package com.nagaja.admin.util;
 
 import com.nagaja.admin.dto.CompanyInfoDto;
 import com.nagaja.admin.dto.MemberInfoDto;
+import com.nagaja.admin.dto.PointInfoDto;
 import com.nagaja.admin.entity.Company;
 import com.nagaja.admin.entity.Pagination;
 import javax.servlet.http.HttpServletResponse;
@@ -189,7 +190,7 @@ public class MyUtils {
             }
 
             // se.shin 엑세파일명
-            String filename = "유저통계";
+            String filename = "NAGAJA 일반회원";
 
             response.reset();
 
@@ -440,7 +441,158 @@ public class MyUtils {
             }
 
             // se.shin 엑세파일명
-            String filename = "유저통계";
+            String filename = "NAGAJA 기업회원";
+
+            response.reset();
+
+            response.setContentType( "application/vnd.ms-excel" );
+            //response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.addHeader("Content-Disposition","attachment;filename=\"" + URLEncoder.encode(filename, "UTF-8") + ".xlsx\"");
+
+            workbook.write(response.getOutputStream());
+            response.getOutputStream().flush();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                //response.getOutputStream().close();
+                workbook.close();
+                workbook.dispose();
+                if(fos != null) try { fos.close(); } catch(Exception ignore) {}
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    //TODO 엑셀 다운로드
+    public static void pointExcelDownLoad(HttpServletResponse response, List<PointInfoDto> list) {
+
+        FileOutputStream fos = null;
+        SXSSFWorkbook workbook = null;
+        SXSSFRow row = null;				// 행
+        //SXSSFCell cell = null;			// 셀
+        CellStyle headStyleFormat = null;	// 샐 스타일
+
+
+        try {
+
+            // 워크북 생성(엑셀 파일)
+            workbook = new SXSSFWorkbook();
+            workbook.setCompressTempFiles(true);
+
+            // Sheet 생성
+            SXSSFSheet sheet = (SXSSFSheet) workbook.createSheet("유저통계");
+            sheet.setRandomAccessWindowSize(100); // 메모리 행 100개로 제한, 초과 시 Disk로 flush
+
+
+            // 헤더 스타일 지정
+            headStyleFormat = workbook.createCellStyle();
+            headStyleFormat.setFillForegroundColor(HSSFColor.HSSFColorPredefined.GREY_25_PERCENT.getIndex());
+            headStyleFormat.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            headStyleFormat.setAlignment(HorizontalAlignment.CENTER);  // 가운데 정렬
+
+            // 헤더 폰트 지정
+            Font font = workbook.createFont();
+            font.setFontHeightInPoints((short) 11);
+            font.setBold(true); // 굵기
+
+            headStyleFormat.setFont(font);
+
+            //... 엑셀 내용 작성 ...
+            int rowNo = 0;	// row number 카운팅 변수
+            final int cellRange = 8;	// 헤더 셀 크기
+
+            // se.shin 테이블 헤더부분
+            Row headerRow = sheet.createRow(rowNo++);
+            headerRow.createCell(0).setCellValue("종류");
+            headerRow.createCell(1).setCellValue("유형");
+            headerRow.createCell(2).setCellValue("지급일자");
+            headerRow.createCell(3).setCellValue("지급 포인트");
+            headerRow.createCell(4).setCellValue("회원 상태");
+            headerRow.createCell(5).setCellValue("아이디");
+            headerRow.createCell(6).setCellValue("이름/기업명");
+            headerRow.createCell(7).setCellValue("전화번호");
+            headerRow.createCell(8).setCellValue("가입 일자");
+
+            // 헤드 스타일 적용
+            for(int i=0; i<=cellRange; i++){
+                headerRow.getCell(i).setCellStyle(headStyleFormat);
+            }
+
+            // dto 호출하여 데이터 가져오는 소스
+
+            // 각각의 row 생성
+            for (PointInfoDto data : list) {
+                row = sheet.createRow(rowNo++);
+
+                if (data.getPointAmount() < 0)
+                {
+                    row.createCell(0).setCellValue("사용");
+                }
+                else
+                {
+                    row.createCell(0).setCellValue("충전");
+                }
+
+                if (data.getPointTypeId() == 1)
+                {
+                    row.createCell(1).setCellValue("추천인");
+                }
+                else if (data.getPointTypeId() == 2)
+                {
+                    row.createCell(1).setCellValue("고객상담");
+                }
+                else if (data.getPointTypeId() == 3)
+                {
+                    row.createCell(1).setCellValue("관리자ID추가");
+                }
+                else if (data.getPointTypeId() == 4)
+                {
+                    row.createCell(1).setCellValue("끌어올리기");
+                }
+
+                row.createCell(2).setCellValue(data.getPointCreateDate());
+                row.createCell(3).setCellValue(data.getPointAmount());
+
+                if (data.getMemStatusId() == 1)
+                {
+                    row.createCell(4).setCellValue("회원일반");
+                }
+                else if (data.getMemStatusId() == 4)
+                {
+                    row.createCell(4).setCellValue("기업일반");
+                }
+
+                row.createCell(5).setCellValue(data.getMemLoginId());
+
+                if (data.getMemStatusId() == 1)
+                {
+                    row.createCell(6).setCellValue(data.getMemName());
+                }
+                else if (data.getMemStatusId() == 4)
+                {
+                    row.createCell(6).setCellValue(data.getCompanyNameEng());
+                }
+
+                if (data.getMemStatusId() == 1)
+                {
+                    row.createCell(7).setCellValue(data.getMemPhone());
+                }
+                else if (data.getMemStatusId() == 4)
+                {
+                    row.createCell(7).setCellValue(data.getCompanyPhone());
+                }
+
+                row.createCell(8).setCellValue(data.getMemCreateDate());
+
+            }
+
+            // se.shin 엑세파일명
+            String filename = "NAGAJA\0포인트\0사용내역";
 
             response.reset();
 
