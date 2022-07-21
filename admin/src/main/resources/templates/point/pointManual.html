@@ -66,8 +66,9 @@
                                                     <div>
                                                         <input data-toggle="modal" data-target="#point" type="button" class="btn-group btn-dark" value="+지급대상 선택">
                                                     </div>
-                                                    <div style="padding-top: 10px">
-                                                        *선택된 지급 대상 :
+                                                    <div style="padding-top: 10px; display: flex;">
+                                                        <p style="margin-right: 5px;">*선택된 지급 대상 : </p>
+                                                        <p class="select_list"></p> 
                                                     </div>
                                                 </td>
 
@@ -186,7 +187,7 @@
 
             <div class="modal-footer">
                 <!--TODO 체크된 기업명 VIEW 선택된 지급 대상 append 체크박스에 값 memId 존재 다시 선택 완료 누를시 기존 추가된 정보 리무브 -->
-                <button class="btn btn-primary" th:onclick="chkBtn()">선택 완료</button>
+                <button class="btn btn-primary select_btn" onclick="checkList()" data-dismiss="modal">선택 완료</button>
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
             </div>
         </div>
@@ -318,7 +319,51 @@
                 }
             })
     }
-</script>
+
+
+    const selectBtn = document.querySelector('.select_btn');
+    let selectArr = [];
+
+    // selectBtn.addEventListener('click', (e) => {
+    //     checkList();
+    //     console.log(selectArr);
+    // });
+    
+    function checkList() {
+        const _tr = document.querySelector('#item_list').querySelectorAll('tr');
+        const textWrap = document.querySelector('.select_list');
+
+        selectArr = [];
+        textWrap.innerHTML = '';
+
+        _tr.forEach((item, idx) => {
+            const _td = item.querySelectorAll('td'); 
+            let _li = [];
+
+            for(let i = 0; i < _td.length; i++) {
+                if(i === 0) {
+                    const chk = _td[i].querySelector('input');
+                    if(!chk.checked) return;
+                    _li.push(chk.value);
+                };
+
+                if(i === 2) {
+                    _li.push(_td[i].innerText);
+                    selectArr.push(_li);
+                }
+            };
+        });
+
+        selectArr.forEach((item, idx) => {
+            idx === selectArr.length - 1 ? 
+            textWrap.innerHTML += `<span data-val="${item[0]}"> ${item[1]}</span>` :
+            textWrap.innerHTML += `<span data-val="${item[0]}"> ${item[1]}, </span>`;
+
+            if((idx + 1) % 10 === 0 && idx !== 0) textWrap.innerHTML += '<br>';
+        });
+    };
+
+
 </script>
 </body>
 </html>
