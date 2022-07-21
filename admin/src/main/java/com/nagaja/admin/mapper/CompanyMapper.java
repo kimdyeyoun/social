@@ -16,6 +16,9 @@ public interface CompanyMapper {
     //TODO 단골 기업 카운트
     int regularsCount(@Param("regular") RegularInfoDto regular);
 
+    //TODO 기업회원 전체 카운트
+    int companyAllCount(@Param("company") CompanyAllDto companyAllDto);
+
     //TODO 기업회원 신청 카운트
     int insCompanyCount(@Param("company") CompanyDto companyDto, @Param("companyStatus") int companyStatus);
 
@@ -24,6 +27,9 @@ public interface CompanyMapper {
 
     //TODO 기업 설렉트
     CompanyInfoDto selectCompanyInfo(@Param("companyId") int companyId);
+
+    //TODO 기업회원 전체 리스트 설렉트
+    List<CompanyInfoDto> companyAllList(@Param("company") CompanyAllDto companyAllDto,  @Param("offset") int offset, @Param("limit") int limit);
 
     //TODO 기업회원 리스트
     List<CompanyInfoDto> companyList(@Param("company") CompanyDto companyDto, @Param("offset") int offset, @Param("limit") int limit);
@@ -81,5 +87,6 @@ public interface CompanyMapper {
 
     //TODO 기업 상태 반려 업데이트
     void returnUpdCompany(@Param("companyId") int companyId);
+
 
 }

@@ -1,8 +1,8 @@
 package com.nagaja.admin.mapper;
 
+import com.nagaja.admin.dto.CompanyAllDto;
 import com.nagaja.admin.dto.MemberDto;
 import com.nagaja.admin.dto.MemberInfoDto;
-import com.nagaja.admin.entity.Member;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -27,4 +27,5 @@ public interface MemberMapper {
 
     //TODO 멤버 탈퇴
     int memberSecession(@Param("memId") int memId);
+
 }

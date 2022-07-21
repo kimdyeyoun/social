@@ -34,6 +34,19 @@ public class CompanyServiceImpl implements CompanyService {
         return CompanyDto.builder().companyInfoList(companyInfoList).pagination(pagination).build();
     }
 
+    //TODO 기업 회원 올 검색
+    @Override
+    public CompanyAllDto selectCompanyAll(CompanyAllDto companyAllDto)
+    {
+        int count = companyMapper.companyAllCount(companyAllDto);
+
+        Pagination pagination = MyUtils.Paging(count, companyAllDto.getPageNum(), companyAllDto.getLimit());
+
+        List<CompanyInfoDto> companyInfoList = companyMapper.companyAllList(companyAllDto, pagination.getOffset(), pagination.getLimit());
+
+        return CompanyAllDto.builder().companyInfoList(companyInfoList).pagination(pagination).build();
+    }
+
     //TODO 기업 회원 신청 검색
     @Override
     public CompanyDto selectInsCompany(CompanyDto companyDto, int companyStatus)

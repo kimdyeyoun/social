@@ -6,4 +6,22 @@
     <select id="pointTypeList" resultType="PointType">
         SELECT * FROM point_type
     </select>
+
+    <!--TODO 포인트 카운트-->
+    <select id="pointCount" resultType="PointDto">
+        SELECT * FROM point p
+        LEFT JOIN point_type pt ON pt.point_type_id = p.point_type_id
+        LEFT JOIN member m ON p.mem_id = m.mem_id
+        LEFT JOIN company c ON c.mem_id = m.mem_id
+        LEFT JOIN company_name cn ON cn.company_id = c.company_id
+    </select>
+
+    <!--TODO 포인트 타입 업데이트-->
+    <update id="changePointAmount">
+        <foreach item="point" collection="point" index="index" separator=";" close=";">
+            UPDATE point_type
+            SET point_type_amount = #{point}
+            WHERE point_type_id = #{index}+1
+        </foreach>
+    </update>
 </mapper>

@@ -1,5 +1,6 @@
 package com.nagaja.admin.service;
 
+import com.nagaja.admin.dto.CompanyAllDto;
 import com.nagaja.admin.dto.MemberDto;
 import com.nagaja.admin.dto.MemberInfoDto;
 
@@ -22,4 +23,5 @@ public interface MemberService {
 
     //TODO 블랙 리스트 탈퇴
     int memberSecession(int memId);
+
 }

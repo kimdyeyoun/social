@@ -72,6 +72,14 @@ public class CompanyController {
         return companyService.selectCompany(companyDto);
     }
 
+    //TODO 유저 전체검색
+    @GetMapping("/selectCompanyAll")
+    @ResponseBody
+    public CompanyAllDto selectCompanyAll(@ModelAttribute CompanyAllDto companyAllDto)
+    {
+        return companyService.selectCompanyAll(companyAllDto);
+    }
+
     //TODO 기업 리뷰 검색
     @GetMapping("/selectReviews")
     @ResponseBody
