@@ -1,5 +1,6 @@
 package com.nagaja.admin.serviceImpl;
 
+import com.nagaja.admin.dto.CompanyAllDto;
 import com.nagaja.admin.dto.MemberDto;
 import com.nagaja.admin.dto.MemberInfoDto;
 import com.nagaja.admin.entity.Pagination;

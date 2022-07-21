@@ -2,7 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nagaja.admin.mapper.CompanyMapper">
 
-
     <!--TODO 기업회원 카운트-->
     <select id="companyCount" resultType="int">
         SELECT COUNT(*) FROM company c
@@ -121,6 +120,66 @@
                 </when>
                 <when test="company.keywordFilter == 5">
                     AND c.company_phone LIKE CONCAT ('%', #{company.keyword}, '%')
+                </when>
+            </choose>
+        </where>
+        ORDER BY c.company_approval_date DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!--TODO 기업회원 전체 리스트-->
+    <select id="companyAllCount" resultType="int">
+        SELECT COUNT(*) FROM company c
+        LEFT JOIN member m ON m.mem_id = c.mem_id
+        LEFT JOIN company_name cn ON cn.company_id = c.company_id
+        LEFT JOIN board_category bc ON bc.board_category_id = c.board_category_id
+        <where>
+            m.mem_status_id = 4
+            <choose>
+                <when test="company.keywordFilter == 1">
+                    AND m.mem_login_id LIKE CONCAT ('%', #{company.keyword}, '%')
+                </when>
+                <when test="company.keywordFilter == 2">
+                    AND (cn.company_name_eng LIKE CONCAT ('%', #{company.keyword}, '%') OR
+                    cn.company_name_kor LIKE CONCAT ('%', #{company.keyword}, '%') OR
+                    cn.company_name_php LIKE CONCAT ('%', #{company.keyword}, '%') OR
+                    cn.company_name_chn LIKE CONCAT ('%', #{company.keyword}, '%') OR
+                    cn.company_name_jpn LIKE CONCAT ('%', #{company.keyword}, '%'))
+                </when>
+                <when test="company.keywordFilter == 3">
+                    AND c.company_phone LIKE CONCAT ('%', #{company.keyword}, '%')
+                </when>
+                <when test="company.keywordFilter == 4">
+                    AND bc.board_category_title LIKE CONCAT ('%', #{company.keyword}, '%')
+                </when>
+            </choose>
+        </where>
+    </select>
+
+    <!--TODO 기업회원 전체 리스트-->
+    <select id="companyAllList" resultType="CompanyInfoDto">
+        SELECT * FROM company c
+        LEFT JOIN member m ON m.mem_id = c.mem_id
+        LEFT JOIN company_name cn ON cn.company_id = c.company_id
+        LEFT JOIN board_category bc ON bc.board_category_id = c.board_category_id
+        <where>
+            m.mem_status_id = 4
+            <choose>
+                <when test="company.keywordFilter == 1">
+                    AND m.mem_login_id LIKE CONCAT ('%', #{company.keyword}, '%')
+                </when>
+                <when test="company.keywordFilter == 2">
+                    AND (cn.company_name_eng LIKE CONCAT ('%', #{company.keyword}, '%') OR
+                    cn.company_name_kor LIKE CONCAT ('%', #{company.keyword}, '%') OR
+                    cn.company_name_php LIKE CONCAT ('%', #{company.keyword}, '%') OR
+                    cn.company_name_chn LIKE CONCAT ('%', #{company.keyword}, '%') OR
+                    cn.company_name_jpn LIKE CONCAT ('%', #{company.keyword}, '%'))
+                </when>
+                <when test="company.keywordFilter == 3">
+                    AND c.company_phone LIKE CONCAT ('%', #{company.keyword}, '%')
+                </when>
+                <when test="company.keywordFilter == 4">
+                    AND bc.board_category_title LIKE CONCAT ('%', #{company.keyword}, '%')
                 </when>
             </choose>
         </where>

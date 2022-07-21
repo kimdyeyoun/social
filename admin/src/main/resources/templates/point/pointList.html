@@ -53,7 +53,7 @@
                         <tbody>
                         <tr>
                           <td>
-                            지급 일자
+                            일시
                           </td>
                           <td>
                             <input type="date" class="form-control" id="startDate" style="width: 250px;">
@@ -66,7 +66,13 @@
                           <td>
                             유저 상태값
                           </td>
+
                           <td>
+                            <select class="form-control" id="status" style="width: 150px;">
+                              <option value="0" selected>전체</option>
+                              <option value="1">충전</option>
+                              <option value="2">사용</option>
+                            </select>
 
                             <select class="form-control" id="limit" style="width: 150px;">
                               <option value="10" selected>10개씩 보기</option>
@@ -81,13 +87,18 @@
                             키워드 검색필터
                           </td>
                           <td>
+
                             <select class="form-control" id="keywordFilter" style="width: 150px;">
                               <option value="0">전체</option>
-                              <option value="1">아이디</option>
-                              <option value="2">기업명</option>
-                              <option value="3">전화번호</option>
-                              <option value="4">담당자 이름</option>
-                              <option value="5">담당자 메일</option>
+                              <option value="1">추천인</option>
+                              <option value="2">고객 상담</option>
+                              <option value="3">관리자ID추가</option>
+                              <option value="4">끌어올리기</option>
+                              <option value="5">결제</option>
+                              <option value="6">유저 일반</option>
+                              <option value="7">기업 일반</option>
+                              <option value="8">이름</option>
+                              <option value="9">전화번호</option>
                             </select>
                             <input class="form-control" type="text" id="keyword" style="padding-left : 10px; width: 500px;">
                           </td>
@@ -162,6 +173,7 @@
   function SearchBtn(e) {
     var data = {'startDate': $("#startDate").val(),
       'endDate': $("#endDate").val(),
+      'status' : $("#status").val(),
       'keywordFilter': $("#keywordFilter").val(),
       'keyword': $("#keyword").val(),
       'limit' : $('#limit').val(),

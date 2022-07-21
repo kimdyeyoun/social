@@ -143,15 +143,19 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
-    console.log($("input[name=point]").val())
+
     function updBtn()
     {
+        var check_list = [];
+        $("input:text[name=point]").each(function () {
+            check_list.push(parseInt($(this).val()));
+        });
         if (confirm('저장 하시겠습니까?')) {
-
             let data = {
-                'point': $("input[name=point]").val();
+                'point': check_list
             }
             console.log(data);
+
             $.ajax({
                 url: '/point/changePointAmount',
                 method: 'PUT',

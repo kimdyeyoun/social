@@ -20,4 +20,19 @@ public class PointInfoDto {
 
     private String pointTypeContent;
     private int pointTypeAmount;
+
+    private int memStatusId;
+    private String memLoginId;
+    private String memName;
+
+    private int companyNameId;
+    private int companyId;
+    private String companyNameEng;
+    private String companyNameKor;
+    private String companyNamePhp;
+    private String companyNameChn;
+    private String companyNameJpn;
+
+    private String memPhone;
+    private String memCreateDate;
 }

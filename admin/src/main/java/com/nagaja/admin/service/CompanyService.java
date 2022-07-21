@@ -12,6 +12,9 @@ public interface CompanyService {
     //TODO 기업 회원 검색
     CompanyDto selectCompany(CompanyDto companyDto);
 
+    //TODO 기업 회원 올 검색
+    CompanyAllDto selectCompanyAll(CompanyAllDto companyAllDto);
+
     //TODO 기업 회원 신청 검색
     CompanyDto selectInsCompany(CompanyDto companyDto, int companyStatus);
 
@@ -44,4 +47,5 @@ public interface CompanyService {
 
     //TODO 기업회원 반려 업데이트
     int returnCompany(CompanyReturn dto);
+
 }

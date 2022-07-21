@@ -1,5 +1,6 @@
 package com.nagaja.admin.controller;
 
+import com.nagaja.admin.dto.CompanyAllDto;
 import com.nagaja.admin.dto.MemberDto;
 import com.nagaja.admin.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,7 @@ public class MemberController {
     {
         return service.selectMember(memberDto);
     }
+
 
     //TODO 엑셀 다운로드
     @PostMapping("/memberExcelDownload")
