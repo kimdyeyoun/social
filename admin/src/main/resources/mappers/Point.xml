@@ -8,13 +8,181 @@
     </select>
 
     <!--TODO 포인트 카운트-->
-    <select id="pointCount" resultType="PointDto">
+    <select id="pointCount" resultType="int">
+        SELECT COUNT(*) FROM point p
+        LEFT JOIN point_type pt ON pt.point_type_id = p.point_type_id
+        LEFT JOIN member m ON p.mem_id = m.mem_id
+        LEFT JOIN company c ON c.mem_id = m.mem_id
+        LEFT JOIN company_name cn ON cn.company_id = c.company_id
+        <where>
+            p.point_type_id NOT IN(0)
+            <choose>
+                <when test="point.status == 1">
+                    <![CDATA[
+                        AND p.point_amount > 0
+                    ]]>
+                </when>
+                <when test="point.status == 2">
+                    <![CDATA[
+                        AND p.point_amount < 0
+                    ]]>
+                </when>
+            </choose>
+
+            <choose>
+                <when test="point.memStatusId == 1">
+                    AND m.mem_status_id = 1
+                </when>
+                <when test="point.memStatusId == 2">
+                    AND m.mem_status_id = 4
+                </when>
+                <otherwise>
+                    AND (m.mem_status_id = 1 OR m.mem_status_id = 4)
+                </otherwise>
+            </choose>
+
+            <choose>
+                <when test="point.pointTypeId == 1">
+                    AND p.point_type_id = 1
+                </when>
+                <when test="point.pointTypeId == 2">
+                    AND p.point_type_id = 2
+                </when>
+                <when test="point.pointTypeId == 3">
+                    AND p.point_type_id = 3
+                </when>
+                <when test="point.pointTypeId == 4">
+                    AND p.point_type_id = 4
+                </when>
+            </choose>
+
+            <choose>
+                <when test="point.keywordFilter == 1">
+                    AND m.mem_name LIKE CONCAT ('%', #{point.keyword}, '%')
+                </when>
+                <when test="point.keywordFilter == 2">
+                    AND (cn.company_name_eng LIKE CONCAT ('%', #{point.keyword}, '%') OR
+                    cn.company_name_kor LIKE CONCAT ('%', #{point.keyword}, '%') OR
+                    cn.company_name_php LIKE CONCAT ('%', #{point.keyword}, '%') OR
+                    cn.company_name_chn LIKE CONCAT ('%', #{point.keyword}, '%') OR
+                    cn.company_name_jpn LIKE CONCAT ('%', #{point.keyword}, '%'))
+                </when>
+                <when test="point.keywordFilter == 3">
+                    AND (m.mem_phone LIKE CONCAT ('%', #{point.keyword}, '%') OR c.company_phone LIKE CONCAT ('%', #{point.keyword}, '%'))
+                </when>
+            </choose>
+        </where>
+    </select>
+
+    <!--TODO 포인트 카운트-->
+    <select id="pointInfoList" resultType="PointInfoDto">
         SELECT * FROM point p
         LEFT JOIN point_type pt ON pt.point_type_id = p.point_type_id
         LEFT JOIN member m ON p.mem_id = m.mem_id
         LEFT JOIN company c ON c.mem_id = m.mem_id
         LEFT JOIN company_name cn ON cn.company_id = c.company_id
+        <where>
+            p.point_type_id NOT IN(0)
+            <choose>
+                <when test="point.status == 1">
+                    <![CDATA[
+                        AND p.point_amount > 0
+                    ]]>
+                </when>
+                <when test="point.status == 2">
+                    <![CDATA[
+                        AND p.point_amount < 0
+                    ]]>
+                </when>
+            </choose>
+
+            <choose>
+                <when test="point.memStatusId == 1">
+                    AND m.mem_status_id = 1
+                </when>
+                <when test="point.memStatusId == 2">
+                    AND m.mem_status_id = 4
+                </when>
+                <otherwise>
+                    AND (m.mem_status_id = 1 OR m.mem_status_id = 4)
+                </otherwise>
+            </choose>
+
+            <choose>
+                <when test="point.pointTypeId == 1">
+                    AND p.point_type_id = 1
+                </when>
+                <when test="point.pointTypeId == 2">
+                    AND p.point_type_id = 2
+                </when>
+                <when test="point.pointTypeId == 3">
+                    AND p.point_type_id = 3
+                </when>
+                <when test="point.pointTypeId == 4">
+                    AND p.point_type_id = 4
+                </when>
+            </choose>
+
+            <choose>
+                <when test="point.keywordFilter == 1">
+                    AND m.mem_name LIKE CONCAT ('%', #{point.keyword}, '%')
+                </when>
+                <when test="point.keywordFilter == 2">
+                    AND (cn.company_name_eng LIKE CONCAT ('%', #{point.keyword}, '%') OR
+                    cn.company_name_kor LIKE CONCAT ('%', #{point.keyword}, '%') OR
+                    cn.company_name_php LIKE CONCAT ('%', #{point.keyword}, '%') OR
+                    cn.company_name_chn LIKE CONCAT ('%', #{point.keyword}, '%') OR
+                    cn.company_name_jpn LIKE CONCAT ('%', #{point.keyword}, '%'))
+                </when>
+                <when test="point.keywordFilter == 3">
+                    AND (m.mem_phone LIKE CONCAT ('%', #{point.keyword}, '%') OR c.company_phone LIKE CONCAT ('%', #{point.keyword}, '%'))
+                </when>
+            </choose>
+        </where>
+        ORDER BY p.point_create_date DESC
+        LIMIT #{offset}, #{limit}
     </select>
+
+    <!--TODO 포인트 엑셀 다운로드 정보 설렉트-->
+    <select id="selectPointExcel" resultType="PointInfoDto">
+        SELECT * FROM point p
+        LEFT JOIN point_type pt ON pt.point_type_id = p.point_type_id
+        LEFT JOIN member m ON p.mem_id = m.mem_id
+        LEFT JOIN company c ON c.mem_id = m.mem_id
+        LEFT JOIN company_name cn ON cn.company_id = c.company_id
+        WHERE p.point_id = #{pointId}
+    </select>
+
+    <!--TODO 포인트 엑셀 다운로드 정보 All 설렉트-->
+    <select id="selectPointExcelAll" resultType="PointInfoDto">
+        SELECT * FROM point p
+        LEFT JOIN point_type pt ON pt.point_type_id = p.point_type_id
+        LEFT JOIN member m ON p.mem_id = m.mem_id
+        LEFT JOIN company c ON c.mem_id = m.mem_id
+        LEFT JOIN company_name cn ON cn.company_id = c.company_id
+        WHERE p.point_type_id NOT IN(0) AND (m.mem_status_id = 1 OR m.mem_status_id = 4)
+    </select>
+
+    <!--TODO 포인트 지급 기존 금액 설렉트-->
+    <select id="selectPointMember" resultType="PointInfoDto">
+        SELECT *
+        FROM point
+        <where>
+            <foreach item="memId" collection="memId" separator="OR" >
+                mem_id = #{memId}
+            </foreach>
+        </where>
+        ORDER BY point_create_date DESC
+        LIMIT #{limit}
+    </select>
+
+    <!--TODO 포인트 지급-->
+    <insert id="insertPoint">
+        INSERT INTO point
+        (mem_id, point_type_id, point_balance, point_amount)
+        VALUES
+        (#{memId}, 5, #{pointBalance}, #{pointAmount})
+    </insert>
 
     <!--TODO 포인트 타입 업데이트-->
     <update id="changePointAmount">

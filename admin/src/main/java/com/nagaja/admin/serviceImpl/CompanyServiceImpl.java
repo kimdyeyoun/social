@@ -135,7 +135,6 @@ public class CompanyServiceImpl implements CompanyService {
         company.setProducts(companyMapper.selectCompanyProduct(company.getCompanyId()));
         company.setCompanyProductImages(companyMapper.selectCompanyProductImages(company.getCompanyId()));
 
-
         return company;
     }
 

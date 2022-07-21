@@ -14,7 +14,8 @@ public class Point {
     private int pointId;
     private int memId;
     private int pointTypeId;
+    private int pointAmount;
     private int pointService;
     private int pointBalance;
-    private String PointCreateDate;
+    private String pointCreateDate;
 }

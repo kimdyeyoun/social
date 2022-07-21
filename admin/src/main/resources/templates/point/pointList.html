@@ -74,6 +74,20 @@
                               <option value="2">사용</option>
                             </select>
 
+                            <select class="form-control" id="memStatusId" style="width: 150px;">
+                              <option value="0" selected>전체</option>
+                              <option value="1">회원일반</option>
+                              <option value="2">기업일반</option>
+                            </select>
+
+                            <select class="form-control" id="pointTypeId" style="width: 150px;">
+                              <option value="0">전체</option>
+                              <option value="1">추천인</option>
+                              <option value="2">고객 상담</option>
+                              <option value="3">관리자ID추가</option>
+                              <option value="4">끌어올리기</option>
+                            </select>
+
                             <select class="form-control" id="limit" style="width: 150px;">
                               <option value="10" selected>10개씩 보기</option>
                               <option value="30">30개씩 보기</option>
@@ -89,16 +103,10 @@
                           <td>
 
                             <select class="form-control" id="keywordFilter" style="width: 150px;">
-                              <option value="0">전체</option>
-                              <option value="1">추천인</option>
-                              <option value="2">고객 상담</option>
-                              <option value="3">관리자ID추가</option>
-                              <option value="4">끌어올리기</option>
-                              <option value="5">결제</option>
-                              <option value="6">유저 일반</option>
-                              <option value="7">기업 일반</option>
-                              <option value="8">이름</option>
-                              <option value="9">전화번호</option>
+                              <option value="0" selected>전체</option>
+                              <option value="1">이름</option>
+                              <option value="2">기업명</option>
+                              <option value="3">전화번호</option>
                             </select>
                             <input class="form-control" type="text" id="keyword" style="padding-left : 10px; width: 500px;">
                           </td>
@@ -118,7 +126,7 @@
                 <a type="button" class="search_btn btn btn-primary" id="excelDownload" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;">선택 엑셀다운로드</a>
                 <a type="button" class="search_btn btn btn-primary" id="excelDownload2" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;">전체 엑셀다운로드</a>
                 <p class="grid-header">
-                  총 { 199 } 건
+
                 </p>
 
                 <div class="grid-body">
@@ -129,14 +137,14 @@
                         <tr>
                           <td><input type="checkbox" id="txn-checkbox" class="check-all"></td>
                           <td>번호</td>
+                          <td>종류</td>
+                          <td>유형</td>
                           <td>지급일자</td>
-                          <td>지급 유형</td>
                           <td>지급 포인트</td>
+                          <td>회원 상태</td>
                           <td>아이디</td>
-                          <td>기업명</td>
+                          <td>이름/기업명</td>
                           <td>전화번호</td>
-                          <td>담당자 이름</td>
-                          <td>담당자 메일</td>
                           <td>가입 일자</td>
                         </tr>
                         </tbody>
@@ -174,6 +182,8 @@
     var data = {'startDate': $("#startDate").val(),
       'endDate': $("#endDate").val(),
       'status' : $("#status").val(),
+      'memStatusId' : $("#memStatusId").val(),
+      'pointTypeId' : $("#pointTypeId").val(),
       'keywordFilter': $("#keywordFilter").val(),
       'keyword': $("#keyword").val(),
       'limit' : $('#limit').val(),
@@ -191,7 +201,7 @@
                 var page_list = $("#page_list");
                 var page_add = "";
                 // list start
-                if (result.companyInfoList.length == 0) {
+                if (result.pointInfoList.length == 0) {
                   item_add += '<tr>';
                   item_add += '<td></td>';
                   item_add += '<td></td>';
@@ -205,25 +215,77 @@
                   item_add += '<td></td>';
                   item_add += '</tr>';
                 } else {
-                  for (var i = 0; i < result.companyInfoList.length; i++) {
+                  for (var i = 0; i < result.pointInfoList.length; i++) {
                     var num = i+1
                     if (e != 1)
                     {
                       num = num + ((e-1)*10);
                     }
                     item_add += '<tr>';
-                    item_add += '<td>' + '<input type="checkbox" name="memId" id="member-checkbox" class="list-checkBox" value="' + result.companyInfoList[i].memId + '">' + '</td>';
+                    item_add += '<td>' + '<input type="checkbox" name="pointId" id="member-checkbox" class="list-checkBox" value="' + result.pointInfoList[i].pointId + '">' + '</td>';
                     item_add += '<td>' + num + '</td>';
-                    item_add += '<td><a href="/member/detailMember?memId='+(result.companyInfoList[i].memId)+'">' + result.companyInfoList[i].memLoginId + '</a></td>';
-                    item_add += '<td>' + result.companyInfoList[i].boardCategoryTitle + '</td>';
-                    item_add += '<td><a href="/company/detailCompany?memId='+(result.companyInfoList[i].memId)+'">' + result.companyInfoList[i].companyNameEng + '</a></td>';
-                    item_add += '<td>' + result.companyInfoList[i].nationInfoName + '</td>';
-                    item_add += '<td>' + result.companyInfoList[i].companyAddress + '</td>';
-                    item_add += '<td>' + result.companyInfoList[i].companyPhone + '</td>';
-                    item_add += '<td>' + result.companyInfoList[i].regularPeople + '</td>';
-                    item_add += '<td>' + result.companyInfoList[i].companyApprovalDate + '</td>';
 
+                    if (result.pointInfoList[i].pointAmount < 0)
+                    {
+                      item_add += '<td>' + '사용' + '</td>';
+                    }
+                    else
+                    {
+                      item_add += '<td>' + '충전' + '</td>';
+                    }
 
+                    if (result.pointInfoList[i].pointTypeId == 1)
+                    {
+                      item_add += '<td>' + '추천인' + '</td>';
+                    }
+                    else if (result.pointInfoList[i].pointTypeId == 2)
+                    {
+                      item_add += '<td>' + '고객상담' + '</td>';
+                    }
+                    else if (result.pointInfoList[i].pointTypeId == 3)
+                    {
+                      item_add += '<td>' + '관리자ID추가' + '</td>';
+                    }
+                    else if (result.pointInfoList[i].pointTypeId == 4)
+                    {
+                      item_add += '<td>' + '끌어올리기' + '</td>';
+                    }
+                    else if (result.pointInfoList[i].pointTypeId == 5)
+                    {
+                      item_add += '<td>' + '충전' + '</td>';
+                    }
+
+                    item_add += '<td>' + result.pointInfoList[i].pointCreateDate + '</td>';
+                    item_add += '<td>' + result.pointInfoList[i].pointAmount + '</td>';
+
+                    if (result.pointInfoList[i].memStatusId == 1)
+                    {
+                      item_add += '<td>' + '회원일반' + '</td>';
+                    }
+                    else if (result.pointInfoList[i].memStatusId == 4)
+                    {
+                      item_add += '<td>' + '기업일반' + '</td>';
+                    }
+
+                    item_add += '<td><a href="/member/detailMember?memId='+(result.pointInfoList[i].memId)+'">' + result.pointInfoList[i].memLoginId + '</a></td>';
+
+                    if (result.pointInfoList[i].memStatusId == 1)
+                    {
+                      item_add += '<td>' + result.pointInfoList[i].memName + '</td>';
+                    }
+                    else if (result.pointInfoList[i].memStatusId == 4)
+                    {
+                      item_add += '<td>' + result.pointInfoList[i].companyNameEng + '</td>';
+                    }
+                    if (result.pointInfoList[i].memStatusId == 1)
+                    {
+                      item_add += '<td>' + result.pointInfoList[i].memPhone + '</td>';
+                    }
+                    else if (result.pointInfoList[i].memStatusId == 4)
+                    {
+                      item_add += '<td>' + result.pointInfoList[i].companyPhone + '</td>';
+                    }
+                    item_add += '<td>' + result.pointInfoList[i].pointCreateDate + '</td>';
 
                     item_add += '</tr>';
                   }
@@ -262,13 +324,13 @@
   // se.shin 엑셀 다운로드 버튼클릭시
   $('#excelDownload').click(function () {
 
-    if ($("input:checkbox[name=memId]:checked").length == 0)
+    if ($("input:checkbox[name=pointId]:checked").length == 0)
     {
       alert("데이터를 선택해주세요.")
       return false;
     }
 
-    var excelUrl = "/company/companyExcelDownload";
+    var excelUrl = "/point/pointExcelDownload";
 
     var request = new XMLHttpRequest();
     request.open('POST', excelUrl, true);
@@ -307,14 +369,14 @@
 
     // se.shin 파라미터 세팅
     var check_list = [];
-    $("input:checkbox[name=memId]:checked").each(function () {
+    $("input:checkbox[name=pointId]:checked").each(function () {
       check_list.push($(this).val());
     });
     console.log(check_list)
 
-    const memId = check_list;
+    const pointId = check_list;
 
-    var params = 'memId=' + memId;
+    var params = 'pointId=' + pointId;
     request.send(params);
 
   });
@@ -322,7 +384,7 @@
   // se.shin 엑셀 다운로드 버튼클릭시
   $('#excelDownload2').click(function () {
 
-    var excelUrl = "/company/companyExcelDownload";
+    var excelUrl = "/point/pointExcelDownload";
 
     var request = new XMLHttpRequest();
     request.open('POST', excelUrl, true);

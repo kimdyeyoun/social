@@ -19,6 +19,8 @@ public class PointDto {
     private String startDate;//TODO 시작날
     private String endDate;//TODO 종료날
     private int status;//TODO 충전 사용
+    private int memStatusId;//TODO 유저타입
+    private int pointTypeId;//TODO 포인트 타입
     private int keywordFilter;//TODO 키워드필터
     private String keyword;//TODO 키워드
     private int pageNum;

@@ -34,6 +34,7 @@ public class CompanyInfoDto {
     private int companyAuth;
     private int companyDelivery;
     private int companyReservation;
+    private int companyReservationCheck;
     private int companyPickup;
     private int companyParking;
     private int companyPet;
@@ -42,6 +43,7 @@ public class CompanyInfoDto {
     private int companyManageMax;
     private Double companyLat;
     private Double companyLng;
+    private int companyCertification;
     private String companyApplicationDate;
     private String companyApprovalDate;
 

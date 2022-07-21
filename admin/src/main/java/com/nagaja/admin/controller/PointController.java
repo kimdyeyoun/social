@@ -2,12 +2,14 @@ package com.nagaja.admin.controller;
 
 import com.nagaja.admin.dto.ChangePointAmountDto;
 import com.nagaja.admin.dto.PointDto;
+import com.nagaja.admin.dto.PointInsDto;
 import com.nagaja.admin.service.PointService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Controller
@@ -48,6 +50,22 @@ public class PointController {
     public PointDto selectPoint(@ModelAttribute PointDto dto)
     {
         return pointService.selectPoint(dto);
+    }
+
+    //TODO 포인트 엑셀 다운로드
+    @PostMapping("/pointExcelDownload")
+    @ResponseBody
+    public void pointExcelDownload(HttpServletResponse response, @RequestParam(value = "pointId", required = false) List<Integer> pointId, @RequestParam(value = "whole", defaultValue = "0") int whole)
+    {
+        pointService.pointExcelDownload(response, pointId, whole);
+    }
+
+    //TODO 포인트 설정 페이지
+    @PostMapping("/insertPoint")
+    @ResponseBody
+    public int insertPoint(@ModelAttribute PointInsDto pointInsDto)
+    {
+        return pointService.insertPoint(pointInsDto);
     }
 
     //TODO 포인트 설정 페이지

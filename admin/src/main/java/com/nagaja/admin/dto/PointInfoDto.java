@@ -14,9 +14,10 @@ public class PointInfoDto {
     private int pointId;
     private int memId;
     private int pointTypeId;
+    private int pointAmount;
     private int pointService;
     private int pointBalance;
-    private String PointCreateDate;
+    private String pointCreateDate;
 
     private String pointTypeContent;
     private int pointTypeAmount;
@@ -33,6 +34,7 @@ public class PointInfoDto {
     private String companyNameChn;
     private String companyNameJpn;
 
+    private String companyPhone;
     private String memPhone;
     private String memCreateDate;
 }

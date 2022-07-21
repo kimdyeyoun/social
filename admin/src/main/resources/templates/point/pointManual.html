@@ -80,10 +80,10 @@
                                                 </th>
                                                 <td>
                                                     <div>
-                                                        <input type="text" class="form-control" style="width: 200px" placeholder="0">P *1P 100원
+                                                        <input type="text" id="pointAmount" class="form-control" style="width: 200px" placeholder="0"> P *1P 100원
                                                     </div>
-                                                    <div>
-                                                        <input style="margin-left: 100px" type="radio" name="pointType" id="pointType1" class="roundup_type" value=1 checked required="required">
+                                                    <div style="padding-top: 20px;">
+                                                        <input type="radio" name="pointType" id="pointType1" class="roundup_type" value=1 checked required="required">
                                                         <label for="pointType1">결제 포인트</label>
                                                         <input style="margin-left: 100px" type="radio" name="pointType" id="pointType2" class="roundup_type" value=0 required="required">
                                                         <label for="pointType2">서비스 포인트</label>
@@ -204,40 +204,6 @@
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
 
-    function updBtn()
-    {
-        var check_list = [];
-        $("input:text[name=point]").each(function () {
-            check_list.push(parseInt($(this).val()));
-        });
-        if (confirm('저장 하시겠습니까?')) {
-            let data = {
-                'point': check_list
-            }
-            console.log(data);
-
-            $.ajax({
-                url: '/point/changePointAmount',
-                method: 'PUT',
-                dataType: "json",
-                data: data,
-                success: function (result) {
-                    switch (result) {
-
-                        case 0:
-                            alert("변경 실패 관리자에게 문의해주십시오.");
-                            break;
-                        case 1:
-                            alert('변경 되었습니다.');
-                            location.reload();
-                            break;
-                    }
-                }
-            })
-        }
-
-    }
-
     $(document).ready(function () {
         SearchBtn(1);
         var $sportAll = $('#txn-checkbox');
@@ -356,12 +322,58 @@
 
         selectArr.forEach((item, idx) => {
             idx === selectArr.length - 1 ? 
-            textWrap.innerHTML += `<span data-val="${item[0]}"> ${item[1]}</span>` :
-            textWrap.innerHTML += `<span data-val="${item[0]}"> ${item[1]}, </span>`;
+            textWrap.innerHTML += `<span data-val="${item[0]}">${item[1]}<input type="hidden" name="pk" value="${item[0]}"></span>` :
+            textWrap.innerHTML += `<span data-val="${item[0]}"> ${item[1]}, <input type="hidden" name="pk" value="${item[0]}"></span>`;
 
             if((idx + 1) % 10 === 0 && idx !== 0) textWrap.innerHTML += '<br>';
         });
+            console.log(selectArr);
     };
+
+    function insBtn()
+    {
+
+        var check_list = [];
+        $("input:hidden[name=pk]").each(function () {
+            check_list.push(parseInt($(this).val()));
+        });
+
+        if (check_list.length == 0)
+        {
+            alert('지급할 회원을 선택하십시오.')
+            return false;
+        }
+
+        console.log( $("input:radio[name=pointType]"))
+        if (confirm('지급 하시겠습니까?')) {
+            let data = {
+                'pk': check_list,
+                'pointAmount' : $("#pointAmount").val(),
+                'pointType' : $("input:radio[name=pointType]").val()
+            }
+            console.log(data);
+
+            $.ajax({
+                url: '/point/insertPoint',
+                method: 'POST',
+                dataType: "json",
+                data: data,
+                success: function (result) {
+                    switch (result) {
+
+                        case 0:
+                            alert("지급 실패 관리자에게 문의해주십시오.");
+                            break;
+                        case 1:
+                            alert('지급 되었습니다.');
+                            location.reload();
+                            break;
+                    }
+                }
+            })
+        }
+
+    }
 
 
 </script>
