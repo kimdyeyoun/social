@@ -13,19 +13,20 @@ import java.util.List;
 @Getter
 @ToString
 @Builder
-@Alias("MarketBoardDto")
-public class MarketBoardDto {
+@Alias("BoardDto")
+public class BoardDto {
 
     private String startDate;//TODO 시작날
     private String endDate;//TODO 종료날
-    private int boardCategoryId;//TODO 카테고리 값
-    private int usedMarketStatus;// TODO 중고마켓 상태
+    private int boardCategoryId;
+    private int boardStatus;
     private int keywordFilter;//TODO 키워드필터
     private String keyword;//TODO 키워드
     private int pageNum;
     private int limit;
 
     private Pagination pagination;
-    private List<MarketBoardInfoDto> boardInfoList;
+
+    private List<BoardInfoDto> boardInfoList;
 
 }

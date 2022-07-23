@@ -69,13 +69,24 @@ public class PointServiceImpl implements PointService {
     //TODO 포인트 지급
     public int insertPoint(PointInsDto pointInsDto)
     {
-        int limit = pointInsDto.getPk().size();
-        List<PointInfoDto> list = pointMapper.selectPointMember(pointInsDto.getPk(), limit);
+        List<PointInfoDto> list = pointMapper.selectPointMember(pointInsDto.getPk());
         int result = 0;
-        for (PointInfoDto data : list)
-        {
 
-            result = pointMapper.insertPoint(data.getMemId(), data.getPointBalance()+pointInsDto.getPointAmount(), pointInsDto.getPointAmount());
+        //TODO 결제포인트
+        if (pointInsDto.getPointType() == 1)
+        {
+            for (PointInfoDto data : list)
+            {
+                result = pointMapper.insertPoint(data.getMemId(), data.getPointBalance()+pointInsDto.getPointAmount(), pointInsDto.getPointAmount());
+            }
+        }
+        //TODO 서비스 포인트
+        else
+        {
+            for (PointInfoDto data : list)
+            {
+                result = pointMapper.insertServicePoint(data.getMemId(), data.getPointBalance(), data.getPointService()+pointInsDto.getPointAmount(), pointInsDto.getPointAmount());
+            }
         }
 
 

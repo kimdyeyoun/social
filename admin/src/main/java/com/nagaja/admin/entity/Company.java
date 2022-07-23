@@ -40,5 +40,7 @@ public class Company {
     private int companyCertification;
     private String companyApplicationDate;
     private String companyApprovalDate;
+    private String companyCertificationStart;
+    private String companyCertificationEnd;
 
 }

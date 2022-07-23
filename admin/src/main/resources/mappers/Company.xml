@@ -133,6 +133,7 @@
         LEFT JOIN member m ON m.mem_id = c.mem_id
         LEFT JOIN company_name cn ON cn.company_id = c.company_id
         LEFT JOIN board_category bc ON bc.board_category_id = c.board_category_id
+        LEFT JOIN nation_info ni ON ni.nation_info_id = m.nation_info_id
         <where>
             m.mem_status_id = 4
             <choose>
@@ -151,6 +152,9 @@
                 </when>
                 <when test="company.keywordFilter == 4">
                     AND bc.board_category_title LIKE CONCAT ('%', #{company.keyword}, '%')
+                </when>
+                <when test="company.keywordFilter == 5">
+                    AND ni.nation_info_name LIKE CONCAT ('%', #{company.keyword}, '%')
                 </when>
             </choose>
         </where>
@@ -162,6 +166,7 @@
         LEFT JOIN member m ON m.mem_id = c.mem_id
         LEFT JOIN company_name cn ON cn.company_id = c.company_id
         LEFT JOIN board_category bc ON bc.board_category_id = c.board_category_id
+        LEFT JOIN nation_info ni ON ni.nation_info_id = m.nation_info_id
         <where>
             m.mem_status_id = 4
             <choose>
@@ -180,6 +185,9 @@
                 </when>
                 <when test="company.keywordFilter == 4">
                     AND bc.board_category_title LIKE CONCAT ('%', #{company.keyword}, '%')
+                </when>
+                <when test="company.keywordFilter == 5">
+                    AND ni.nation_info_name LIKE CONCAT ('%', #{company.keyword}, '%')
                 </when>
             </choose>
         </where>

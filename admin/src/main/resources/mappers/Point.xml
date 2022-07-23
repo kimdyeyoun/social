@@ -168,12 +168,11 @@
         SELECT *
         FROM point
         <where>
-            <foreach item="memId" collection="memId" separator="OR" >
-                mem_id = #{memId}
+            point_id IN
+            <foreach item="memId" collection="memId" separator="," open="(" close=")">
+                 (SELECT MAX(point_id) FROM point WHERE mem_id = #{memId})
             </foreach>
         </where>
-        ORDER BY point_create_date DESC
-        LIMIT #{limit}
     </select>
 
     <!--TODO 포인트 지급-->
@@ -182,6 +181,14 @@
         (mem_id, point_type_id, point_balance, point_amount)
         VALUES
         (#{memId}, 5, #{pointBalance}, #{pointAmount})
+    </insert>
+
+    <!--TODO 포인트 지급-->
+    <insert id="insertServicePoint">
+        INSERT INTO point
+            (mem_id, point_type_id, point_service, point_balance, point_amount)
+        VALUES
+            (#{memId}, 6, #{pointService}, #{pointBalance}, #{pointAmount})
     </insert>
 
     <!--TODO 포인트 타입 업데이트-->

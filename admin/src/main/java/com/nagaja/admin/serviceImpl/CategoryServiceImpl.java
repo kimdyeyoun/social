@@ -62,6 +62,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public int insertCategory(CategoryInsDto dto)
     {
+        if (dto.getBoardCategoryTitle() == null || dto.getBoardCategoryTitle().equals(""))
+        {
+            return Status.SECOND;
+        }
 
         if (dto.getFile() != null && !dto.getFile().isEmpty())
         {
@@ -88,7 +92,6 @@ public class CategoryServiceImpl implements CategoryService {
 
         if (dto.getSubCategoryTitle() != null && !dto.getSubCategoryTitle().isEmpty())
         {
-            System.out.println(dto.getSubCategoryTitle());
             categoryMapper.parentInSubCategory(dto.getSubCategoryTitle());
         }
 

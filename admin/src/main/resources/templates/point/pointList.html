@@ -126,7 +126,7 @@
                 <a type="button" class="search_btn btn btn-primary" id="excelDownload" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;">선택 엑셀다운로드</a>
                 <a type="button" class="search_btn btn btn-primary" id="excelDownload2" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;">전체 엑셀다운로드</a>
                 <p class="grid-header">
-
+                  <span id="count"></span>
                 </p>
 
                 <div class="grid-body">
@@ -216,6 +216,8 @@
                   item_add += '</tr>';
                 } else {
                   for (var i = 0; i < result.pointInfoList.length; i++) {
+                    $("#count").empty();
+                    $("#count").append('총 {' + result.pointInfoList.length + '} 건');
                     var num = i+1
                     if (e != 1)
                     {
@@ -253,6 +255,10 @@
                     else if (result.pointInfoList[i].pointTypeId == 5)
                     {
                       item_add += '<td>' + '충전' + '</td>';
+                    }
+                    else if (result.pointInfoList[i].pointTypeId == 6)
+                    {
+                      item_add += '<td>' + '서비스' + '</td>';
                     }
 
                     item_add += '<td>' + result.pointInfoList[i].pointCreateDate + '</td>';

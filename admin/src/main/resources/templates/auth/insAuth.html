@@ -45,7 +45,7 @@
                 <div class="row">
                     <div class="col-12" style="margin-bottom: 15px; display: flex; justify-content: space-between;">
                         <!-- Page Heading -->
-                        <h4>포인트 수동 지급</h4>
+                        <h4>나가자 인증 업체(기업) 등록</h4>
                     </div>
                 </div>
                 <div class="row">
@@ -60,15 +60,15 @@
                                             <tbody>
                                             <tr>
                                                 <th style="text-align: center">
-                                                    지급 대상 선택
+                                                    인증업체
                                                 </th>
-                                                <td>
+                                                <td colspan="3">
                                                     <div>
-                                                        <input data-toggle="modal" data-target="#point" type="button" class="btn-group btn-dark" value="+지급대상 선택">
+                                                        <input data-toggle="modal" data-target="#auth" type="button" class="btn-group btn-dark" value="+업체 선택">
                                                     </div>
                                                     <div style="padding-top: 10px; display: flex;">
-                                                        <p style="margin-right: 5px;">*선택된 지급 대상 : </p>
-                                                        <p class="select_list"></p> 
+                                                        <p style="margin-right: 5px;">*선택된 인증 대상 : </p>
+                                                        <p class="select_list"></p>
                                                     </div>
                                                 </td>
 
@@ -76,20 +76,37 @@
 
                                             <tr>
                                                 <th style="text-align: center">
-                                                    지급 포인트
+                                                    노출 시작일자 *
                                                 </th>
                                                 <td>
-                                                    <div>
-                                                        <input type="text" id="pointAmount" class="form-control" style="width: 200px" placeholder="0"> P *1P 100원
-                                                    </div>
-                                                    <div style="padding-top: 20px;">
-                                                        <input type="radio" name="pointType" id="pointType1" class="roundup_type" value=1 checked required="required">
-                                                        <label for="pointType1">결제 포인트</label>
-                                                        <input style="margin-left: 100px" type="radio" name="pointType" id="pointType2" class="roundup_type" value=0 required="required">
-                                                        <label for="pointType2">서비스 포인트</label>
-                                                    </div>
+                                                    <span><input type="date" id="startDate"></span>
+                                                    <span>
+                                                        <select class="form-control" id="startTime" style="width: 150px;">
+                                                            <option value="0" selected>00:00</option>
+                                                            <th:block th:each="num: ${#numbers.sequence(1,24)}">
+                                                                <option th:if="${num <= 9}" th:value="${'0'+num+':00'}" th:text="${'0'+num+':00'}"></option>
+                                                                <option th:if="${num > 9 && num <= 19}" th:value="${num+':00'}" th:text="${num+':00'}"></option>
+                                                                <option th:if="${num > 19}" th:value="${num+':00'}" th:text="${num+':00'}"></option>
+                                                            </th:block>
+                                                        </select>
+                                                    </span>
                                                 </td>
 
+                                                <th style="text-align: center">
+                                                    노출 종료 일자
+                                                </th>
+                                                <td>
+                                                    <span><input type="date" id="endDate"></span>
+                                                        <select class="form-control" id="endTime" style="width: 150px;">
+                                                            <option value="0" selected>00:00</option>
+                                                            <th:block th:each="num: ${#numbers.sequence(1,24)}">
+                                                                <option th:if="${num <= 9}" th:value="${'0'+num+':00'}" th:text="${'0'+num+':00'}"></option>
+                                                                <option th:if="${num > 9 && num <= 19}" th:value="${num+':00'}" th:text="${num+':00'}"></option>
+                                                                <option th:if="${num > 19}" th:value="${num+':00'}" th:text="${num+':00'}"></option>
+                                                            </th:block>
+                                                        </select>
+                                                    </span>
+                                                </td>
                                             </tr>
                                             </tbody>
                                         </table>
@@ -100,9 +117,13 @@
                     </div>
                 </div>
 
-                <div class="mx-auto" style="text-align: right; margin-top: 10px;">
-                    <div>
-                        <span><button class="search_btn btn btn-dark" onclick="insBtn()">지급하기</button></span>
+                <div class="mx-auto">
+                    <div style="margin-top: 10px; display: flex; align-items: center; justify-content: space-between">
+                        <span style="display: block;"><a href="/auth/authList"><input type="button" class="search_btn btn btn-dark" value="초기화"></a></span>
+                        <div>
+                            <span><a href="/auth/authList"><input type="button" class="search_btn btn btn-primary" value="목록"></a></span>
+                            <span><button class="search_btn btn btn-dark" onclick="insBtn()">등록</button></span>
+                        </div>
                     </div>
                 </div>
 
@@ -112,7 +133,7 @@
 </div>
 
 <!--TODO 포인트 지급 대상 모달창-->
-<div class="modal fade" id="point" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="auth" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -124,7 +145,7 @@
 
             <div class="grid">
                 <p class="grid-header">
-                     포인트 지급 대상 선택
+                    인증 대상 선택
                 </p>
                 <div class="card-body">
                     <br>
@@ -145,6 +166,7 @@
                                                 <option value="2">기업명</option>
                                                 <option value="3">전화번호</option>
                                                 <option value="4">기업 카테고리</option>
+                                                <option value="5">주소 국가</option>
                                             </select>
                                             <input class="form-control" type="text" id="keyword" style="padding-left : 10px; width: 500px;">
                                         </td>
@@ -173,6 +195,7 @@
                                     <td>기업명</td>
                                     <td>전화번호</td>
                                     <td>기업 카테고리</td>
+                                    <td>주소 국가</td>
                                 </tr>
                                 </tbody>
                                 <tbody id="item_list">
@@ -211,7 +234,7 @@
             var $this = $(this);
             var checked = $this.prop('checked'); // checked 문자열 참조(true, false)
             // console.log(checked);
-            $('input[name="memId"]').prop('checked', checked);
+            $('input[name="companyId"]').prop('checked', checked);
 
         });
     });
@@ -241,16 +264,18 @@
                         item_add += '<td></td>';
                         item_add += '<td></td>';
                         item_add += '<td></td>';
+                        item_add += '<td></td>';
                         item_add += '</tr>';
                     } else {
                         for (var i = 0; i < result.companyInfoList.length; i++) {
                             item_add += '<tr>';
 
-                            item_add += '<td>' + '<input type="checkbox" name="memId" id="member-checkbox" class="list-checkBox" value="' + result.companyInfoList[i].memId + '">' + '</td>';
+                            item_add += '<td>' + '<input type="checkbox" name="companyId" id="member-checkbox" class="list-checkBox" value="' + result.companyInfoList[i].companyId + '">' + '</td>';
                             item_add += '<td>' + result.companyInfoList[i].memLoginId + '</td>'
                             item_add += '<td>' + result.companyInfoList[i].companyNameEng + '</td>'
                             item_add += '<td>' + result.companyInfoList[i].companyPhone + '</td>'
                             item_add += '<td>' + result.companyInfoList[i].boardCategoryTitle + '</td>'
+                            item_add += '<td>' + result.companyInfoList[i].nationInfoName + '</td>'
 
                             item_add += '</tr>';
                         }
@@ -294,7 +319,7 @@
     //     checkList();
     //     console.log(selectArr);
     // });
-    
+
     function checkList() {
         const _tr = document.querySelector('#item_list').querySelectorAll('tr');
         const textWrap = document.querySelector('.select_list');
@@ -303,7 +328,7 @@
         textWrap.innerHTML = '';
 
         _tr.forEach((item, idx) => {
-            const _td = item.querySelectorAll('td'); 
+            const _td = item.querySelectorAll('td');
             let _li = [];
 
             for(let i = 0; i < _td.length; i++) {
@@ -321,17 +346,19 @@
         });
 
         selectArr.forEach((item, idx) => {
-            idx === selectArr.length - 1 ? 
-            textWrap.innerHTML += `<span data-val="${item[0]}">${item[1]}<input type="hidden" name="pk" value="${item[0]}"></span>` :
-            textWrap.innerHTML += `<span data-val="${item[0]}"> ${item[1]}, <input type="hidden" name="pk" value="${item[0]}"></span>`;
+            idx === selectArr.length - 1 ?
+                textWrap.innerHTML += `<span data-val="${item[0]}">${item[1]}<input type="hidden" name="pk" value="${item[0]}"></span>` :
+                textWrap.innerHTML += `<span data-val="${item[0]}"> ${item[1]}, <input type="hidden" name="pk" value="${item[0]}"></span>`;
 
             if((idx + 1) % 10 === 0 && idx !== 0) textWrap.innerHTML += '<br>';
         });
-            console.log(selectArr);
+        console.log(selectArr);
     };
 
     function insBtn()
     {
+        var startDate = $("#startDate").val()+ " " +$("#startTime").val()
+        var endDate = $("#endDate").val()+ " " +$("#endTime").val()
 
         var check_list = [];
         $("input:hidden[name=pk]").each(function () {
@@ -340,38 +367,36 @@
 
         if (check_list.length == 0)
         {
-            alert('지급할 회원을 선택하십시오.')
+            alert('인증 회원을 선택하십시오.')
             return false;
         }
-
-        if ($("#pointAmount").val() == 0 || $("#pointAmount").val() == "")
+        if ($("#startTime").val() == 0 || $("#endTime").val() == 0)
         {
-            alert('금액을 입력 하십시오.')
+            alert('인증 시간을 선택하십시오.')
             return false;
         }
+        if (confirm('등록 하시겠습니까?')) {
 
-        console.log( $("input:radio[name=pointType]:checked"))
-        if (confirm('지급 하시겠습니까?')) {
             let data = {
                 'pk': check_list,
-                'pointAmount' : $("#pointAmount").val(),
-                'pointType' : $("input:radio[name=pointType]:checked").val()
+                'startDate' : startDate,
+                'endDate' : endDate
             }
             console.log(data);
 
             $.ajax({
-                url: '/point/insertPoint',
-                method: 'POST',
+                url: '/auth/updateAuth',
+                method: 'PUT',
                 dataType: "json",
                 data: data,
                 success: function (result) {
                     switch (result) {
 
                         case 0:
-                            alert("지급 실패 관리자에게 문의해주십시오.");
+                            alert("등록 실패 관리자에게 문의해주십시오.");
                             break;
                         case 1:
-                            alert('지급 되었습니다.');
+                            alert('등록 되었습니다.');
                             location.reload();
                             break;
                     }

@@ -1,8 +1,6 @@
 package com.nagaja.admin.serviceImpl;
 
-import com.nagaja.admin.dto.BoardMarketUpdDto;
-import com.nagaja.admin.dto.MarketBoardDto;
-import com.nagaja.admin.dto.MarketBoardInfoDto;
+import com.nagaja.admin.dto.*;
 import com.nagaja.admin.entity.BoardCategory;
 import com.nagaja.admin.entity.Pagination;
 import com.nagaja.admin.mapper.BoardMapper;
@@ -38,9 +36,8 @@ public class BoardServiceImpl implements BoardService {
 
         List<MarketBoardInfoDto> list = boardMapper.marketBoardList(marketBoardDto, pagination.getOffset(), pagination.getLimit());
 
-        return MarketBoardDto.builder().pagination(pagination).marketCount(count).boardInfoList(list).build();
+        return MarketBoardDto.builder().pagination(pagination).boardInfoList(list).build();
     }
-
 
     //TODO 중고마켓 디테일 설렉트
     @Override
@@ -51,11 +48,38 @@ public class BoardServiceImpl implements BoardService {
         return info;
     }
 
+    //TODO 게시판 검색
+    @Override
+    public BoardDto selectBoard(BoardDto boardDto)
+    {
+        int count = boardMapper.boardCount(boardDto);
+
+        Pagination pagination = MyUtils.Paging(count, boardDto.getPageNum(), boardDto.getLimit());
+
+        List<BoardInfoDto> list = boardMapper.boardList(boardDto, pagination.getOffset(), pagination.getLimit());
+
+        return BoardDto.builder().pagination(pagination).boardInfoList(list).build();
+    }
+
     //TODO NEW 표기일 설렉트
     @Override
     public int newSelect()
     {
         return boardMapper.newSelect();
+    }
+
+    //TODO 게시판 글 공개/비공개 설정
+    @Override
+    public int updateBoard(BoardUpdDto boardUpdDto)
+    {
+        int result = boardMapper.updateBoard(boardUpdDto);
+
+        if (result == 0)
+        {
+            return Status.ZERO;
+        }
+
+        return Status.FIRST;
     }
 
     //TODO 중고마켓 글 공개/비공개 설정
