@@ -46,6 +46,8 @@ public class CompanyInfoDto {
     private int companyCertification;
     private String companyApplicationDate;
     private String companyApprovalDate;
+    private String companyCertificationStart;
+    private String companyCertificationEnd;
 
     private int companyNameId;
     private String companyNameEng;

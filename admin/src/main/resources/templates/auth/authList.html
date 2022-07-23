@@ -35,14 +35,14 @@
             <div id="content-viewport">
                 <div class="row">
                     <div class="col-12" style="margin-bottom: 15px; display: flex; justify-content: space-between;">
-                        <h4>기업회원 통합 관리</h4>
+                        <h4>나가자 인증 업체(기업) 목록</h4>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12">
                         <div class="grid">
                             <p class="grid-header">
-                                회원 검색
+                                인증 업체 검색
                             </p>
                             <div class="card-body">
                                 <br>
@@ -53,7 +53,7 @@
                                                 <tbody>
                                                 <tr>
                                                     <td>
-                                                        가입 일자
+                                                        신청 일자
                                                     </td>
                                                     <td>
                                                         <input type="date" class="form-control" id="startDate" style="width: 250px;">
@@ -64,18 +64,11 @@
 
                                                 <tr>
                                                     <td>
-                                                        유저 상태값
+                                                        필터
                                                     </td>
                                                     <td>
-                                                        <select class="form-control" id="companyStatus" name="companyStatus" style="width: 150px;">
-                                                            <option value="0" selected>전체</option>
-                                                            <option value="1">신청완료</option>
-                                                            <option value="2">등록완료</option>
-                                                            <option value="3">반려</option>
-                                                        </select>
-
                                                         <select class="form-control" id="nationInfoId" style="width: 150px;">
-                                                            <option value="0" selected>전체</option>
+                                                            <option value="0" selected>주소 국가</option>
                                                             <th:block th:each="data : ${nation}">
                                                                 <option th:value="${data.nationInfoId}" th:text="${data.nationInfoName}"></option>
                                                             </th:block>
@@ -93,16 +86,17 @@
                                                     <td>
                                                         키워드 검색필터
                                                     </td>
+
                                                     <td>
                                                         <select class="form-control" id="keywordFilter" style="width: 150px;">
-                                                            <option value="0">전체</option>
-                                                            <option value="1">이름</option>
-                                                            <option value="2">아이디</option>
-                                                            <option value="3">전화번호</option>
-                                                            <option value="4">주소</option>
-                                                        </select>
+                                                            <option value="0" selected>전체</option>
+                                                            <option value="1">기업 카테고리</option>
+                                                            <option value="2">기업명</option>
+                                                            <option value="3">주소</option>
+                                                       </select>
                                                         <input class="form-control" type="text" id="keyword" style="padding-left : 10px; width: 500px;">
                                                     </td>
+
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -116,11 +110,10 @@
                         </div>
                         <div class="col-12">
                             <div class="grid" id="grid-width">
-                                <a type="button" class="search_btn btn btn-primary" onclick="changeStatusBtn()" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;">기업회원 전환</a>
-                                <a type="button" class="search_btn btn btn-primary" id="excelDownload" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;">선택 엑셀다운로드</a>
-                                <a type="button" class="search_btn btn btn-primary" id="excelDownload2" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;">전체 엑셀다운로드</a>
                                 <p class="grid-header">
-                                    기업 신청 목록
+                                    <span id="count"></span>
+                                    <a type="button" class="search_btn btn btn-danger" id="excelDownload" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;" onclick="delBtn()">삭제</a>
+                                    <a type="button" href="/auth/insAuth" class="search_btn btn btn-primary" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;">+등록</a>
                                 </p>
 
                                 <div class="grid-body">
@@ -130,16 +123,13 @@
                                                 <tbody>
                                                 <tr>
                                                     <td><input type="checkbox" id="txn-checkbox" class="check-all"></td>
-                                                    <td>번호</td>
-                                                    <td>신청일자</td>
-                                                    <td>신청상태</td>
-                                                    <td>신청인 아이디</td>
-                                                    <td>기업카테고리</td>
+                                                    <td>기업 카테고리</td>
                                                     <td>기업명</td>
-                                                    <td>담당자이름</td>
-                                                    <td>담당자 전화번호</td>
-                                                    <td>담당자 메일</td>
+                                                    <td>주소 국가</td>
                                                     <td>주소</td>
+                                                    <td>단골 수</td>
+                                                    <td>노출 시작일</td>
+                                                    <td>노출 종료일자</td>
                                                 </tr>
                                                 </tbody>
                                                 <tbody id="item_list">
@@ -158,6 +148,7 @@
         </div>
     </div>
 </div>
+
 <th:block th:include="/../hf/footer.html"></th:block>
 <script src="/assets/vendors/js/core.js"></script>
 <script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
@@ -173,24 +164,21 @@
     });
 
     function SearchBtn(e) {
-
         var data = {'startDate': $("#startDate").val(),
             'endDate': $("#endDate").val(),
             'nationInfoId' : $("#nationInfoId").val(),
+            'memStatusId' : 4,
             'keywordFilter': $("#keywordFilter").val(),
-            'companyStatus' : $("#companyStatus").val(),
-            'memStatusId' : 0,
             'keyword': $("#keyword").val(),
             'limit' : $('#limit').val(),
             'pageNum': e};
         $.ajax(
             {
-                url: '/company/selectInsCompany',
+                url: '/auth/selectAuthCompany',
                 method: 'GET',
                 dataType : 'json',
                 data : data,
                 success: function (result) {
-                    console.log(result);
                     var item_list = $("#item_list");
                     var item_add = "";
                     var page_list = $("#page_list");
@@ -206,48 +194,22 @@
                         item_add += '<td></td>';
                         item_add += '<td></td>';
                         item_add += '<td></td>';
-                        item_add += '<td></td>';
-                        item_add += '<td></td>';
-                        item_add += '<td></td>';
                         item_add += '</tr>';
                     } else {
                         for (var i = 0; i < result.companyInfoList.length; i++) {
-                            item_add += '<tr>';
-                            var num = i+1
-                            if (e != 1)
-                            {
-                                num = num + ((e-1)*10);
-                            }
-                            if (result.companyInfoList[i].companyStatus == 1)
-                            {
-                                item_add += '<td>' + '<input type="checkbox" name="memId" id="member-checkbox" class="list-checkBox" value="' + result.companyInfoList[i].memId + '">' + '</td>';
-                            }
-                            else
-                            {
-                                item_add += '<td>' + '<input type="checkbox" name="memId" id="member-checkbox" class="list-checkBox" value="0">' + '</td>';
-                            }
-                            item_add += '<td>' + num + '</td>';
-                            item_add += '<td>' + result.companyInfoList[i].companyApplicationDate + '</td>';
+                            $("#count").empty();
+                            $("#count").append('총 {' + result.companyInfoList.length + '} 건');
 
-                            if (result.companyInfoList[i].companyStatus == 1)
-                            {
-                                item_add += '<td>' + '신청완료' + '</td>';
-                            }
-                            else if (result.companyInfoList[i].companyStatus == 2)
-                            {
-                                item_add += '<td>' + '등록완료' + '</td>';
-                            }
-                            else if (result.companyInfoList[i].companyStatus == 3)
-                            {
-                                item_add += '<td>' + '반려' + '</td>';
-                            }
-                            item_add += '<td><a href="/member/detailMember?memId='+(result.companyInfoList[i].memId)+'">' + result.companyInfoList[i].memLoginId + '</a></td>';
+                            item_add += '<tr>';
+                            item_add += '<td>' + '<input type="checkbox" name="companyId" id="member-checkbox" class="list-checkBox" value="' + result.companyInfoList[i].companyId + '">' + '</td>';
                             item_add += '<td>' + result.companyInfoList[i].boardCategoryTitle + '</td>';
-                            item_add += '<td><a href="/company/detailInsCompany?memId='+(result.companyInfoList[i].memId)+'">' + result.companyInfoList[i].companyNameEng + '</a></td>';
-                            item_add += '<td>' + result.companyInfoList[i].companyMasterName + '</td>';
-                            item_add += '<td>' + result.companyInfoList[i].companyMasterPhone + '</td>';
-                            item_add += '<td>' + result.companyInfoList[i].companyMasterEmail + '</td>';
+                            item_add += '<td><a href="/company/detailCompany?memId='+result.companyInfoList[i].memId+'">' + result.companyInfoList[i].companyNameEng + '</a></td>';
+
+                            item_add += '<td>' + result.companyInfoList[i].nationInfoName + '</td>';
                             item_add += '<td>' + result.companyInfoList[i].companyAddress + '</td>';
+                            item_add += '<td>' + result.companyInfoList[i].regularPeople + '</td>';
+                            item_add += '<td>' + result.companyInfoList[i].companyCertificationStart + '</td>';
+                            item_add += '<td>' + result.companyInfoList[i].companyCertificationEnd + '</td>';
 
                             item_add += '</tr>';
                         }
@@ -283,147 +245,48 @@
             })
     }
 
-    // se.shin 엑셀 다운로드 버튼클릭시
-    $('#excelDownload').click(function () {
 
-        if ($("input:checkbox[name=memId]:checked").length == 0)
-        {
-            alert("데이터를 선택해주세요.")
-            return false;
-        }
+    function delBtn()
+    {
 
-        var excelUrl = "/company/companyExcelDownload";
-
-        var request = new XMLHttpRequest();
-        request.open('POST', excelUrl, true);
-        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-        request.responseType = 'blob';
-
-        request.onload = function(e) {
-
-            var filename = "";
-            var disposition = request.getResponseHeader('Content-Disposition');
-            if (disposition && disposition.indexOf('attachment') !== -1) {
-                var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-                var matches = filenameRegex.exec(disposition);
-                if (matches != null && matches[1])
-                    filename = decodeURI( matches[1].replace(/['"]/g, '') );
-            }
-
-
-            if (this.status === 200) {
-                var blob = this.response;
-                if(window.navigator.msSaveOrOpenBlob) {
-                    window.navigator.msSaveBlob(blob, filename);
-                }
-                else{
-                    var downloadLink = window.document.createElement('a');
-                    var contentTypeHeader = request.getResponseHeader("Content-Type");
-                    downloadLink.href = window.URL.createObjectURL(new Blob([blob], { type: contentTypeHeader }));
-                    downloadLink.download = filename;
-                    document.body.appendChild(downloadLink);
-                    downloadLink.click();
-                    document.body.removeChild(downloadLink);
-                }
-            }
-        };
-
-
-        // se.shin 파라미터 세팅
         var check_list = [];
-        $("input:checkbox[name=memId]:checked").each(function () {
-            check_list.push($(this).val());
+        $("input:checkbox[name=companyId]:checked").each(function () {
+            check_list.push(parseInt($(this).val()));
         });
 
-        const memId = check_list;
-
-        var params = 'memId=' + memId;
-        request.send(params);
-
-    });
-
-    // se.shin 엑셀 다운로드 버튼클릭시
-    $('#excelDownload2').click(function () {
-
-        var excelUrl = "/company/companyExcelDownload";
-
-        var request = new XMLHttpRequest();
-        request.open('POST', excelUrl, true);
-        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-        request.responseType = 'blob';
-
-        request.onload = function(e) {
-
-            var filename = "";
-            var disposition = request.getResponseHeader('Content-Disposition');
-            if (disposition && disposition.indexOf('attachment') !== -1) {
-                var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-                var matches = filenameRegex.exec(disposition);
-                if (matches != null && matches[1])
-                    filename = decodeURI( matches[1].replace(/['"]/g, '') );
-            }
-
-
-            if (this.status === 200) {
-                var blob = this.response;
-                if(window.navigator.msSaveOrOpenBlob) {
-                    window.navigator.msSaveBlob(blob, filename);
-                }
-                else{
-                    var downloadLink = window.document.createElement('a');
-                    var contentTypeHeader = request.getResponseHeader("Content-Type");
-                    downloadLink.href = window.URL.createObjectURL(new Blob([blob], { type: contentTypeHeader }));
-                    downloadLink.download = filename;
-                    document.body.appendChild(downloadLink);
-                    downloadLink.click();
-                    document.body.removeChild(downloadLink);
-                }
-            }
-        };
-
-        var params = 'whole=' + 2;
-
-        request.send(params);
-
-    });
-
-    function changeStatusBtn() {
-
-        if ($("input:checkbox[name=memId]:checked").length == 0)
+        if (check_list.length == 0)
         {
-            alert('선택된 정보가 없습니다.')
+            alert('인증 회원을 선택하십시오.')
             return false;
         }
-        if (confirm('변경 하겠습니까?')) {
-            var check_list = [];
-            $("input:checkbox[name=memId]:checked").each(function () {
-                check_list.push($(this).val());
-            });
 
-            const memId = check_list;
+        if (confirm('삭제 하시겠습니까?')) {
 
             let data = {
-                'memId': memId
+                'pk': check_list
             }
+            console.log(data);
+
             $.ajax({
-                url: '/company/changeInsCompanyStatus',
-                method: 'PUT',
+                url: '/auth/deleteAuth',
+                method: 'DELETE',
                 dataType: "json",
                 data: data,
                 success: function (result) {
                     switch (result) {
 
                         case 0:
-                            alert("변경 실패 관리자에게 문의해주십시오.");
+                            alert("삭제 실패 관리자에게 문의해주십시오.");
                             break;
                         case 1:
-                            alert('변경 되었습니다.');
+                            alert('삭제 되었습니다.');
                             location.reload();
                             break;
                     }
                 }
             })
         }
+
     }
 
 </script>

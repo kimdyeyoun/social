@@ -14,6 +14,7 @@
         LEFT JOIN used_market um ON um.board_id = b.board_id
         LEFT JOIN board_category bc ON bc.board_category_id = b.board_category_id
         <where>
+            bc.board_category_parent = 1
             <if test="market.startDate != null and !market.startDate.equals('')">
                 <![CDATA[
                         AND DATE(b.board_create_date) >= DATE(#{market.startDate})
@@ -57,6 +58,7 @@
         LEFT JOIN board_image bi ON bi.board_id = b.board_id
 
         <where>
+            bc.board_category_parent = 1
             <if test="market.startDate != null and !market.startDate.equals('')">
                 <![CDATA[
                         AND DATE(b.board_create_date) >= DATE(#{market.startDate})
@@ -93,6 +95,76 @@
         LIMIT #{offset}, #{limit}
     </select>
 
+    <!--TODO 게시판 카운트-->
+    <select id="boardCount" resultType="int">
+        SELECT COUNT(*) FROM board b
+        <where>
+            b.board_category_id = #{board.boardCategoryId}
+            <if test="board.startDate != null and !board.startDate.equals('')">
+                <![CDATA[
+                        AND DATE(b.board_create_date) >= DATE(#{board.startDate})
+                    ]]>
+            </if>
+
+            <if test="board.endDate != null and !board.endDate.equals('')">
+                <![CDATA[
+                        AND DATE(b.board_create_date) <= DATE(#{board.endDate})
+                    ]]>
+            </if>
+
+            <if test="board.boardStatus != null and board.boardStatus != 2">
+                AND b.board_status = #{board.boardStatus}
+            </if>
+
+            <choose>
+                <when test="board.keywordFilter == 1">
+                    AND b.board_title LIKE CONCAT('%', #{board.keyword}, '%')
+                </when>
+                <when test="board.keywordFilter == 2">
+                    AND b.board_content LIKE CONCAT('%', #{board.keyword}, '%')
+                </when>
+            </choose>
+        </where>
+    </select>
+
+    <!--TODO 게시판 리스트-->
+    <select id="boardList" resultType="BoardInfoDto">
+        SELECT *,
+        (SELECT COUNT(*) FROM reply r WHERE r.board_id = b.board_id) AS replyCount,
+        (SELECT COUNT(*) FROM board_view_count bvc WHERE bvc.board_id = b.board_id) AS boardCount
+        FROM board b
+        <where>
+            b.board_category_id = #{board.boardCategoryId}
+
+            <if test="board.startDate != null and !board.startDate.equals('')">
+                <![CDATA[
+                        AND DATE(b.board_create_date) >= DATE(#{board.startDate})
+                    ]]>
+            </if>
+
+            <if test="board.endDate != null and !board.endDate.equals('')">
+                <![CDATA[
+                        AND DATE(b.board_create_date) <= DATE(#{board.endDate})
+                    ]]>
+            </if>
+
+            <if test="board.boardStatus != null and board.boardStatus != 2">
+                AND b.board_status = #{board.boardStatus}
+            </if>
+
+            <choose>
+                <when test="board.keywordFilter == 1">
+                    AND b.board_title LIKE CONCAT('%', #{board.keyword}, '%')
+                </when>
+                <when test="board.keywordFilter == 2">
+                    AND b.board_content LIKE CONCAT('%', #{board.keyword}, '%')
+                </when>
+            </choose>
+        </where>
+        ORDER BY b.board_create_date DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
     <!--TODO 게시판 디테일 설렉트-->
     <select id="selectDetailMarket" resultType="MarketBoardInfoDto">
         SELECT * FROM board b
@@ -113,6 +185,19 @@
         SELECT new_item_marking_date FROM new_item_marking
         WHERE new_item_marking_id = 1
     </select>
+
+    <!--TODO TODO 게시판 글 공개/비공개 설정-->
+    <update id="updateBoard">
+        UPDATE board
+        SET board_status = #{market.boardStatus}
+        <where>
+            <if test="board.boardId != null and board.boardId.size() != 0">
+                <foreach item="boardId" collection="board.boardId" open="(" close=")" separator="OR">
+                    board_id = #{boardId}
+                </foreach>
+            </if>
+        </where>
+    </update>
 
     <!--TODO 중고 마켓 공개/비공개 설정-->
     <update id="updateBoardMarket">

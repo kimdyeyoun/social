@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nagaja.admin.mapper.AuthMapper">
+
+    <!--TODO 인증업체 카운트-->
+    <select id="authCompanyCount" resultType="int">
+        SELECT COUNT(*) FROM company c
+        LEFT JOIN member m ON m.mem_id = c.mem_id
+        LEFT JOIN board_category bc ON bc.board_category_id = c.board_category_id
+        LEFT JOIN company_name cn ON cn.company_id = c.company_id
+        LEFT JOIN nation_info ni ON ni.nation_info_id = m.nation_info_id
+        <where>
+            c.company_certification = 1 AND m.mem_status_id = 4
+
+            <if test="company.startDate != null and !company.startDate.equals('')">
+                <![CDATA[
+                        AND DATE(c.company_certification_start) >= DATE(#{company.startDate})
+                    ]]>
+            </if>
+
+            <if test="company.endDate != null and !company.endDate.equals('')">
+                <![CDATA[
+                        AND DATE(c.company_certification_start) <= DATE(#{company.endDate})
+                    ]]>
+            </if>
+
+            <if test="company.nationInfoId != null and company.nationInfoId != 0">
+                AND m.nation_info_id = #{company.nationInfoId}
+            </if>
+
+            <choose>
+                <when test="company.keywordFilter == 1">
+                    AND bc.board_category_title LIKE CONCAT ('%', #{company.keyword}, '%')
+                </when>
+                <when test="company.keywordFilter == 2">
+                    AND (cn.company_name_eng LIKE CONCAT ('%', #{company.keyword}, '%') OR
+                    cn.company_name_kor LIKE CONCAT ('%', #{company.keyword}, '%') OR
+                    cn.company_name_php LIKE CONCAT ('%', #{company.keyword}, '%') OR
+                    cn.company_name_chn LIKE CONCAT ('%', #{company.keyword}, '%') OR
+                    cn.company_name_jpn LIKE CONCAT ('%', #{company.keyword}, '%'))
+                </when>
+                <when test="company.keywordFilter == 3">
+                    AND c.company_address LIKE CONCAT ('%', #{company.keyword}, '%')
+                </when>
+            </choose>
+        </where>
+    </select>
+
+    <!--TODO 인증업체 카운트-->
+    <select id="authCompanyList" resultType="CompanyInfoDto">
+        SELECT *,(SELECT COUNT(*) FROM regular r WHERE r.company_id = c.company_id) AS regularPeople
+        FROM company c
+        LEFT JOIN member m ON m.mem_id = c.mem_id
+        LEFT JOIN board_category bc ON bc.board_category_id = c.board_category_id
+        LEFT JOIN company_name cn ON cn.company_id = c.company_id
+        LEFT JOIN nation_info ni ON ni.nation_info_id = m.nation_info_id
+        <where>
+            c.company_certification = 1 AND m.mem_status_id = 4
+
+            <if test="company.startDate != null and !company.startDate.equals('')">
+                <![CDATA[
+                        AND DATE(c.company_certification_start) >= DATE(#{company.startDate})
+                    ]]>
+            </if>
+
+            <if test="company.endDate != null and !company.endDate.equals('')">
+                <![CDATA[
+                        AND DATE(c.company_certification_start) <= DATE(#{company.endDate})
+                    ]]>
+            </if>
+
+            <if test="company.nationInfoId != null and company.nationInfoId != 0">
+                AND m.nation_info_id = #{company.nationInfoId}
+            </if>
+
+            <choose>
+                <when test="company.keywordFilter == 1">
+                    AND bc.board_category_title LIKE CONCAT ('%', #{company.keyword}, '%')
+                </when>
+                <when test="company.keywordFilter == 2">
+                    AND (cn.company_name_eng LIKE CONCAT ('%', #{company.keyword}, '%') OR
+                    cn.company_name_kor LIKE CONCAT ('%', #{company.keyword}, '%') OR
+                    cn.company_name_php LIKE CONCAT ('%', #{company.keyword}, '%') OR
+                    cn.company_name_chn LIKE CONCAT ('%', #{company.keyword}, '%') OR
+                    cn.company_name_jpn LIKE CONCAT ('%', #{company.keyword}, '%'))
+                </when>
+                <when test="company.keywordFilter == 3">
+                    AND c.company_address LIKE CONCAT ('%', #{company.keyword}, '%')
+                </when>
+            </choose>
+        </where>
+        ORDER BY c.company_certification_start DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!--TODO 인증업체 만료갯수 카운트-->
+    <select id="selectNowAuth" resultType="int">
+        SELECT COUNT(*) FROM company
+        <where>
+            company_certification = 1
+            <![CDATA[
+                     AND DATE_FORMAT(company_certification_end, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{now}, '%Y-%m-%d %H:%i:%s')
+                ]]>
+        </where>
+    </select>
+
+    <!--TODO 기간만료 인증업체 업데이트-->
+    <update id="updateAuthCompany">
+        UPDATE company
+        SET company_certification = 0
+        <where>
+            company_certification = 1
+            <![CDATA[
+                     AND DATE_FORMAT(company_certification_end, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{now}, '%Y-%m-%d %H:%i:%s')
+                ]]>
+        </where>
+    </update>
+
+    <!--TODO 인증업체 company_certification 1-->
+    <update id="updateAuth">
+        UPDATE company
+        SET company_certification = 1,
+            company_certification_start = #{auth.startDate},
+            company_certification_end = #{auth.endDate}
+        <where>
+            <foreach item="companyId" collection="auth.pk" separator="OR">
+                company_id =#{companyId}
+            </foreach>
+        </where>
+    </update>
+
+    <!--TODO 인증업체 company_certification 0-->
+    <update id="deleteAuth">
+        UPDATE company
+        SET company_certification = 0
+        <where>
+            <foreach item="companyId" collection="companyId" separator="OR">
+                company_id =#{companyId}
+            </foreach>
+        </where>
+    </update>
+
+
+</mapper>

@@ -27,10 +27,13 @@ public interface PointMapper {
     List<PointInfoDto> selectPointExcelAll();
 
     //TODO 포인트 지급 기존 금액 설렉트
-    List<PointInfoDto> selectPointMember(@Param("memId") List<Integer> pk, @Param("limit") int limit);
+    List<PointInfoDto> selectPointMember(@Param("memId") List<Integer> pk);
 
     //TODO 포인트 지급
-    int insertPoint(@Param("memId") int memId, @Param("pointBalance") int pointBalance,@Param("pointAmount") int pointAmount);
+    int insertPoint(@Param("memId") int memId, @Param("pointBalance") int pointBalance, @Param("pointAmount") int pointAmount);
+
+    //TODO 서비스 포인트 지급
+    int insertServicePoint(@Param("memId") int memId, @Param("pointBalance") int pointBalance, @Param("pointService") int pointService, @Param("pointAmount") int pointAmount);
 
     //TODO 포인트 값 체인지
     int changePointAmount(@Param("point") List<Integer> point);

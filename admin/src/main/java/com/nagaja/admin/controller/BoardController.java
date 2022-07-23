@@ -1,8 +1,6 @@
 package com.nagaja.admin.controller;
 
-import com.nagaja.admin.dto.BoardMarketUpdDto;
-import com.nagaja.admin.dto.CategorySequenceDto;
-import com.nagaja.admin.dto.MarketBoardDto;
+import com.nagaja.admin.dto.*;
 import com.nagaja.admin.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -41,6 +39,22 @@ public class BoardController {
     public MarketBoardDto selectMarketBoard(@ModelAttribute MarketBoardDto marketBoardDto)
     {
         return boardService.selectMarketBoard(marketBoardDto);
+    }
+
+    //TODO 게시판 리스트 조회
+    @GetMapping("/selectBoard")
+    @ResponseBody
+    public BoardDto selectBoard(@ModelAttribute BoardDto boardDto)
+    {
+        return boardService.selectBoard(boardDto);
+    }
+
+    //TODO TODO 게시판 글 공개/비공개 설정
+    @PutMapping("/updateBoard")
+    @ResponseBody
+    public int updateBoard(@ModelAttribute BoardUpdDto boardUpdDto)
+    {
+        return boardService.updateBoard(boardUpdDto);
     }
 
     //TODO 중고마켓 공개/비공개 설정
