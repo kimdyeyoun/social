@@ -16,6 +16,9 @@ public interface BoardService {
     //TODO 중고마켓 디테일 설렉트
     MarketBoardInfoDto selectDetailMarket(int boardId);
 
+    //TODO 게시판 상세정보
+    BoardInfoDto selectDetailBoard(int boardId);
+
     //TODO NEW 표기일 설렉트
     int newSelect();
 

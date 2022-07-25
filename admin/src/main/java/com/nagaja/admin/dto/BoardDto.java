@@ -20,6 +20,7 @@ public class BoardDto {
     private String endDate;//TODO 종료날
     private int boardCategoryId;
     private int boardStatus;
+    private int childStatus;
     private int keywordFilter;//TODO 키워드필터
     private String keyword;//TODO 키워드
     private int pageNum;

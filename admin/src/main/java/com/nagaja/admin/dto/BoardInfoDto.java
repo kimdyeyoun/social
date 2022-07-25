@@ -1,9 +1,13 @@
 package com.nagaja.admin.dto;
 
+import com.nagaja.admin.entity.BoardImage;
+import com.nagaja.admin.entity.Reply;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.apache.ibatis.type.Alias;
+
+import java.util.List;
 
 @Setter
 @Getter
@@ -22,15 +26,15 @@ public class BoardInfoDto {
     private String boardCreateDate;
     private String boardModifyDate;
 
-    private int replyId;
-    private String replyContent;
-    private int replyStatus;
-    private String replyCreateDate;
-    private String replyModifyDate;
+    private List<BoardImage> images;
+    //댓글글
+    List<Reply> replyList;
 
     //TODO 댓글 갯수
     private int replyCount;
     //TODO 게시판 조회수
     private int boardCount;
+    //TODO 상단 고정 체크
+    private int noticeCount;
 
 }

@@ -47,6 +47,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	protected void configure(HttpSecurity http) throws Exception
 	{
 		http
+			.headers()
+			.frameOptions()
+			.sameOrigin()
+			.disable()
 			.csrf().disable()
 			.authorizeRequests()
 //				.antMatchers("/**").permitAll()

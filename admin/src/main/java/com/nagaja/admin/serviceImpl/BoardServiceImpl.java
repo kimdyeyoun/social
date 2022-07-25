@@ -2,6 +2,7 @@ package com.nagaja.admin.serviceImpl;
 
 import com.nagaja.admin.dto.*;
 import com.nagaja.admin.entity.BoardCategory;
+import com.nagaja.admin.entity.BoardImage;
 import com.nagaja.admin.entity.Pagination;
 import com.nagaja.admin.mapper.BoardMapper;
 import com.nagaja.admin.service.BoardService;
@@ -46,6 +47,21 @@ public class BoardServiceImpl implements BoardService {
         MarketBoardInfoDto info = boardMapper.selectDetailMarket(boardId);
         info.setImages(boardMapper.selectBoardImages(boardId));
         return info;
+    }
+
+    //TODO 게시판 상세정보
+    @Override
+    public BoardInfoDto selectDetailBoard(int boardId)
+    {
+        BoardInfoDto boardInfoDto = boardMapper.selectDetailBoard(boardId);
+
+        List<BoardImage> images = boardMapper.selectBoardImages(boardId);
+
+        if (images != null && !images.isEmpty())
+        {
+            boardInfoDto.setImages(images);
+        }
+        return boardInfoDto;
     }
 
     //TODO 게시판 검색

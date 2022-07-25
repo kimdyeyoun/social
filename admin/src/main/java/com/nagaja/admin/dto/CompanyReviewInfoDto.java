@@ -17,7 +17,6 @@ public class CompanyReviewInfoDto {
     private int companyReviewId;
     private int memId;
     private int companyId;
-    private String companyReviewTitle;
     private String companyReviewContent;
     private int companyReviewStatus;
     private String companyReviewCreateDate;

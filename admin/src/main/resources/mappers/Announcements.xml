@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nagaja.admin.mapper.AnnouncementsMapper">
+
+    <!--TODO 공지사항 하위 카테고리 설렉트-->
+    <select id="selectChildBoard" resultType="BoardCategory">
+        SELECT * FROM board_category
+        WHERE board_category_parent = 19
+    </select>
+
+    <!--TODO 공지사항 이미지 설렉트-->
+    <select id="selectFile" resultType="BoardImage">
+        SELECT * FROM board_image
+        WHERE board_image_id = #{boardImageId}
+    </select>
+
+    <!--TODO 공지사항 이미지 설렉트 리스트-->
+    <select id="selectFileList" resultType="BoardImage">
+        SELECT * FROM board_image
+        WHERE board_id = #{boardId}
+    </select>
+
+    <!--TODO 공지사항 상단 카운트-->
+    <select id="noticeAnnouncementsCount" resultType="int">
+        SELECT COUNT(*) FROM notice
+        WHERE board_id = #{boardId}
+    </select>
+
+    <!--TODO 공지사항 등록-->
+    <insert id="insertAnnouncements">
+        INSERT INTO board
+        (board_category_id, board_title, board_content, board_status)
+        VALUES
+        (#{announcements.boardCategoryId}, #{announcements.boardTitle}, #{announcements.boardContent}, #{announcements.boardStatus})
+        <selectKey resultType="integer" keyProperty="announcements.boardId" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <!--TODO 공지사항 이미지 등록-->
+    <insert id="insertAnnouncementsImage">
+        INSERT INTO board_image
+            (board_id, board_image_origin, board_image_name)
+        VALUES
+            (#{announcements.boardId}, #{announcements.boardImageOrigin}, #{announcements.boardImageName})
+    </insert>
+
+    <!--TODO 공지사항 업데이트-->
+    <update id="updateAnnouncements">
+        UPDATE board
+        SET board_category_id = #{announcements.boardCategoryId},
+            board_title = #{announcements.boardTitle},
+            board_content = #{announcements.boardContent},
+            board_status = #{announcements.boardStatus}
+        WHERE board_id = #{announcements.boardId}
+    </update>
+
+    <!--TODO 공지사항 상단 업데이트-->
+    <update id="changeAnnouncements">
+        UPDATE notice
+        SET board_id = #{boardId}
+        WHERE notice_type = 2
+    </update>
+
+    <!--TODO 게시판 델리트-->
+    <delete id="deleteAnnouncements">
+        DELETE FROM board
+        WHERE board_id = #{boardId}
+    </delete>
+
+    <!--TODO 게시판 이미지 델리트-->
+    <delete id="deleteFile">
+        DELETE FROM board_image
+        WHERE board_image_id = #{boardImageId}
+    </delete>
+
+</mapper>

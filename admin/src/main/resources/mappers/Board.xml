@@ -98,8 +98,9 @@
     <!--TODO 게시판 카운트-->
     <select id="boardCount" resultType="int">
         SELECT COUNT(*) FROM board b
+        LEFT JOIN board_category bc ON b.board_category_id = bc.board_category_id
         <where>
-            b.board_category_id = #{board.boardCategoryId}
+
             <if test="board.startDate != null and !board.startDate.equals('')">
                 <![CDATA[
                         AND DATE(b.board_create_date) >= DATE(#{board.startDate})
@@ -111,6 +112,15 @@
                         AND DATE(b.board_create_date) <= DATE(#{board.endDate})
                     ]]>
             </if>
+
+            <choose>
+                <when test="board.childStatus != 0">
+                    b.board_category_id = #{board.childStatus}
+                </when>
+                <otherwise>
+                    bc.board_category_parent = #{board.boardCategoryId}
+                </otherwise>
+            </choose>
 
             <if test="board.boardStatus != null and board.boardStatus != 2">
                 AND b.board_status = #{board.boardStatus}
@@ -133,8 +143,8 @@
         (SELECT COUNT(*) FROM reply r WHERE r.board_id = b.board_id) AS replyCount,
         (SELECT COUNT(*) FROM board_view_count bvc WHERE bvc.board_id = b.board_id) AS boardCount
         FROM board b
+        LEFT JOIN board_category bc ON b.board_category_id = bc.board_category_id
         <where>
-            b.board_category_id = #{board.boardCategoryId}
 
             <if test="board.startDate != null and !board.startDate.equals('')">
                 <![CDATA[
@@ -147,6 +157,15 @@
                         AND DATE(b.board_create_date) <= DATE(#{board.endDate})
                     ]]>
             </if>
+
+            <choose>
+                <when test="board.childStatus != 0">
+                    b.board_category_id = #{board.childStatus}
+                </when>
+                <otherwise>
+                    bc.board_category_parent = #{board.boardCategoryId}
+                </otherwise>
+            </choose>
 
             <if test="board.boardStatus != null and board.boardStatus != 2">
                 AND b.board_status = #{board.boardStatus}
@@ -174,7 +193,7 @@
         WHERE b.board_id = #{boardId}
     </select>
 
-    <!--TODO 게시판 디테일 설렉트-->
+    <!--TODO 게시판 이미지 설렉트-->
     <select id="selectBoardImages" resultType="BoardImage">
         SELECT * FROM board_image
         WHERE board_id = #{boardId}
@@ -186,10 +205,16 @@
         WHERE new_item_marking_id = 1
     </select>
 
+    <!--TODO 게시판 상세조회-->
+    <select id="selectDetailBoard" resultType="BoardInfoDto">
+        SELECT *,(SELECT COUNT(*) FROM notice WHERE board_id = #{boardId} AND notice_type = 2) AS noticeCount FROM board
+        WHERE board_id = #{boardId}
+    </select>
+
     <!--TODO TODO 게시판 글 공개/비공개 설정-->
     <update id="updateBoard">
         UPDATE board
-        SET board_status = #{market.boardStatus}
+        SET board_status = #{board.boardStatus}
         <where>
             <if test="board.boardId != null and board.boardId.size() != 0">
                 <foreach item="boardId" collection="board.boardId" open="(" close=")" separator="OR">

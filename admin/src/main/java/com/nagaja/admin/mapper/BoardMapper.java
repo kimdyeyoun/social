@@ -32,6 +32,9 @@ public interface BoardMapper {
     //TODO 중고마켓 이미지 설렉트
     List<BoardImage> selectBoardImages(@Param("boardId") int boardId);
 
+    //TODO 게시판 상세정보
+    BoardInfoDto selectDetailBoard(@Param("boardId") int boardId);
+
     //TODO NEW 표기일 설렉트
     int newSelect();
 
