@@ -22,9 +22,9 @@ public class AnnouncementsServiceImpl implements AnnouncementsService {
     private final AWSUploader AWSUploader;
 
     //TODO 자식 카테고리 설렉트
-    public List<BoardCategory> selectChildBoard()
+    public List<BoardCategory> selectChildBoard(int boardId)
     {
-        return announcementsMapper.selectChildBoard();
+        return announcementsMapper.selectChildBoard(boardId);
     }
 
     //TODO 현지뉴스 등록

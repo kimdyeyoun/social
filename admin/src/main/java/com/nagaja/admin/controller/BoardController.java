@@ -44,9 +44,9 @@ public class BoardController {
     //TODO 게시판 리스트 조회
     @GetMapping("/selectBoard")
     @ResponseBody
-    public BoardDto selectBoard(@ModelAttribute BoardDto boardDto)
+    public BoardDto selectBoard(@ModelAttribute BoardDto boardDto, @RequestParam(value = "classification", defaultValue = "0") int classification)
     {
-        return boardService.selectBoard(boardDto);
+        return boardService.selectBoard(boardDto, classification);
     }
 
     //TODO TODO 게시판 글 공개/비공개 설정

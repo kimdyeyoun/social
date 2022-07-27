@@ -99,6 +99,10 @@
     <select id="boardCount" resultType="int">
         SELECT COUNT(*) FROM board b
         LEFT JOIN board_category bc ON b.board_category_id = bc.board_category_id
+        LEFT JOIN member m ON m.mem_id = b.mem_id
+        LEFT JOIN company c ON c.mem_id = b.mem_id
+        LEFT JOIN company_name cn ON cn.company_id = c.company_id
+        LEFT JOIN member_status ms ON ms.mem_status_id = m.mem_status_id
         <where>
 
             <if test="board.startDate != null and !board.startDate.equals('')">
@@ -113,12 +117,23 @@
                     ]]>
             </if>
 
+            <if test="classification != 0">
+                <choose>
+                    <when test="classification == 1">
+                        AND m.mem_status_id IN(4,5,6,7)
+                    </when>
+                    <when test="classification == 2">
+                        AND m.mem_status_id IN(1,2,3)
+                    </when>
+                </choose>
+            </if>
+
             <choose>
                 <when test="board.childStatus != 0">
-                    b.board_category_id = #{board.childStatus}
+                    AND b.board_category_id = #{board.childStatus}
                 </when>
                 <otherwise>
-                    bc.board_category_parent = #{board.boardCategoryId}
+                    AND bc.board_category_parent = #{board.boardCategoryId}
                 </otherwise>
             </choose>
 
@@ -132,6 +147,9 @@
                 </when>
                 <when test="board.keywordFilter == 2">
                     AND b.board_content LIKE CONCAT('%', #{board.keyword}, '%')
+                </when>
+                <when test="board.keywordFilter == 3">
+                    AND m.mem_login_id LIKE CONCAT('%', #{board.keyword}, '%')
                 </when>
             </choose>
         </where>
@@ -144,6 +162,10 @@
         (SELECT COUNT(*) FROM board_view_count bvc WHERE bvc.board_id = b.board_id) AS boardCount
         FROM board b
         LEFT JOIN board_category bc ON b.board_category_id = bc.board_category_id
+        LEFT JOIN member m ON m.mem_id = b.mem_id
+        LEFT JOIN company c ON c.mem_id = b.mem_id
+        LEFT JOIN company_name cn ON cn.company_id = c.company_id
+        LEFT JOIN member_status ms ON ms.mem_status_id = m.mem_status_id
         <where>
 
             <if test="board.startDate != null and !board.startDate.equals('')">
@@ -158,12 +180,23 @@
                     ]]>
             </if>
 
+            <if test="classification != 0">
+                <choose>
+                    <when test="classification == 1">
+                        AND m.mem_status_id IN(4,5,6)
+                    </when>
+                    <when test="classification == 2">
+                        AND m.mem_status_id IN(1,2,3,7)
+                    </when>
+                </choose>
+            </if>
+
             <choose>
                 <when test="board.childStatus != 0">
-                    b.board_category_id = #{board.childStatus}
+                    AND b.board_category_id = #{board.childStatus}
                 </when>
                 <otherwise>
-                    bc.board_category_parent = #{board.boardCategoryId}
+                    AND bc.board_category_parent = #{board.boardCategoryId}
                 </otherwise>
             </choose>
 
@@ -177,6 +210,9 @@
                 </when>
                 <when test="board.keywordFilter == 2">
                     AND b.board_content LIKE CONCAT('%', #{board.keyword}, '%')
+                </when>
+                <when test="board.keywordFilter == 3">
+                    AND m.mem_login_id LIKE CONCAT('%', #{board.keyword}, '%')
                 </when>
             </choose>
         </where>

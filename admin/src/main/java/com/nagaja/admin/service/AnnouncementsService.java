@@ -9,7 +9,7 @@ import java.util.List;
 public interface AnnouncementsService {
 
     //TODO 자식 카테고리 설렉트
-    List<BoardCategory> selectChildBoard();
+    List<BoardCategory> selectChildBoard(int boardId);
 
     //TODO 공지사항 등록
     int insertAnnouncements(AnnouncementsDto announcementsDto);

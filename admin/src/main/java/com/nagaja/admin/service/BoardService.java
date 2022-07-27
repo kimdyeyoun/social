@@ -23,7 +23,7 @@ public interface BoardService {
     int newSelect();
 
     //TODO 게시판 검색
-    BoardDto selectBoard(BoardDto boardDto);
+    BoardDto selectBoard(BoardDto boardDto, int classification);
 
     //TODO TODO 게시판 글 공개/비공개 설정
     int updateBoard(BoardUpdDto boardUpdDto);

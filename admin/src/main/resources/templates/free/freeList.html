@@ -35,15 +35,15 @@
             <div id="content-viewport">
                 <div class="row">
                     <div class="col-12" style="margin-bottom: 15px; display: flex; justify-content: space-between;">
-                        <h4>공지사항 목록</h4>
+                        <h4>자유게시판 목록</h4>
+                        <input type="hidden" name="pk" id="pk" th:value="${param.boardId}">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12">
                         <div class="grid">
                             <p class="grid-header">
-                                공지사항 검색
-                                <input type="hidden" name="pk" id="pk" th:value="${param.boardId}">
+                                자유게시판 검색
                             </p>
                             <div class="card-body">
                                 <br>
@@ -84,20 +84,35 @@
 
                                                 <tr>
                                                     <td>
+                                                        분류
+                                                    </td>
+                                                    <td>
+                                                        <input type="radio" name="classification" id="classification1" class="roundup_type" value="0" checked required="required">
+                                                        <label for="classification1">전체</label>
+                                                        <input style="margin-left: 100px" type="radio" name="classification" id="classification2" class="roundup_type" value="1" required="required">
+                                                        <label for="classification2">기업회원</label>
+                                                        <input style="margin-left: 100px" type="radio" name="classification" id="classification3" class="roundup_type" value="2" required="required">
+                                                        <label for="classification3">일반회원</label>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
                                                         키워드 검색필터
                                                     </td>
 
                                                     <td>
-                                                        <select class="form-control" id="keywordFilter" style="width: 150px;">
-                                                            <option value="0" selected>전체</option>
-                                                            <option value="1">제목</option>
-                                                            <option value="2">내용</option>
-                                                        </select>
                                                         <select class="form-control" id="childStatus" style="width: 150px;">
                                                             <option value="0" selected>전체</option>
                                                             <th:block th:each="board : ${child}">
                                                                 <option th:value="${board.boardCategoryId}" th:text="${board.boardCategoryTitle}"></option>
                                                             </th:block>
+                                                        </select>
+                                                        <select class="form-control" id="keywordFilter" style="width: 150px;">
+                                                            <option value="0" selected>전체</option>
+                                                            <option value="1">제목</option>
+                                                            <option value="2">내용</option>
+                                                            <option value="3">작성자</option>
                                                         </select>
                                                         <input class="form-control" type="text" id="keyword" style="padding-left : 10px; width: 500px;">
                                                     </td>
@@ -117,7 +132,6 @@
                             <div class="grid" id="grid-width">
                                 <p class="grid-header">
                                     <span id="count"></span>
-                                    <a href="/announcements/insAnnouncements" type="button" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;" class="search_btn btn btn-primary" >등록</a>
                                     <a type="button" class="search_btn btn btn-danger" id="excelDownload2" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;" onclick="updBtn(0)">선택 비공개</a>
                                     <a type="button" class="search_btn btn btn-dark" id="excelDownload" style="color: #FFFFFF; float: right; margin: 5px 10px 0 0;" onclick="updBtn(1)">선택 공개</a>
                                 </p>
@@ -130,8 +144,12 @@
                                                 <tr>
                                                     <td><input type="checkbox" id="txn-checkbox" class="check-all"></td>
                                                     <td>번호</td>
+                                                    <td>분류</td>
+                                                    <td>카테고리</td>
                                                     <td>노출상태</td>
-                                                    <td>기사 제목</td>
+                                                    <td>상단노출</td>
+                                                    <td>게시글 제목</td>
+                                                    <td>작성자</td>
                                                     <td>조회수</td>
                                                     <td>댓글수</td>
                                                     <td>등록일자</td>
@@ -174,6 +192,7 @@
             'endDate': $("#endDate").val(),
             'childStatus' : $("#childStatus").val(),
             'boardCategoryId' : $("#pk").val(),
+            'classification' : $("input:radio[name=classification]:checked").val(),
             'boardStatus' : $("#boardStatus").val(),
             'keywordFilter': $("#keywordFilter").val(),
             'keyword': $("#keyword").val(),
@@ -214,6 +233,10 @@
                             item_add += '<tr>';
                             item_add += '<td>' + '<input type="checkbox" name="boardId" id="member-checkbox" class="list-checkBox" value="' + result.boardInfoList[i].boardId + '">' + '</td>';
                             item_add += '<td>' + num + '</td>';
+
+                            item_add += '<td>' + result.boardInfoList[i].memStatusContent + '</td>';
+                            item_add += '<td>' + result.boardInfoList[i].boardCategoryTitle + '</td>';
+
                             if (result.boardInfoList[i].boardStatus == 0)
                             {
                                 item_add += '<td>' + '비공개' + '</td>';
@@ -222,7 +245,30 @@
                             {
                                 item_add += '<td>' + '공개' + '</td>';
                             }
+
+                            if (result.boardInfoList[i].boardCategoryStatus == 0)
+                            {
+                                item_add += '<td>' + '상하단' + '</td>';
+                            }
+                            else if (result.boardInfoList[i].boardCategoryStatus == 1)
+                            {
+                                item_add += '<td>' + '하단' + '</td>';
+                            }
+                            else
+                            {
+                                item_add += '<td>' + '상단' + '</td>';
+                            }
+
                             item_add += '<td><a href="/announcements/detailAnnouncements?boardId='+(result.boardInfoList[i].boardId)+'">' + result.boardInfoList[i].boardTitle + '</a></td>';
+                            //TODO 여기
+                            if (result.boardInfoList[i].memStatusId == 1 || result.boardInfoList[i].memStatusId == 2 || result.boardInfoList[i].memStatusId == 3 || result.boardInfoList[i].memStatusId == 7)
+                            {
+                                item_add += '<td><a href="/member/detailMember?memId='+(result.boardInfoList[i].memId)+'">' + result.boardInfoList[i].memLoginId + '</a></td>';
+                            }
+                            else
+                            {
+                                item_add += '<td><a href="/company/detailCompany?memId='+(result.boardInfoList[i].memId)+'">' + result.boardInfoList[i].companyNameEng + '</a></td>';
+                            }
 
                             item_add += '<td>' + result.boardInfoList[i].boardCount + '</td>';
                             item_add += '<td>' + result.boardInfoList[i].replyCount + '</td>';

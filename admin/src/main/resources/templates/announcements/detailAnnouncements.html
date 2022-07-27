@@ -46,9 +46,10 @@
                     <div class="col-12">
                         <div class="grid">
                             <p class="grid-header">
-
-                                <span th:if="${announcements.noticeCount == 0 and announcements.boardCategoryId == 71}"><input type="button" class="upgrade-btn btn btn-dark" th:onclick="changeBtn(1)" value="자유게시판 상단에 고정"></span>
-                                <span th:unless="${announcements.noticeCount == 0 and announcements.boardCategoryId == 71}"><input type="button" class="upgrade-btn btn btn-danger" th:onclick="changeBtn(0)" value="자유게시판 상단 해제"></span>
+                                <th:block th:if="${announcements.boardCategoryId == 71}">
+                                    <span th:if="${announcements.noticeCount == 0}"><input type="button" class="upgrade-btn btn btn-dark" th:onclick="changeBtn(1)" value="자유게시판 상단에 고정"></span>
+                                    <span th:unless="${announcements.noticeCount == 0}"><input type="button" class="upgrade-btn btn btn-danger" th:onclick="changeBtn(0)" value="자유게시판 상단 해제"></span>
+                                </th:block>
                                 <span style="float: right;"><a href="/announcements/announcementsList">목록</a></span>
                             </p>
                             <div class="grid-body">
@@ -84,7 +85,7 @@
                                                         노출 상태
                                                     </th>
                                                     <td colspan="3">
-                                                        <input style="margin-left: 100px" type="radio" name="boardStatus" id="boardStatus1" class="roundup_type" th:checked="${announcements.boardStatus == 1}" value=1 checked required="required">
+                                                        <input style="margin-left: 100px" type="radio" name="boardStatus" id="boardStatus1" class="roundup_type" th:checked="${announcements.boardStatus == 1}" value=1 required="required">
                                                         <label for="boardStatus1">공개</label>
                                                         <input style="margin-left: 100px" type="radio" name="boardStatus" id="boardStatus2" class="roundup_type" th:checked="${announcements.boardStatus == 0}" value="0" required="required">
                                                         <label for="boardStatus2">비공개</label>
@@ -377,9 +378,7 @@
                                 location.href="/announcements/detailAnnouncements?boardId="+$("#boardId").val();
                                 break;
                             }
-                        case 2:
-                            alert('상단고정 공지사항입니다.해제후 삭제하십시오.');
-                            break;
+
                     }
                 }
             })

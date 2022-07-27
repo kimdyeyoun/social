@@ -19,9 +19,9 @@ public class AnnouncementsController {
 
     //TODO 공지사항 리스트 페이지
     @GetMapping("/announcementsList")
-    public ModelAndView announcementsList(ModelAndView mv)
+    public ModelAndView announcementsList(ModelAndView mv, @RequestParam(value = "boardId") int boardId)
     {
-        mv.addObject("child", announcementsService.selectChildBoard());
+        mv.addObject("child", announcementsService.selectChildBoard(boardId));
         mv.setViewName("/announcements/announcementsList");
         return mv;
     }
@@ -31,16 +31,16 @@ public class AnnouncementsController {
     public ModelAndView detailAnnouncements(ModelAndView mv, @RequestParam(value = "boardId") int boardId)
     {
         mv.addObject("announcements", boardService.selectDetailBoard(boardId));
-        mv.addObject("child", announcementsService.selectChildBoard());
+        mv.addObject("child", announcementsService.selectChildBoard(boardId));
         mv.setViewName("/announcements/detailAnnouncements");
         return mv;
     }
 
     //TODO 공지사항 등록 페이지
     @GetMapping("/insAnnouncements")
-    public ModelAndView insAnnouncements(ModelAndView mv)
+    public ModelAndView insAnnouncements(ModelAndView mv, @RequestParam(value = "boardId") int boardId)
     {
-        mv.addObject("child", announcementsService.selectChildBoard());
+        mv.addObject("child", announcementsService.selectChildBoard(boardId));
         mv.setViewName("/announcements/insAnnouncements");
         return mv;
     }

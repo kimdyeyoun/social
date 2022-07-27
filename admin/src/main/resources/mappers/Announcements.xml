@@ -3,9 +3,9 @@
 <mapper namespace="com.nagaja.admin.mapper.AnnouncementsMapper">
 
     <!--TODO 공지사항 하위 카테고리 설렉트-->
-    <select id="selectChildBoard" resultType="BoardCategory">
+    <select id="selectChildBoard" parameterType="int" resultType="BoardCategory">
         SELECT * FROM board_category
-        WHERE board_category_parent = 19
+        WHERE board_category_parent = #{boardId}
     </select>
 
     <!--TODO 공지사항 이미지 설렉트-->

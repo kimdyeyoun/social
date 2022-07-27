@@ -26,8 +26,17 @@ public class BoardInfoDto {
     private String boardCreateDate;
     private String boardModifyDate;
 
+    private int memStatusId;
+    private String memLoginId;
+    private String memStatusContent;
+
+    private String companyNameEng;
+    private String boardCategoryTitle;
+    private int boardCategoryStatus;
+
     private List<BoardImage> images;
-    //댓글글
+
+    //TODO 댓글 리스트
     List<Reply> replyList;
 
     //TODO 댓글 갯수

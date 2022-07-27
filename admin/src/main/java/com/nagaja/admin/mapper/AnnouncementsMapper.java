@@ -13,7 +13,7 @@ import java.util.List;
 public interface AnnouncementsMapper {
 
     //TODO 하위카테고리 설렉트
-    List<BoardCategory> selectChildBoard();
+    List<BoardCategory> selectChildBoard(@Param("boardId") int boardId);
 
     //TODO 공지사항 이미지 설렉트
     BoardImage selectFile(@Param("boardImageId") Integer boardImageId);

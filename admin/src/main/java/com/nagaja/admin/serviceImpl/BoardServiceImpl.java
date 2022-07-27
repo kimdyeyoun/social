@@ -66,13 +66,13 @@ public class BoardServiceImpl implements BoardService {
 
     //TODO 게시판 검색
     @Override
-    public BoardDto selectBoard(BoardDto boardDto)
+    public BoardDto selectBoard(BoardDto boardDto, int classification)
     {
-        int count = boardMapper.boardCount(boardDto);
+        int count = boardMapper.boardCount(boardDto, classification);
 
         Pagination pagination = MyUtils.Paging(count, boardDto.getPageNum(), boardDto.getLimit());
 
-        List<BoardInfoDto> list = boardMapper.boardList(boardDto, pagination.getOffset(), pagination.getLimit());
+        List<BoardInfoDto> list = boardMapper.boardList(boardDto, classification, pagination.getOffset(), pagination.getLimit());
 
         return BoardDto.builder().pagination(pagination).boardInfoList(list).build();
     }

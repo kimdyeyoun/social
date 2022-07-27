@@ -26,7 +26,7 @@ public class CompanyInfoDto {
     private String companyLiveTime;
     private String companyBreakTime;
     private String companyReservationTime;
-    private String companyReservationPerson;
+    private int companyReservationPerson;
     private String companyPayType;
     private String companyLicense;
     private String companyLicenseOrigin;

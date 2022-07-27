@@ -18,10 +18,10 @@ public interface BoardMapper {
     int marketBoardCount(@Param("market") MarketBoardDto marketBoardDto);
 
     //TODO 게시판 카운트
-    int boardCount(@Param("board") BoardDto boardDto);
+    int boardCount(@Param("board") BoardDto boardDto, @Param("classification") int classification);
 
     //TODO 게시판 리스트
-    List<BoardInfoDto> boardList(@Param("board") BoardDto boardDto, @Param("offset") int offset, @Param("limit") int limit);
+    List<BoardInfoDto> boardList(@Param("board") BoardDto boardDto, @Param("classification") int classification, @Param("offset") int offset, @Param("limit") int limit);
 
     //TODO 중고마켓 검색
     List<MarketBoardInfoDto> marketBoardList(@Param("market") MarketBoardDto marketBoardDto, @Param("offset") int offset, @Param("limit") int limit);
