@@ -14,7 +14,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -28,7 +27,6 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
     final HttpSession httpSession;
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-
         OAuth2UserService deleteGate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = deleteGate.loadUser(userRequest);
 
@@ -45,7 +43,6 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
         {
             //TODO 정보 가져옴
             Map<String, Object> hash = (Map<String, Object>) response.get("response");
-
             email = (String) hash.get("email");
 
         }

@@ -29,8 +29,8 @@ public class AWSUploader
 
 	public AWSUploader()
 	{
-		String accessKey = "AKIA4C3UNPP36NFSXH6N";
-		String secretKey = "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";
+		String accessKey = "AKIA4C3UNPP3TOG3KHOW";
+		String secretKey = "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";
 
 		amazonS3 = new AmazonS3Client(new BasicAWSCredentials(accessKey, secretKey));
 	}
