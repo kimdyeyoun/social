@@ -43,7 +43,6 @@ public class BaseController {
     // 로그인 시도 이후 받아온 정보
     private OAuth2AuthorizedClientService nnnnnn;
 
-
     @GetMapping("/login")
     public String login(Model model) throws Exception{
         Iterable<ClientRegistration> clientRegistrations = null;
